@@ -1,5 +1,8 @@
 # xtensor-r
 
+# THIS IS A SUPER EARLY PREVIEW OF THE R BINDINGS
+# PLEASE WAIT ANOTHER WEEK OR TWO
+
 Bindings for xtensor to the R library.
 
 ## Test
