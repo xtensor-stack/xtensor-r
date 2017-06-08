@@ -13,9 +13,11 @@
 #include <xtensor/xbuffer_adaptor.hpp>
 #include <xtensor/xutils.hpp>
 #include <xtensor/xsemantic.hpp>
+#include <xtensor/xio.hpp>
 #include <xtensor/xiterator.hpp>
 
 #include <RcppCommon.h>
+#include <Rcpp.h>
 
 using namespace Rcpp;
 using namespace xt;
@@ -33,7 +35,7 @@ namespace xt
         using shape_type = std::vector<typename container_type::size_type>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
-        using inner_shape_type = xbuffer_adaptor<int>;
+        using inner_shape_type = IntegerVector;
         using inner_strides_type = shape_type;
         using inner_backstrides_type = backstrides_type;
         using temporary_type = rxarray<T>;
@@ -87,13 +89,20 @@ namespace xt
 
         constexpr static int SXP = traits::r_sexptype_traits<T>::rtype;
 
-        rxarray(SEXP exp);
+        rxarray(SEXP exp, bool owned = false);
 
-        rxarray(const shape_type& shape);
-        rxarray(const shape_type& shape, const_reference value);
+        rxarray(const shape_type& shape, bool owned = true);
+        rxarray(const shape_type& shape, const_reference value, bool owned = true);
 
         template <class E>
         rxarray(const xexpression<E>& e);
+
+        rxarray(const self_type& rhs);
+
+        rxarray(self_type&&) = default;
+        self_type& operator=(self_type&&) = default;
+
+        ~rxarray();
 
         template <class E>
         inline self_type& operator=(const xexpression<E>& e);
@@ -114,6 +123,7 @@ namespace xt
         inner_shape_type m_shape;
         strides_type m_strides;
         strides_type m_backstrides;
+        bool m_owned;
 
         inline const inner_shape_type& shape_impl() const noexcept;
         inline const inner_strides_type& strides_impl() const noexcept;
@@ -125,17 +135,14 @@ namespace xt
     };
 
     template <class T>
-    rxarray<T>::rxarray(SEXP exp) : m_sexp(exp)
+    rxarray<T>::rxarray(SEXP exp, bool owned)
+        : m_sexp(exp), m_owned(owned)
     {
-        SEXP shape_attr = Rf_getAttrib(m_sexp, R_DimSymbol);
-        R_xlen_t n_dims = Rf_xlength(shape_attr);
+        m_shape = inner_shape_type(Rf_getAttrib(m_sexp, R_DimSymbol));
 
-        int* shape = INTEGER(shape_attr);
+        resize_container(m_strides, base_type::dimension());
+        resize_container(m_backstrides, base_type::dimension());
 
-        resize_container(m_strides, n_dims);
-        resize_container(m_backstrides, n_dims);
-
-        m_shape = inner_shape_type(shape, (std::size_t) n_dims);
         xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(m_shape);
@@ -143,28 +150,32 @@ namespace xt
     }
 
     template <class T>
-    rxarray<T>::rxarray(const rxarray<T>::shape_type& shape)
+    rxarray<T>::rxarray(const rxarray<T>::shape_type& shape, bool owned)
+        : m_owned(owned)
     {
         resize_container(m_strides, shape.size());
         resize_container(m_backstrides, shape.size());
 
-        const int vtype = traits::r_sexptype_traits<int>::rtype;
-        SEXP shape_sxp = Rf_allocVector(vtype, shape.size());
+        auto tmp_shape = IntegerVector(shape.begin(), shape.end());
 
-        int* r_shape = INTEGER(shape_sxp);
-        m_shape = inner_shape_type(r_shape, shape.size());
-        std::copy(shape.begin(), shape.end(), m_shape.begin());
+        xt::compute_strides(shape, layout(), m_strides, m_backstrides);
 
-        xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
+        std::size_t sz = compute_size(shape);
 
-        m_sexp = Rf_allocArray(SXP, shape_sxp);
-
-        std::size_t sz = compute_size(m_shape);
+        m_sexp = Rf_allocArray(SXP, SEXP(tmp_shape));
         m_data = container_type(internal::r_vector_start<SXP>(m_sexp), sz);
+
+        m_shape = inner_shape_type(Rf_getAttrib(m_sexp, R_DimSymbol));
+
+        if (m_owned)
+        {
+            Rcpp_PreserveObject(m_sexp);
+        }
     }
 
     template <class T>
-    rxarray<T>::rxarray(const rxarray<T>::shape_type& shape, const_reference value) : rxarray<T>(shape)
+    rxarray<T>::rxarray(const rxarray<T>::shape_type& shape, const_reference value, bool owned)
+        : rxarray<T>(shape, owned)
     {
         std::fill(begin(), end(), value);
     }
@@ -175,6 +186,29 @@ namespace xt
     {
         shape_type shape = forward_sequence<shape_type>(e.derived_cast().shape());
         semantic_base::assign(e);
+    }
+
+    template <class T>
+    rxarray<T>::rxarray(const self_type& rhs)
+    {
+        m_strides = rhs.strides();
+        m_backstrides = rhs.backstrides();
+
+        std::size_t sz = compute_size(m_shape);
+        m_sexp = Rf_allocArray(SXP, SEXP(rhs.shape()));
+        m_data = container_type(internal::r_vector_start<SXP>(m_sexp), sz);
+        m_shape = inner_shape_type(Rf_getAttrib(m_sexp, R_DimSymbol));
+
+        std::copy(rhs.data().cbegin(), rhs.data().cend(), this->data().begin());
+    }
+
+    template <class T>
+    rxarray<T>::~rxarray<T>()
+    {
+        if (m_owned)
+        {
+            Rcpp_ReleaseObject(m_sexp);
+        }
     }
 
     template <class T>

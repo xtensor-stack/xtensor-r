@@ -16,12 +16,13 @@ library('Rcpp')
 library('devtools')
 setwd('..')
 
-Rcpp::compileAttributes('xtensor')
+Rcpp::compileAttributes('xtensor-r')
 
-build('xtensor')
+build('xtensor-r')
 
 # Compiling the package
 
+Sys.setenv("PKG_CXXFLAGS"="-std=c++14")
 install.packages('xtensor_0.1.0.tar.gz')
 
 # Testing
@@ -29,4 +30,11 @@ install.packages('xtensor_0.1.0.tar.gz')
 A <- array(seq(2 * 3 * 4 * 5), c(2, 3, 4, 5))
 A[ , , , 1] = 123
 print(A)
-xtensor::rcpp_hello_xtensor(A)
+result = xtensor::rcpp_hello_xtensor(A)
+
+cleanMem <- function(n=10) { for (i in 1:n) gc() }
+cleanMem()
+
+print(result)
+
+print(A)
