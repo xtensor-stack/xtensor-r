@@ -191,11 +191,14 @@ namespace xt
     template <class T>
     rxarray<T>::rxarray(const self_type& rhs)
     {
+        m_owned = true;
         m_strides = rhs.strides();
         m_backstrides = rhs.backstrides();
 
-        std::size_t sz = compute_size(m_shape);
         m_sexp = Rf_allocArray(SXP, SEXP(rhs.shape()));
+        Rcpp_PreserveObject(m_sexp);
+
+        std::size_t sz = compute_size(m_shape);
         m_data = container_type(internal::r_vector_start<SXP>(m_sexp), sz);
         m_shape = inner_shape_type(Rf_getAttrib(m_sexp, R_DimSymbol));
 
