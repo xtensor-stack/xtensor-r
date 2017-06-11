@@ -27,8 +27,8 @@ install.packages('xtensor_0.1.0.tar.gz')
 
 # Testing
 
-A <- array(seq(2 * 3 * 4 * 5), c(2, 3, 4, 5))
-A[ , , , 1] = 123
+A <- array(seq(2 * 3 * 2), c(2, 3, 2))
+A[ , , 1] = 123
 print(A)
 result = xtensor::rcpp_hello_xtensor(A)
 
