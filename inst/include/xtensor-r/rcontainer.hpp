@@ -21,8 +21,8 @@
 namespace xt
 {
 
-	using Rcpp::Rcpp_ReplaceObject;
-	using Rcpp::Rcpp_ReleaseObject;
+    using Rcpp::Rcpp_ReplaceObject;
+    using Rcpp::Rcpp_ReleaseObject;
 
     namespace detail
     {
@@ -60,7 +60,7 @@ namespace xt
     template <class D>
     class rcontainer : public xcontainer<D>
     {
-    
+
     public:
 
         using derived_type = D;
@@ -122,14 +122,14 @@ namespace xt
 
     private:
 
-    	SEXP m_sexp;
+        SEXP m_sexp;
         bool m_owned;
     };
 
 
     template <class D>
     rcontainer<D>::rcontainer()
-    	: m_sexp(R_NilValue), m_owned(true)
+        : m_sexp(R_NilValue), m_owned(true)
     {
     }
 
@@ -137,7 +137,7 @@ namespace xt
     rcontainer<D>::rcontainer(SEXP exp)
         : m_sexp(R_NilValue), m_owned(false)
     {
-    	m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
+        m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     template <class D>
@@ -145,15 +145,15 @@ namespace xt
     {
         if (m_owned)
         {
-        	Rcpp_ReleaseObject(m_sexp);
-        	m_sexp = R_NilValue;
+            Rcpp_ReleaseObject(m_sexp);
+            m_sexp = R_NilValue;
         }
     }
 
     template <class D>
     void rcontainer<D>::set_sexp(SEXP exp)
     {
-    	m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
+        m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     /**
@@ -166,8 +166,8 @@ namespace xt
         if (shape.size() != this->dimension() || !std::equal(shape.begin(), shape.end(), this->shape().begin()))
         {
             strides_type strides = make_sequence<strides_type>(shape.size(), size_type(1));
-	        compute_strides(shape, layout_type::column_major, strides);
-	        reshape(shape, strides);
+            compute_strides(shape, layout_type::column_major, strides);
+            reshape(shape, strides);
         }
     }
 
@@ -186,13 +186,13 @@ namespace xt
     template <class D>
     inline layout_type rcontainer<D>::layout() const
     {
-    	return layout_type::column_major;
+        return layout_type::column_major;
     }
 
     template <class D>
     inline rcontainer<D>::operator SEXP() const
     {
-    	return m_sexp;
+        return m_sexp;
     }
 }
 
