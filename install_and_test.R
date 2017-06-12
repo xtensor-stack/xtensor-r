@@ -30,4 +30,4 @@ A <- array(seq(2), c(2, 1, 1, 1))
 # A[ , , , 1] = 123
 # print(A)
 b <- array(32.23, c(4, 2, 2))
-xtensor::rcpp_hello_xtensor(b)
+xtensor::rcpp_hello_xtensor(4:123)

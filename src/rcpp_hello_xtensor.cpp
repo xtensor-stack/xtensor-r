@@ -13,7 +13,8 @@ using namespace Rcpp;
 // [[Rcpp::plugins(cpp14)]]
 
 // [[Rcpp::export]]
-xt::rtensor<double, 2> rcpp_hello_xtensor(xt::rtensor<double, 3> tens) {
+xt::rtensor<double, 2> rcpp_hello_xtensor(xt::rtensor<int, 1> tens) {
+	std::cout << tens << std::endl;
     auto t = xt::rtensor<double, 2>({{1,2,3},{5,5,5}});
     auto x = xt::rarray<double>({{1,2,3},{5,5,5}});
 	return t * x;
