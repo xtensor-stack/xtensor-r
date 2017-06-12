@@ -28,6 +28,12 @@ namespace xt
     {
         inline xbuffer_adaptor<int> r_shape_to_buffer_adaptor(SEXP exp)
         {
+            if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
+            {
+                Rcpp::IntegerVector d = Rcpp::IntegerVector::create(Rf_length(exp));
+                Rf_setAttrib(exp, R_DimSymbol, d);
+            }
+
             SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
             std::size_t n = (std::size_t) Rf_xlength(shape_sexp);
             return xbuffer_adaptor<int>(
@@ -36,6 +42,12 @@ namespace xt
 
         inline xbuffer_adaptor<int> r_shape_to_buffer_adaptor(SEXP exp, std::size_t n)
         {
+            if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
+            {
+                Rcpp::IntegerVector d = Rcpp::IntegerVector::create(Rf_length(exp));
+                Rf_setAttrib(exp, R_DimSymbol, d);
+            }
+
             SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
             if (n != (std::size_t) Rf_xlength(shape_sexp))
             {
@@ -179,7 +191,7 @@ namespace xt
     template <class D>
     inline void rcontainer<D>::reshape(const shape_type& shape, const strides_type& strides)
     {
-        derived_type tmp(shape, strides);
+        derived_type tmp(shape);
         *static_cast<derived_type*>(this) = std::move(tmp);
     }
 
