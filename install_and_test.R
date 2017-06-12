@@ -16,9 +16,9 @@ library('Rcpp')
 library('devtools')
 setwd('..')
 
-Rcpp::compileAttributes('xtensor')
+Rcpp::compileAttributes('xtensor-r')
 
-build('xtensor')
+build('xtensor-r')
 
 # Compiling the package
 
