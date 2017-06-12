@@ -179,7 +179,7 @@ namespace xt
     template <class D>
     inline void rcontainer<D>::reshape(const shape_type& shape, const strides_type& strides)
     {
-        derived_type tmp(shape, strides);
+        derived_type tmp(shape);
         *static_cast<derived_type*>(this) = std::move(tmp);
     }
 

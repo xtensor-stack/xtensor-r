@@ -13,8 +13,9 @@
 #include <xtensor/xbuffer_adaptor.hpp>
 #include <xtensor/xutils.hpp>
 #include <xtensor/xsemantic.hpp>
-#include <xtensor/xio.hpp>
 #include <xtensor/xiterator.hpp>
+
+#include "xtensor-r/rcontainer.hpp"
 
 #include <RcppCommon.h>
 #include <Rcpp.h>
@@ -86,10 +87,14 @@ namespace xt
 
         constexpr static int SXP = traits::r_sexptype_traits<T>::rtype;
 
+        rarray();
         rarray(SEXP exp);
 
-        rarray(const shape_type& shape);
-        rarray(const shape_type& shape, const_reference value);
+        template <class S = shape_type>
+        rarray(const S& shape);
+
+        template <class S = shape_type>
+        rarray(const S& shape, const_reference value);
 
         rarray(const value_type& t);
         rarray(nested_initializer_list_t<value_type, 1> t);
@@ -102,6 +107,7 @@ namespace xt
         rarray(const xexpression<E>& e);
 
         rarray(const self_type& rhs);
+        self_type& operator=(const self_type& rhs);
 
         rarray(self_type&&) = default;
         self_type& operator=(self_type&&) = default;
@@ -147,11 +153,18 @@ namespace xt
         xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(m_shape);
-        m_data = container_type(internal::r_vector_start<SXP>(exp), sz);
+        m_data = container_type(static_cast<T*>(internal::r_vector_start<SXP>(exp)), sz);
     }
 
     template <class T>
-    rarray<T>::rarray(const rarray<T>::shape_type& shape)
+    rarray<T>::rarray()
+        : base_type()
+    {
+    }
+
+    template <class T>
+    template <class S>
+    rarray<T>::rarray(const S& shape)
     {
         resize_container(m_strides, shape.size());
         resize_container(m_backstrides, shape.size());
@@ -163,13 +176,14 @@ namespace xt
         std::size_t sz = compute_size(shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_data = container_type(reinterpret_cast<T*>(internal::r_vector_start<SXP>(SEXP(*this))), sz);
 
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
     }
 
     template <class T>
-    rarray<T>::rarray(const rarray<T>::shape_type& shape, const_reference value)
+    template <class S>
+    rarray<T>::rarray(const S& shape, const_reference value)
         : rarray<T>(shape)
     {
         std::fill(begin(), end(), value);
@@ -185,18 +199,17 @@ namespace xt
 
     template <class T>
     rarray<T>::rarray(const self_type& rhs)
+        : self_type(rhs.shape())
     {
-        m_strides = rhs.strides();
-        m_backstrides = rhs.backstrides();
-
-        base_type::set_sexp(Rf_allocArray(SXP, SEXP(rhs.shape())));
-
-        std::size_t sz = compute_size(m_shape);
-        m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
-
-        m_shape = detail::r_shape_to_buffer_adaptor(*this);
-
         std::copy(rhs.data().cbegin(), rhs.data().cend(), this->data().begin());
+    }
+
+    template <class T>
+    rarray<T>::rarray(const value_type& t)
+        : base_type()
+    {
+        base_type::reshape(xt::shape<shape_type>(t));
+        nested_copy(m_data.begin(), t);
     }
 
     template <class T>
@@ -232,6 +245,14 @@ namespace xt
         : self_type(xt::shape<shape_type>(t))
     {
         nested_copy(xbegin(), t);
+    }
+
+    template <class T>
+    inline auto rarray<T>::operator=(const self_type& rhs) -> self_type&
+    {
+        self_type tmp(rhs);
+        *this = std::move(tmp);
+        return *this;
     }
 
     template <class T>
