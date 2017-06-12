@@ -138,6 +138,11 @@ namespace xt
     rxarray<T>::rxarray(SEXP exp, bool owned)
         : m_sexp(exp), m_owned(owned)
     {
+        // if dims attributes does not exist, set it to length of object
+        if (Rf_isNull(Rf_getAttrib(m_sexp, R_DimSymbol))) {
+            Rcpp::IntegerVector d = Rcpp::IntegerVector::create(Rf_length(m_sexp));
+            Rf_setAttrib(m_sexp, R_DimSymbol, d);
+        }
         m_shape = inner_shape_type(Rf_getAttrib(m_sexp, R_DimSymbol));
 
         resize_container(m_strides, base_type::dimension());
