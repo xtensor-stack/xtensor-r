@@ -70,19 +70,6 @@ namespace xt
     };
 
     template <class C = std::vector<std::size_t>>
-    struct row_major_result : layout_result<C>
-    {
-        inline row_major_result()
-        {
-            this->m_strides = { 8, 4, 1 };
-            this->m_backstrides = {16, 4, 3};
-            this->m_data = { -1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                             10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                             20, 21, 22, 23 };
-        }
-    };
-
-    template <class C = std::vector<std::size_t>>
     struct column_major_result : layout_result<C>
     {
         inline column_major_result()
@@ -93,19 +80,6 @@ namespace xt
                               1, 9, 17, 5, 13, 21,
                               2, 10, 18, 6, 14, 22,
                               3, 11, 19, 7, 15, 23 };
-        }
-    };
-
-    template <class C = std::vector<std::size_t>>
-    struct central_major_result : layout_result<C>
-    {
-        inline central_major_result()
-        {
-            this->m_strides = { 8, 1, 2 };
-            this->m_backstrides = { 16, 1, 6};
-            this->m_data = { -1, 4, 1, 5, 2, 6, 3, 7,
-                              8, 12, 9, 13, 10, 14, 11, 15,
-                             16, 20, 17, 21, 18, 22, 19, 23 };
         }
     };
 

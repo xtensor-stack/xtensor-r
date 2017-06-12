@@ -6,31 +6,23 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xtensor-r/rarray.hpp"
+#include <iostream>
 
 #include "gtest/gtest.h"
-#include "R.h"
+#include "xtensor-r/rarray.hpp"
 
-extern "C" {
-   int Rf_initEmbeddedR(int argc, char**argv);
-   void Rf_endEmbeddedR(int fatal);
-   int R_running_as_main_program;
-}
-
-#include <iostream>
+#include "RInside.h"
 
 int main(int argc, char* argv[])
 {
-    R_running_as_main_program = 1;
-    Rf_initEmbeddedR(argc, argv);
-    // Initialize all the things (google-test and Python interpreter)
+
+    RInside R(argc, argv);
+
     ::testing::InitGoogleTest(&argc, argv);
 
     // Run test suite
     int ret = RUN_ALL_TESTS();
 
-    Rf_endEmbeddedR(0);
-
-    return ret;
+    exit(ret);
 }
 

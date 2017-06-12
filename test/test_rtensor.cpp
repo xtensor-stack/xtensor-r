@@ -13,7 +13,7 @@
 
 namespace xt
 {
-    using container_type = std::vector<std::size_t>;
+    using container_type = std::array<int, 3>;
 
     TEST(rtensor, initializer_constructor)
     {
@@ -42,7 +42,7 @@ namespace xt
 
     TEST(rtensor, strided_constructor)
     {
-        central_major_result<container_type> cmr;
+        column_major_result<container_type> cmr;
         rtensor<int, 3> cma(cmr.m_shape);
         compare_shape(cma, cmr);
     }
@@ -171,10 +171,10 @@ namespace xt
         test_iterator<rtensor<int, 3>, container_type>(a);
     }
 
-    TEST(rtensor, zerod)
-    {
-        rtensor<int, 3> a;
-        EXPECT_EQ(0, a());
-    }
+    // TEST(rtensor, zerod)
+    // {
+    //     rtensor<int, 3> a;
+    //     EXPECT_EQ(0, a());
+    // }
 
 }

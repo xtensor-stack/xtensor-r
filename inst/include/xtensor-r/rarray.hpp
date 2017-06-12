@@ -1,5 +1,5 @@
 /***************************************************************************
-* Copyright (c) 2017, Johan Mabille, Sylvain Corlay and Wolf Vollprecht    *
+* Copyright (c) 2017, Wolf Vollprecht, Johan Mabille, and Sylvain Corlay   *
 *                                                                          *
 * Distributed under the terms of the BSD 3-Clause License.                 *
 *                                                                          *
@@ -90,11 +90,8 @@ namespace xt
         rarray();
         rarray(SEXP exp);
 
-        template <class S = shape_type>
-        rarray(const S& shape);
-
-        template <class S = shape_type>
-        rarray(const S& shape, const_reference value);
+        rarray(const shape_type& shape);
+        rarray(const shape_type& shape, const_reference value);
 
         rarray(const value_type& t);
         rarray(nested_initializer_list_t<value_type, 1> t);
@@ -113,17 +110,17 @@ namespace xt
         self_type& operator=(self_type&&) = default;
 
         template <class E>
-        inline self_type& operator=(const xexpression<E>& e);
+        self_type& operator=(const xexpression<E>& e);
 
         template <class S = shape_type>
-        inline void reshape(const S& shape);
+        void reshape(const S& shape);
 
         using base_type::begin;
         using base_type::end;
         using base_type::xbegin;
         using base_type::xend;
 
-        inline layout_type layout() const;
+        layout_type layout() const;
 
     private:
 
@@ -132,17 +129,26 @@ namespace xt
         strides_type m_strides;
         strides_type m_backstrides;
 
-        inline const inner_shape_type& shape_impl() const noexcept;
-        inline const inner_strides_type& strides_impl() const noexcept;
-        inline const inner_backstrides_type& backstrides_impl() const noexcept;
-        inline container_type& data_impl() noexcept;
-        inline const container_type& data_impl() const noexcept;
+        template <class S>
+        void init_from_shape(const S& shape);
+
+        const inner_shape_type& shape_impl() const noexcept;
+        const inner_strides_type& strides_impl() const noexcept;
+        const inner_backstrides_type& backstrides_impl() const noexcept;
+        container_type& data_impl() noexcept;
+        const container_type& data_impl() const noexcept;
 
         friend class xcontainer<rarray<T>>;
     };
 
     template <class T>
-    rarray<T>::rarray(SEXP exp)
+    inline rarray<T>::rarray()
+        : base_type()
+    {
+    }
+
+    template <class T>
+    inline rarray<T>::rarray(SEXP exp)
         : base_type(exp)
     {
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
@@ -157,18 +163,11 @@ namespace xt
     }
 
     template <class T>
-    rarray<T>::rarray()
-        : base_type()
-    {
-    }
-
-    template <class T>
     template <class S>
-    rarray<T>::rarray(const S& shape)
+    inline void rarray<T>::init_from_shape(const S& shape)
     {
         resize_container(m_strides, shape.size());
         resize_container(m_backstrides, shape.size());
-
         auto tmp_shape = IntegerVector(shape.begin(), shape.end());
 
         xt::compute_strides(shape, layout(), m_strides, m_backstrides);
@@ -177,73 +176,75 @@ namespace xt
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
         m_data = container_type(reinterpret_cast<T*>(internal::r_vector_start<SXP>(SEXP(*this))), sz);
-
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
     }
 
     template <class T>
-    template <class S>
-    rarray<T>::rarray(const S& shape, const_reference value)
-        : rarray<T>(shape)
+    inline rarray<T>::rarray(const shape_type& shape)
     {
+        init_from_shape(shape);
+    }
+
+    template <class T>
+    inline rarray<T>::rarray(const shape_type& shape, const_reference value)
+    {
+        init_from_shape(shape);
         std::fill(begin(), end(), value);
     }
 
     template <class T>
     template <class E>
-    rarray<T>::rarray(const xexpression<E>& e)
+    inline rarray<T>::rarray(const xexpression<E>& e)
     {
-        shape_type shape = forward_sequence<shape_type>(e.derived_cast().shape());
         semantic_base::assign(e);
     }
 
     template <class T>
-    rarray<T>::rarray(const self_type& rhs)
-        : self_type(rhs.shape())
+    inline rarray<T>::rarray(const self_type& rhs)
     {
+        init_from_shape(rhs.shape());
         std::copy(rhs.data().cbegin(), rhs.data().cend(), this->data().begin());
     }
 
     template <class T>
-    rarray<T>::rarray(const value_type& t)
-        : base_type()
+    inline rarray<T>::rarray(const value_type& t)
     {
-        base_type::reshape(xt::shape<shape_type>(t));
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(m_data.begin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 1> t)
-        : self_type(xt::shape<shape_type>(t))
     {
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(xbegin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 2> t)
-        : self_type(xt::shape<shape_type>(t))
     {
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(xbegin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 3> t)
-        : self_type(xt::shape<shape_type>(t))
     {
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(xbegin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 4> t)
-        : self_type(xt::shape<shape_type>(t))
     {
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(xbegin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 5> t)
-        : self_type(xt::shape<shape_type>(t))
     {
+        init_from_shape(xt::shape<shape_type>(t));
         nested_copy(xbegin(), t);
     }
 

@@ -34,7 +34,6 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 set(XTENSOR_R_HEADERS
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rarray.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rcontainer.hpp
-    ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rstrides_adaptor.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rtensor.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rvectorize.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp
@@ -64,6 +63,24 @@ if(BUILD_TESTS)
     message("RCpp Include Directory: " ${Rcpp_INCLUDE_DIRS})
 
     include_directories(${Rcpp_INCLUDE_DIRS})
+
+    execute_process(
+        COMMAND "R" "-q -e find.package('RInside')"
+        OUTPUT_VARIABLE RINSIDE_FIND_RESULT_STRING
+        RESULT_VARIABLE RINSIDE_FIND_RESULT)
+
+    string(REGEX MATCH "\".+\"" RINSIDE_LOCATION_LINE ${RINSIDE_FIND_RESULT_STRING})
+    string(REGEX REPLACE "\"" "" RINSIDE_LOCATION_LINE ${RINSIDE_LOCATION_LINE})
+
+    string(CONCAT RInside_INCLUDE_DIRS ${RINSIDE_LOCATION_LINE} "/include/")
+    message("RInside Include Directory: " ${RInside_INCLUDE_DIRS})
+
+    find_library(RINSIDE_LIBRARIES
+        NAMES RInside
+        HINTS ${RINSIDE_LOCATION_LINE}/lib/
+    )
+
+    include_directories(${RInside_INCLUDE_DIRS})
 
     find_package(R REQUIRED)
 

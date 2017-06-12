@@ -91,16 +91,14 @@ namespace xt
         constexpr static int SXP = traits::r_sexptype_traits<T>::rtype;
 
         rtensor();
-        explicit rtensor(SEXP exp);
-
         rtensor(nested_initializer_list_t<T, N> t);
 
-        template <class S>
-        explicit rtensor(const S& shape);
-        template <class S>
-        explicit rtensor(const S& shape, const_reference value);
+        explicit rtensor(SEXP exp);
+        explicit rtensor(const shape_type& shape);
+        explicit rtensor(const shape_type& shape, const_reference value);
 
-        explicit rtensor(const shape_type& shape, const strides_type& strides);
+        template <class S>
+        static self_type from_shape(const S& shape);
 
         rtensor(const self_type& rhs) ;
         self_type& operator=(const self_type& rhs);
@@ -114,7 +112,7 @@ namespace xt
         template <class E>
         self_type& operator=(const xexpression<E>& e);
 
-        template <class S = shape_type>
+        template <class S>
         inline void reshape(const S& shape);
 
         layout_type layout() const;
@@ -130,6 +128,9 @@ namespace xt
         inner_strides_type m_strides;
         inner_backstrides_type m_backstrides;
         container_type m_data;
+
+        template <class S>
+        void init_from_shape(const S& shape);
 
         inner_shape_type& shape_impl() noexcept;
         const inner_shape_type& shape_impl() const noexcept;
@@ -160,11 +161,13 @@ namespace xt
         : base_type()
     {
         auto tmp_shape = IntegerVector(N, 1);
-        xt::compute_strides(m_shape, layout_type::column_major, m_strides, m_backstrides);
+        xt::compute_strides(tmp_shape , layout_type::column_major, m_strides, m_backstrides);
         std::size_t sz = compute_size(tmp_shape);
+
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
         m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
+
         m_data[0] = T();
     }
 
@@ -178,32 +181,10 @@ namespace xt
         m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
     }
 
-    /**
-     * Allocates a rtensor with a nested initializer list.
-     */
-    template <class T, std::size_t N>
-    inline rtensor<T, N>::rtensor(nested_initializer_list_t<T, N> t)
-        : self_type(xt::shape<shape_type>(t))
-    {
-        // always using xbegin as it's column_major layout
-        nested_copy(xbegin(), t);
-    }
 
-    template <class T, std::size_t N>
-    inline rtensor<T, N>::rtensor(const shape_type& shape, const strides_type& /*strides*/)
-        : self_type(shape)
-    {
-    }
-
-    /**
-     * Allocates an uninitialized rtensor with the specified shape and
-     * layout.
-     * @param shape the shape of the rtensor
-     * @param l the layout_type of the rtensor
-     */
     template <class T, std::size_t N>
     template <class S>
-    inline rtensor<T, N>::rtensor(const S& shape)
+    void rtensor<T, N>::init_from_shape(const S& shape)
     {
         auto tmp_shape = IntegerVector(shape.begin(), shape.end());
         xt::compute_strides(shape, layout_type::column_major, m_strides, m_backstrides);
@@ -216,6 +197,37 @@ namespace xt
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
     }
 
+    template <class T, std::size_t N>
+    template <class S>
+    inline rtensor<T, N> rtensor<T, N>::from_shape(const S& shape)
+    {
+        shape_type temp_shape = forward_sequence<shape_type>(shape);
+        return self_type(temp_shape);
+    }
+
+    /**
+     * Allocates a rtensor with a nested initializer list.
+     */
+    template <class T, std::size_t N>
+    inline rtensor<T, N>::rtensor(nested_initializer_list_t<T, N> t)
+        : self_type(xt::shape<shape_type>(t))
+    {
+        // always using xbegin as it's column_major layout
+        nested_copy(xbegin(), t);
+    }
+
+    /**
+     * Allocates an uninitialized rtensor with the specified shape and
+     * layout.
+     * @param shape the shape of the rtensor
+     * @param l the layout_type of the rtensor
+     */
+    template <class T, std::size_t N>
+    inline rtensor<T, N>::rtensor(const shape_type& shape)
+    {
+        init_from_shape(shape);
+    }
+
     /**
      * Allocates a rtensor with the specified shape and layout. Elements
      * are initialized to the specified value.
@@ -224,10 +236,9 @@ namespace xt
      * @param l the layout_type of the rtensor
      */
     template <class T, std::size_t N>
-    template <class S>
-    inline rtensor<T, N>::rtensor(const S& shape, const_reference value)
-        : self_type(shape)
+    inline rtensor<T, N>::rtensor(const shape_type& shape, const_reference value)
     {
+        init_from_shape(shape);
         std::fill(m_data.begin(), m_data.end(), value);
     }
     //@}
@@ -241,8 +252,8 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const self_type& rhs)
-        : self_type(rhs.shape())
     {
+        init_from_shape(rhs.shape());
         std::copy(rhs.data().begin(), rhs.data().end(), this->data().begin());
     }
 
@@ -268,8 +279,8 @@ namespace xt
     template <class T, std::size_t N>
     template <class E>
     inline rtensor<T, N>::rtensor(const xexpression<E>& e)
-        : self_type(e.derived_cast().shape())
     {
+        init_from_shape(e.derived_cast().shape());
         semantic_base::assign(e);
     }
 
@@ -288,7 +299,7 @@ namespace xt
     template <class S>
     inline void rtensor<T, N>::reshape(const S& shape)
     {
-        self_type tmp(shape);
+        auto tmp = self_type::from_shape(shape);
         *static_cast<self_type*>(this) = std::move(tmp);
     }
 

@@ -54,7 +54,7 @@ namespace xt
 
     TEST(rarray, copy_semantic)
     {
-        central_major_result<> res;
+        column_major_result<> res;
         int value = 2;
         rarray<int> a(res.m_shape, value);
         
@@ -69,7 +69,7 @@ namespace xt
 
         {
             SCOPED_TRACE("assignment operator");
-            row_major_result<> r;
+            column_major_result<> r;
             rarray<int> c(r.m_shape, 0);
             EXPECT_NE(a.data(), c.data());
             c = a;
@@ -82,7 +82,7 @@ namespace xt
 
     TEST(rarray, move_semantic)
     {
-        central_major_result<> res;
+        column_major_result<> res;
         int value = 2;
         rarray<int> a(res.m_shape, value);
 
@@ -96,7 +96,7 @@ namespace xt
 
         {
             SCOPED_TRACE("move assignment");
-            row_major_result<> r;
+            column_major_result<> r;
             rarray<int> c(r.m_shape, 0);
             EXPECT_NE(a.data(), c.data());
             rarray<int> tmp(a);
@@ -150,17 +150,17 @@ namespace xt
 
     TEST(rarray, initializer_list)
     {
-        rarray<int> a0(1);
+        // rarray<int> a0(1);
         rarray<int> a1({1, 2});
         rarray<int> a2({{1, 2}, {2, 4}, {5, 6}});
-        EXPECT_EQ(1, a0());
+        // EXPECT_EQ(1, a0());
         EXPECT_EQ(2, a1(1));
         EXPECT_EQ(4, a2(1, 1));
     }
- 
-    TEST(rarray, zerod)
-    {
-        rarray<int> a;
-        EXPECT_EQ(0, a());
-    }
+    // TODO zerod
+    // TEST(rarray, zerod)
+    // {
+    //     rarray<int> a;
+    //     EXPECT_EQ(0, a());
+    // }
 }
