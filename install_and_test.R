@@ -22,19 +22,12 @@ build('xtensor-r')
 
 # Compiling the package
 
-Sys.setenv("PKG_CXXFLAGS"="-std=c++14")
 install.packages('xtensor_0.1.0.tar.gz')
 
 # Testing
 
-A <- array(seq(2 * 3 * 4 * 5), c(2, 3, 4, 5))
-A[ , , , 1] = 123
-print(A)
-result = xtensor::rcpp_hello_xtensor(A)
-
-cleanMem <- function(n=10) { for (i in 1:n) gc() }
-cleanMem()
-
-print(result)
-
-print(A)
+A <- array(seq(2), c(2, 1, 1, 1))
+# A[ , , , 1] = 123
+# print(A)
+b <- array(32.23, c(4, 2, 2))
+xtensor::rcpp_hello_xtensor(4:123)
