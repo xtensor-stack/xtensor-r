@@ -1,5 +1,5 @@
 ############################################################################
-# Copyright (c) 2016, Johan Mabille and Sylvain Corlay                     #
+# Copyright (c) 2016, Wolf Vollprecht, Johan Mabille and Sylvain Corlay    #
 #                                                                          #
 # Distributed under the terms of the BSD 3-Clause License.                 #
 #                                                                          #
@@ -8,15 +8,19 @@
 
 cmake_minimum_required(VERSION 3.1)
 
+set(CMAKE_MACOSX_RPATH 1)
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    project(xtensor-python-test)
+    project(xtensor-r-test)
 
     find_package(xtensor REQUIRED CONFIG)
     set(XTENSOR_INCLUDE_DIR ${xtensor_INCLUDE_DIRS})
 
     find_package(xtensor-r REQUIRED CONFIG)
     set(XTENSOR_R_INCLUDE_DIR ${xtensor-r_INCLUDE_DIRS})
-
 endif ()
 
 message(STATUS "Forcing tests build type to Release")
@@ -88,6 +92,8 @@ include_directories(${GTEST_INCLUDE_DIRS})
 find_package(R REQUIRED)
 
 include_directories(${R_INCLUDE_DIR})
+link_directories(${R_ROOT_DIR}/lib)
+link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 
 set(XTENSOR_R_TESTS
     main.cpp
