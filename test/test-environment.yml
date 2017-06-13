@@ -1,0 +1,7 @@
+name: test-xtensor-r
+channels:
+    - conda-forge
+    - defaults
+dependencies:
+    - cmake
+    - gtest

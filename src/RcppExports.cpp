@@ -7,13 +7,13 @@
 using namespace Rcpp;
 
 // rcpp_hello_xtensor
-xt::rxarray<double> rcpp_hello_xtensor(xt::rxarray<double>& foo);
-RcppExport SEXP xtensor_rcpp_hello_xtensor(SEXP fooSEXP) {
+xt::rtensor<double, 2> rcpp_hello_xtensor(xt::rtensor<int, 1> tens);
+RcppExport SEXP xtensor_rcpp_hello_xtensor(SEXP tensSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< xt::rxarray<double>& >::type foo(fooSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_xtensor(foo));
+    Rcpp::traits::input_parameter< xt::rtensor<int, 1> >::type tens(tensSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_hello_xtensor(tens));
     return rcpp_result_gen;
 END_RCPP
 }
