@@ -6,12 +6,12 @@
 # The full license is in the file LICENSE, distributed with this software. #
 ############################################################################
 
-# xtensor-python cmake module
+# xtensor-r cmake module
 # This module sets the following variables in your project::
 #
-#   xtensor-python_FOUND - true if xtensor-python found on the system
-#   xtensor-python_INCLUDE_DIRS - the directory containing xtensor-python headers
-#   xtensor-python_LIBRARY - empty
+#   xtensor-r_FOUND - true if xtensor-r found on the system
+#   xtensor-r_INCLUDE_DIRS - the directory containing xtensor-r headers
+#   xtensor-r_LIBRARY - empty
 
 @PACKAGE_INIT@
 

@@ -1,8 +1,8 @@
-# xtensor-r
+# ![xtensor-r](http://quantstack.net/assets/images/xtensor-r.svg)
 
 **THIS IS A SUPER EARLY PREVIEW OF THE R BINDINGS, PLEASE DON'T USE IT JUST YET**
 
-Bindings for xtensor to the R library.
+R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-dimensional array library.
 
 ## Test
 
