@@ -4,7 +4,6 @@ os: Visual Studio 2015
 
 platform:
   - x64
-  - x86
 
 environment:
   matrix:
@@ -28,4 +27,11 @@ install:
   - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -DCMAKE_PREFIX_PATH=-DCMAKE_PREFIX_PATH=C:\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D BUILD_TESTS=ON  ..
+  # Full build on x64 with msys64
+  - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+  - set PATH=C:\msys64\mingw64\bin;%PATH%
+  - cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
+  - cmake --build . --target test_xtensor_r
+  - cmake --build . --target install
+  # Test cmake only on x86
+  #- cmake -G "Nmake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
