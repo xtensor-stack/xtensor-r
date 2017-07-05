@@ -2,6 +2,9 @@
 #
 # - This module locates an installed R distribution.
 #
+# Input:
+#  R_LIB_ARCH - For windows (i386 or x64)
+#
 # Defines the following:
 #  R_COMMAND           - Path to R command
 #  R_HOME              - Path to 'R home', as reported by R
@@ -24,12 +27,24 @@
 #     3. Within external system libraries
 #
 
+if(NOT R_LIB_ARCH)
+  if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
+    set(R_LIB_ARCH x64)
+  else()
+    set(R_LIB_ARCH i386)
+  endif()
+endif()
+
 set(TEMP_CMAKE_FIND_APPBUNDLE ${CMAKE_FIND_APPBUNDLE})
 set(CMAKE_FIND_APPBUNDLE "NEVER")
 find_program(R_COMMAND R DOC "R executable.")
 set(CMAKE_FIND_APPBUNDLE ${TEMP_CMAKE_FIND_APPBUNDLE})
 
 if(R_COMMAND)
+  # temporarily append ".dll" to the cmake find_library suffixes
+  set(OLD_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} ".dll")
+
   execute_process(WORKING_DIRECTORY .
                   COMMAND ${R_COMMAND} RHOME
                   OUTPUT_VARIABLE R_ROOT_DIR
@@ -46,26 +61,28 @@ if(R_COMMAND)
   set(R_HOME ${R_ROOT_DIR} CACHE PATH "R home directory obtained from R RHOME")
 
   find_path(R_INCLUDE_DIR R.h
-            HINTS ${R_ROOT_DIR}
+            HINTS ${R_ROOT_DIR} ${R_ROOT_DIR}/bin/${R_LIB_ARCH}
             PATHS /usr/local/lib /usr/local/lib64 /usr/share
             PATH_SUFFIXES include R/include
             DOC "Path to file R.h")
 
   find_library(R_LIBRARY_BASE R
-            HINTS ${R_ROOT_DIR}/lib
+            HINTS ${R_ROOT_DIR}/lib ${R_ROOT_DIR}/bin/${R_LIB_ARCH}
             DOC "R library (example libR.a, libR.dylib, etc.).")
 
   find_library(R_LIBRARY_BLAS NAMES Rblas blas
-            HINTS ${R_ROOT_DIR}/lib
+            HINTS ${R_ROOT_DIR}/lib ${R_ROOT_DIR}/bin/${R_LIB_ARCH}
             DOC "Rblas library (example libRblas.a, libRblas.dylib, etc.).")
 
   find_library(R_LIBRARY_LAPACK NAMES Rlapack lapack
-            HINTS ${R_ROOT_DIR}/lib
+            HINTS ${R_ROOT_DIR}/lib ${R_ROOT_DIR}/bin/${R_LIB_ARCH}
             DOC "Rlapack library (example libRlapack.a, libRlapack.dylib, etc.).")
 
   find_library(R_LIBRARY_READLINE readline
             DOC "(Optional) system readline library. Only required if the R libraries were built with readline support.")
 
+  # reset cmake find_library to initial value
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_SUFFIXES})
 else()
   message(SEND_ERROR "FindR.cmake requires the following variables to be set: R_COMMAND")
 endif()
