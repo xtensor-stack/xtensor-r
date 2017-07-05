@@ -9,11 +9,11 @@
 #ifndef RARRAY_HPP
 #define RARRAY_HPP
 
-#include <xtensor/xcontainer.hpp>
-#include <xtensor/xbuffer_adaptor.hpp>
-#include <xtensor/xutils.hpp>
-#include <xtensor/xsemantic.hpp>
-#include <xtensor/xiterator.hpp>
+#include "xtensor/xcontainer.hpp"
+#include "xtensor/xbuffer_adaptor.hpp"
+#include "xtensor/xutils.hpp"
+#include "xtensor/xsemantic.hpp"
+#include "xtensor/xiterator.hpp"
 
 #include "xtensor-r/rcontainer.hpp"
 

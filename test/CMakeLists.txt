@@ -92,7 +92,11 @@ include_directories(${GTEST_INCLUDE_DIRS})
 find_package(R REQUIRED)
 
 include_directories(${R_INCLUDE_DIR})
+
 link_directories(${R_ROOT_DIR}/lib)
+link_directories(${R_ROOT_DIR}/bin/${R_LIB_ARCH})
+link_directories(${RINSIDE_LOCATION_LINE}/libs/${R_LIB_ARCH})
+link_directories(${RINSIDE_LOCATION_LINE}/lib)
 link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 
 set(XTENSOR_R_TESTS
@@ -109,5 +113,8 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     add_dependencies(${XTENSOR_R_TARGET} gtest_main)
 endif()
 
-add_custom_target(xtest COMMAND ./test_xtensor_r DEPENDS ${XTENSOR_R_TARGET})
-
+if(UNIX)
+    add_custom_target(xtest COMMAND export R_HOME=${R_HOME} && ./test_xtensor_r DEPENDS ${XTENSOR_R_TARGET})
+else()
+    add_custom_target(xtest COMMAND set R_HOME=${R_HOME} && .\\test_xtensor_r DEPENDS ${XTENSOR_R_TARGET})
+endif()
