@@ -33,6 +33,7 @@ matrix:
             - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
+      compiler: clang
       env: COMPILER=clang CLANG=3.6
     - os: linux
       addons:
@@ -42,6 +43,7 @@ matrix:
             - llvm-toolchain-precise-3.7
           packages:
             - clang-3.7
+      compiler: clang
       env: COMPILER=clang CLANG=3.7
     - os: linux
       addons:
@@ -51,10 +53,13 @@ matrix:
             - llvm-toolchain-precise-3.8
           packages:
             - clang-3.8
+      compiler: clang
       env: COMPILER=clang CLANG=3.8
     - os: osx
       osx_image: xcode8
       compiler: clang
+  allow_failures:
+    - compiler: clang
 env:
   global:
     - MINCONDA_VERSION="latest"
@@ -94,7 +99,7 @@ install:
     - conda install gtest cmake
     # Testing
     - conda install r r-rcpp r-base -c r
-    - conda install xtensor==0.10.4 -c conda-forge
+    - conda install xtensor==0.10.5 -c conda-forge
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build
     - cd build

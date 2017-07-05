@@ -47,45 +47,43 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
 endif()
 
 if(BUILD_TESTS)
-    include_directories(${XTENSOR_R_INCLUDE_DIR})
+    find_package(R REQUIRED)
     find_package(xtensor REQUIRED)
     include_directories(${xtensor_INCLUDE_DIRS})
+    include_directories(${XTENSOR_R_INCLUDE_DIR})
 
+    # Locate Rcpp by invoking R
     execute_process(
-        COMMAND "R" "-q -e find.package('Rcpp')"
+        COMMAND ${R_COMMAND} -q -e "find.package('Rcpp')"
         OUTPUT_VARIABLE RCPP_FIND_RESULT_STRING
         RESULT_VARIABLE RCPP_FIND_RESULT)
-
     string(REGEX MATCH "\".+\"" RCPP_LOCATION_LINE ${RCPP_FIND_RESULT_STRING})
     string(REGEX REPLACE "\"" "" RCPP_LOCATION_LINE ${RCPP_LOCATION_LINE})
-
     string(CONCAT Rcpp_INCLUDE_DIRS ${RCPP_LOCATION_LINE} "/include/")
     message("RCpp Include Directory: " ${Rcpp_INCLUDE_DIRS})
-
     include_directories(${Rcpp_INCLUDE_DIRS})
 
+    # Locate RInside by invoking R
     execute_process(
-        COMMAND "R" "-q -e find.package('RInside')"
+        COMMAND ${R_COMMAND} -q -e "find.package('RInside')"
         OUTPUT_VARIABLE RINSIDE_FIND_RESULT_STRING
         RESULT_VARIABLE RINSIDE_FIND_RESULT)
-
     string(REGEX MATCH "\".+\"" RINSIDE_LOCATION_LINE ${RINSIDE_FIND_RESULT_STRING})
     string(REGEX REPLACE "\"" "" RINSIDE_LOCATION_LINE ${RINSIDE_LOCATION_LINE})
-
     string(CONCAT RInside_INCLUDE_DIRS ${RINSIDE_LOCATION_LINE} "/include/")
     message("RInside Include Directory: " ${RInside_INCLUDE_DIRS})
 
+    set(OLD_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} ".dll")
     find_library(RINSIDE_LIBRARIES
         NAMES RInside
-        HINTS ${RINSIDE_LOCATION_LINE}/lib/
+        HINTS ${RINSIDE_LOCATION_LINE}/lib ${RINSIDE_LOCATION_LINE}/libs/${R_LIB_ARCH}
     )
-
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_SUFFIXES})
     include_directories(${RInside_INCLUDE_DIRS})
 
-    find_package(R REQUIRED)
-
+    # Include the tests
     add_subdirectory(test)
-    # add_subdirectory(benchmark)
 endif()
 
 # Installation
