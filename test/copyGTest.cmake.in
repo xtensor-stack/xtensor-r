@@ -10,6 +10,11 @@ cmake_minimum_required(VERSION 2.8.2)
 
 project(googletest-download NONE)
 
+IF(WIN32)
+  # Disabling pthreads on windows + mingw
+  SET(GTEST_DISABLE_PTHREADS ON)
+ENDIF()
+
 include(ExternalProject)
 ExternalProject_Add(googletest
     URL               "${GTEST_SRC_DIR}"
@@ -19,5 +24,6 @@ ExternalProject_Add(googletest
     BUILD_COMMAND     ""
     INSTALL_COMMAND   ""
     TEST_COMMAND      ""
+    CMAKE_ARGS        -DGTEST_DISABLE_PTHREADS=${GTEST_DISABLE_PTHREADS}
 )
 
