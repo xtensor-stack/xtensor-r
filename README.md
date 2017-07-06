@@ -8,18 +8,54 @@
 
 R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-dimensional array library.
 
-## Test
+ - `xtensor` is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
+ - `xtensor-r` enables inplace use of R arrays in C++ with all the benefits from `xtensor`
 
-Install `devtools` and `Rcpp` for R: 
+     - C++ universal function and broadcasting 
+     - STL - compliant APIs.
+     - A broad coverage of numpy APIs (see [the numpy to xtensor cheat sheet](http://xtensor.readthedocs.io/en/latest/numpy.html)).
 
-```
-install.packages('Rcpp')
-install.packages('devtools')
+The R bindings for `xtensor` are based on the [Rcpp](https://github.com/JuliaInterop/CxxWrap.jl/) C++ library.
+
+## Installing from source
+
+First, assemble the source tarbal for the CRAN package.
+
+```bash
+bash ./r-packaging.sh
 ```
 
-And then, to build the `xtensor` R package, and install into the R workspace, run the following script. 
-It will also call the `rcpp_hello_xtensor` function from `src/rcpp_hello_xtensor.cpp`.
+From the `build` Install `devtools` and `Rcpp` for R: 
 
+```R
+# Rcpp
+install.packages('Rcpp', repos='http://cran.us.r-project.org')
+library('Rcpp')
+Rcpp::compileAttributes('R-package')
+
+# Devtools
+install.packages('devtools', repos='http://cran.us.r-project.org')
+library('devtools')
+build('R-package')
 ```
-cat install_and_test.R | R --no-save
+
+At this stage, we have generated the `xtensor_0.1.0-0.tar.gz` file in the build directory which is the tarball that can be uploaded on CRAN.
+
+It can be installed with
+
+```R
+install.packages('xtensor_0.1.0-0.tar.gz')
 ```
+
+Testing the library
+
+```R 
+library('xtensor')
+xtensor::rcpp_hello_xtensor(4:12)
+```
+
+## License
+
+We use a shared copyright model that enables all contributors to maintain the copyright on their contributions.
+
+This software is licensed under the BSD-3-Clause license. See the [LICENSE](LICENSE) file for details.
