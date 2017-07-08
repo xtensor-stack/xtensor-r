@@ -25,7 +25,7 @@ First, assemble the source tarbal for the CRAN package.
 bash ./r-packaging.sh
 ```
 
-From the `build` Install `devtools` and `Rcpp` for R: 
+From the `build`, directory, run the following R commands:
 
 ```R
 # Rcpp
