@@ -8,7 +8,10 @@ Simple function using Rcpp
 Simple function using Rcpp
 }
 \usage{
-rcpp_hello_xtensor()	
+rcpp_hello_xtensor(tens)	
+}
+\arguments{
+\item{tens}{The tensor to be processed}
 }
 \examples{
 \dontrun{

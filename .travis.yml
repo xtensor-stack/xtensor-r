@@ -103,7 +103,9 @@ install:
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build
     - cd build
-    - cmake -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda -DBUILD_CRAN_PACKAGE=ON ..
+    - cmake -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
+    - make cran
+    #- R CMD check --as-cran ./xtensor_*.tar.gz
     - make -j2 test_xtensor_r
     - make install
     - cd test
