@@ -118,33 +118,45 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 # R Package Target
 # ================
 
-OPTION(BUILD_CRAN_PACKAGE "Build CRAN tarball" OFF)
+file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
-if(BUILD_CRAN_PACKAGE)
-    file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
-    include(ExternalProject)
+set(XTENSOR_TAG 0.10.7)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-    set(XTENSOR_TAG 0.10.7)
-    set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
+include(ExternalProject)
+ExternalProject_Add(xtensor
+    GIT_REPOSITORY https://github.com/QuantStack/xtensor
+    GIT_TAG ${XTENSOR_TAG}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+)
+set_target_properties(xtensor PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-    ExternalProject_Add(xtensor
-        GIT_REPOSITORY https://github.com/QuantStack/xtensor
-        GIT_TAG ${XTENSOR_TAG}
-        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
-    )
+ExternalProject_Add(xtensor-r
+    DOWNLOAD_COMMAND ""
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+)
+set_target_properties(xtensor-r PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-    # Install Rcpp and devtools
-    execute_process(
-        COMMAND ${R_COMMAND} -q -e "install.packages(c('Rcpp', 'devtools'), repos='http://cran.us.r-project.org')"
-    )
+add_custom_target(cran DEPENDS xtensor xtensor-r)
 
-    # Run Rcpp compileAttributes
-    execute_process(
-        COMMAND ${R_COMMAND} -q -e "library('Rcpp'); Rcpp::compileAttributes('R-package');"
-    )
+# Install Rcpp and devtools
+add_custom_command(
+    TARGET cran
+    POST_BUILD
+    COMMAND ${R_COMMAND} -q -e \"install.packages\(c\(\'Rcpp\',\'devtools\'\),repos=\'http://cran.us.r-project.org\'\)\"
+)
 
-    # Run devtools build
-    execute_process(
-        COMMAND ${R_COMMAND} -q -e "library('devtools'); build('R-package')"
-    )
-endif()
+# Run Rcpp compileAttributes
+add_custom_command(
+    TARGET cran
+    POST_BUILD
+    COMMAND ${R_COMMAND} -q -e \"library\(\'Rcpp\'\)\;Rcpp::compileAttributes\(\'R-package\'\)\;\"
+)
+
+# Run devtools build
+add_custom_command(
+    TARGET cran
+    POST_BUILD
+    COMMAND ${R_COMMAND} -q -e \"library\(\'devtools\'\)\;build\(\'R-package\'\)\;\"
+)

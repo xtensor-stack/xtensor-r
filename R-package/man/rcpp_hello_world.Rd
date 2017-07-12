@@ -1,5 +1,5 @@
-\name{rcpp_hello_world}
-\alias{rcpp_hello_world}
+\name{rcpp_hello_xtensor}
+\alias{rcpp_hello_xtensor}
 \docType{package}
 \title{
 Simple function using Rcpp
@@ -8,10 +8,10 @@ Simple function using Rcpp
 Simple function using Rcpp
 }
 \usage{
-rcpp_hello_world()	
+rcpp_hello_xtensor()	
 }
 \examples{
 \dontrun{
-rcpp_hello_world()
+rcpp_hello_xtensor()
 }
 }

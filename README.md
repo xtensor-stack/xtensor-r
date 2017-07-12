@@ -23,7 +23,7 @@ First, assemble the source tarbal for the CRAN package.
 
 ```bash
 cmake -DBUILD_CRAN_PACKAGE=ON .
-make r-package
+make cran
 ```
 
 It can be installed with
