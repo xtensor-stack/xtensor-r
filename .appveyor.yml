@@ -31,7 +31,9 @@ install:
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set R_HOME=%MINICONDA%\\R
   - "set PATH=%PATH%;%MINICONDA%\\Library\\mingw-w64\\bin;%MINICONDA%\\R\\library\\RInside\\libs\\x64;%MINICONDA%\\R\\bin\\x64"
-  - cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
+  - appveyor DownloadFile https://cran.r-project.org/bin/windows/Rtools/Rtools34.exe
+  - Rtools34.exe /VERYSILENT -NoNewWindow -Wait
+  - cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON -DBUILD_CRAN_PACKAGE=ON ..
   - cmake --build . --target test_xtensor_r
   - cmake --build . --target install
   # Test cmake only on x86

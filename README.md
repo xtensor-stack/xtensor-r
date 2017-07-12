@@ -22,24 +22,9 @@ The R bindings for `xtensor` are based on the [Rcpp](https://github.com/JuliaInt
 First, assemble the source tarbal for the CRAN package.
 
 ```bash
-bash ./r-packaging.sh
+cmake -DBUILD_CRAN_PACKAGE=ON .
+make r-package
 ```
-
-From the `build`, directory, run the following R commands:
-
-```R
-# Rcpp
-install.packages('Rcpp', repos='http://cran.us.r-project.org')
-library('Rcpp')
-Rcpp::compileAttributes('R-package')
-
-# Devtools
-install.packages('devtools', repos='http://cran.us.r-project.org')
-library('devtools')
-build('R-package')
-```
-
-At this stage, we have generated the `xtensor_0.1.0-0.tar.gz` file in the build directory which is the tarball that can be uploaded on CRAN.
 
 It can be installed with
 
@@ -53,6 +38,17 @@ Testing the library
 library('xtensor')
 xtensor::rcpp_hello_xtensor(4:12)
 ```
+
+## Dependencies on `xtensor` and `Rcpp`
+
+`xtensor-r` depends on the `xtensor` and `Rcpp` libraries
+
+| `xtensor-r`  | `xtensor` | `Rcpp`   |
+|--------------|-----------|----------|
+| master       |  ^0.10.7  | ^0.12.11 |
+
+ - Core `xtensor` headers are vendored in the CRAN package.
+ - When using the conda, or debian package managers, xtensor-r has a dependency on xtensor.
 
 ## License
 

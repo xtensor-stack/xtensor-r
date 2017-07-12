@@ -86,8 +86,8 @@ if(BUILD_TESTS)
     add_subdirectory(test)
 endif()
 
-# Installation
-# ============
+# C++ Module Installation
+# =======================
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -115,3 +115,36 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${XTENSOR_R_CMAKECONFIG_INSTALL_DIR})
 
+# R Package Target
+# ================
+
+OPTION(BUILD_CRAN_PACKAGE "Build CRAN tarball" OFF)
+
+if(BUILD_CRAN_PACKAGE)
+    file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
+    include(ExternalProject)
+
+    set(XTENSOR_TAG 0.10.7)
+    set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
+
+    ExternalProject_Add(xtensor
+        GIT_REPOSITORY https://github.com/QuantStack/xtensor
+        GIT_TAG ${XTENSOR_TAG}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+    )
+
+    # Install Rcpp and devtools
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "install.packages(c('Rcpp', 'devtools'), repos='http://cran.us.r-project.org')"
+    )
+
+    # Run Rcpp compileAttributes
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "library('Rcpp'); Rcpp::compileAttributes('R-package');"
+    )
+
+    # Run devtools build
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "library('devtools'); build('R-package')"
+    )
+endif()
