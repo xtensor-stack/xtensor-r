@@ -34,3 +34,16 @@ vignettes/*.pdf
 
 # Build directory
 build/
+
+# Test build artefacts
+test/test_xtensor
+test/CMakeCache.txt
+test/Makefile
+test/CMakeFiles/
+test/cmake_install.cmake
+
+# Documentation build artefacts
+docs/CMakeCache.txt
+docs/xml/
+docs/build/
+
