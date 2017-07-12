@@ -118,30 +118,33 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 # R Package Target
 # ================
 
-file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
+OPTION(BUILD_CRAN_PACKAGE "Build CRAN tarball" OFF)
 
-include(ExternalProject)
+if(BUILD_CRAN_PACKAGE)
+    file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
+    include(ExternalProject)
 
-set(XTENSOR_TAG 0.10.7)
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
+    set(XTENSOR_TAG 0.10.7)
+    set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-ExternalProject_Add(xtensor
-    GIT_REPOSITORY https://github.com/QuantStack/xtensor
-    GIT_TAG ${XTENSOR_TAG}
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
-)
+    ExternalProject_Add(xtensor
+        GIT_REPOSITORY https://github.com/QuantStack/xtensor
+        GIT_TAG ${XTENSOR_TAG}
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+    )
 
-# Install Rcpp and devtools
-execute_process(
-    COMMAND ${R_COMMAND} -q -e "install.packages(c('Rcpp', 'devtools'), repos='http://cran.us.r-project.org')"
-)
+    # Install Rcpp and devtools
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "install.packages(c('Rcpp', 'devtools'), repos='http://cran.us.r-project.org')"
+    )
 
-# Run Rcpp compileAttributes
-execute_process(
-    COMMAND ${R_COMMAND} -q -e "library('Rcpp'); Rcpp::compileAttributes('R-package');"
-)
+    # Run Rcpp compileAttributes
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "library('Rcpp'); Rcpp::compileAttributes('R-package');"
+    )
 
-# Run devtools build
-execute_process(
-    COMMAND ${R_COMMAND} -q -e "library('devtools'); build('R-package')"
-)
+    # Run devtools build
+    execute_process(
+        COMMAND ${R_COMMAND} -q -e "library('devtools'); build('R-package')"
+    )
+endif()

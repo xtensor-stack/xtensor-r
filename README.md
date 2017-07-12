@@ -22,7 +22,7 @@ The R bindings for `xtensor` are based on the [Rcpp](https://github.com/JuliaInt
 First, assemble the source tarbal for the CRAN package.
 
 ```bash
-cmake .
+cmake -DBUILD_CRAN_PACKAGE=ON .
 make r-package
 ```
 
