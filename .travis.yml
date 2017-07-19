@@ -105,7 +105,8 @@ install:
     - cd build
     - cmake -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
     - make cran
-    #- R CMD check --as-cran ./xtensor_*.tar.gz
+    - bash R CMD check --as-cran ./xtensor_*.tar.gz
+    - cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00install.out
     - make -j2 test_xtensor_r
     - make install
     - cd test
