@@ -54,7 +54,7 @@ namespace xt
 
     /**
      * @class rtensor
-     * @brief Multidimensional container providing the xtensor container semantics wrapping a numpy array.
+     * @brief Multidimensional container providing the xtensor container semantics wrapping a R array.
      *
      * rtensor is similar to the xtensor container in that it has a static dimensionality.
      *
