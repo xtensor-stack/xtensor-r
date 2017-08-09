@@ -46,8 +46,9 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     set(BUILD_TESTS ON)
 endif()
 
+find_package(R REQUIRED)
+
 if(BUILD_TESTS)
-    find_package(R REQUIRED)
     find_package(xtensor REQUIRED)
     include_directories(${xtensor_INCLUDE_DIRS})
     include_directories(${XTENSOR_R_INCLUDE_DIR})
@@ -142,6 +143,8 @@ set_target_properties(xtensor-r PROPERTIES EXCLUDE_FROM_ALL TRUE)
 add_custom_target(cran DEPENDS xtensor xtensor-r)
 
 OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
+
+message(STATUS "R command" ${R_COMMAND})
 
 if (XTENSOR_INSTALL_R_PACKAGES)
     # Install Rcpp and devtools
