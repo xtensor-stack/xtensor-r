@@ -12,11 +12,11 @@
 #include <functional>
 #include <numeric>
 
-#include "xtensor/xcontainer.hpp"
 #include "xtensor/xbuffer_adaptor.hpp"
+#include "xtensor/xcontainer.hpp"
 
-#include <RcppCommon.h>
 #include <Rcpp.h>
+#include <RcppCommon.h>
 
 namespace xt
 {
@@ -35,7 +35,7 @@ namespace xt
             }
 
             SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
-            std::size_t n = (std::size_t) Rf_xlength(shape_sexp);
+            std::size_t n = (std::size_t)Rf_xlength(shape_sexp);
             return xbuffer_adaptor<int>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
@@ -49,7 +49,7 @@ namespace xt
             }
 
             SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
-            if (n != (std::size_t) Rf_xlength(shape_sexp))
+            if (n != (std::size_t)Rf_xlength(shape_sexp))
             {
                 throw std::runtime_error("Could not convert shape. Dimensions don't match.");
             }
@@ -72,7 +72,6 @@ namespace xt
     template <class D>
     class rcontainer : public xcontainer<D>
     {
-
     public:
 
         using derived_type = D;

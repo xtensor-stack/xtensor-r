@@ -39,14 +39,14 @@ namespace xt
      * @brief Create numpy-style universal function from scalar function.
      */
     template <class R, class... Args>
-    inline rvectorizer<R(*)(Args...), R, Args...> rvectorize(R(*f) (Args...))
+    inline rvectorizer<R (*)(Args...), R, Args...> rvectorize(R (*f)(Args...))
     {
-        return rvectorizer<R(*) (Args...), R, Args...>(f);
+        return rvectorizer<R (*)(Args...), R, Args...>(f);
     }
 
     /// @cond DOXYGEN_INCLUDE_OVERLOADS
     template <class F, class R, class... Args>
-    inline rvectorizer<F, R, Args...> rvectorize(F&& f, R(*) (Args...))
+    inline rvectorizer<F, R, Args...> rvectorize(F&& f, R (*)(Args...))
     {
         return rvectorizer<F, R, Args...>(std::forward<F>(f));
     }

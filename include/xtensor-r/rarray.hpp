@@ -9,16 +9,16 @@
 #ifndef RARRAY_HPP
 #define RARRAY_HPP
 
-#include "xtensor/xcontainer.hpp"
 #include "xtensor/xbuffer_adaptor.hpp"
-#include "xtensor/xutils.hpp"
-#include "xtensor/xsemantic.hpp"
+#include "xtensor/xcontainer.hpp"
 #include "xtensor/xiterator.hpp"
+#include "xtensor/xsemantic.hpp"
+#include "xtensor/xutils.hpp"
 
 #include "xtensor-r/rcontainer.hpp"
 
-#include <RcppCommon.h>
 #include <Rcpp.h>
+#include <RcppCommon.h>
 
 using namespace Rcpp;
 using namespace xt;
@@ -48,13 +48,12 @@ namespace xt
     {
     };
 
-    template<class T>
+    template <class T>
     class rarray : public rcontainer<rarray<T>>,
                    public xcontainer_semantic<rarray<T>>
     {
-
     public:
-        
+
         using self_type = rarray<T>;
         using base_type = rcontainer<self_type>;
         using semantic_base = xcontainer_semantic<rarray<T>>;

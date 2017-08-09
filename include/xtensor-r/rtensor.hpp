@@ -9,19 +9,19 @@
 #ifndef R_TENSOR_HPP
 #define R_TENSOR_HPP
 
-#include <cstddef>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <cstddef>
 #include <iostream>
 
-#include "xtensor/xutils.hpp"
-#include "xtensor/xsemantic.hpp"
-#include "xtensor/xiterator.hpp"
 #include "xtensor/xbuffer_adaptor.hpp"
 #include "xtensor/xio.hpp"
+#include "xtensor/xiterator.hpp"
+#include "xtensor/xsemantic.hpp"
+#include "xtensor/xutils.hpp"
 
-#include <RcppCommon.h>
 #include <Rcpp.h>
+#include <RcppCommon.h>
 
 using namespace Rcpp;
 
@@ -76,8 +76,8 @@ namespace xt
         using semantic_base = xcontainer_semantic<self_type>;
         using base_type = rcontainer<self_type>;
         using container_type = typename base_type::container_type;
-        using value_type = typename base_type::value_type; 
-        using reference = typename base_type::reference; 
+        using value_type = typename base_type::value_type;
+        using reference = typename base_type::reference;
         using const_reference = typename base_type::const_reference;
         using pointer = typename base_type::pointer;
         using size_type = typename base_type::size_type;
@@ -100,7 +100,7 @@ namespace xt
         template <class S>
         static self_type from_shape(const S& shape);
 
-        rtensor(const self_type& rhs) ;
+        rtensor(const self_type& rhs);
         self_type& operator=(const self_type& rhs);
 
         rtensor(self_type&&) = default;
@@ -161,7 +161,7 @@ namespace xt
         : base_type()
     {
         auto tmp_shape = IntegerVector(N, 1);
-        xt::compute_strides(tmp_shape , layout_type::column_major, m_strides, m_backstrides);
+        xt::compute_strides(tmp_shape, layout_type::column_major, m_strides, m_backstrides);
         std::size_t sz = compute_size(tmp_shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
