@@ -141,12 +141,16 @@ set_target_properties(xtensor-r PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 add_custom_target(cran DEPENDS xtensor xtensor-r)
 
-# Install Rcpp and devtools
-add_custom_command(
-    TARGET cran
-    POST_BUILD
-    COMMAND ${R_COMMAND} -q -e \"install.packages\(c\(\'Rcpp\',\'devtools\'\),repos=\'http://cran.us.r-project.org\'\)\"
-)
+OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
+
+if (XTENSOR_INSTALL_R_PACKAGES)
+    # Install Rcpp and devtools
+    add_custom_command(
+        TARGET cran
+        POST_BUILD
+        COMMAND ${R_COMMAND} -q -e \"install.packages\(c\(\'Rcpp\',\'devtools\'\),repos=\'http://cran.us.r-project.org\'\)\"
+    )
+endif()
 
 # Run Rcpp compileAttributes
 add_custom_command(

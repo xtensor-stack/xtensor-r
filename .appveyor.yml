@@ -22,7 +22,7 @@ install:
   - conda update -q conda
   - conda install gtest cmake -c conda-forge
   # Testing
-  - conda install r r-rcpp r-base -c r
+  - conda install r r-rcpp r-base r-devtools -c r
   - conda install xtensor==0.10.5 -c conda-forge
   - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
   - mkdir build
@@ -33,7 +33,7 @@ install:
   - "set PATH=%PATH%;%MINICONDA%\\Library\\mingw-w64\\bin;%MINICONDA%\\R\\library\\RInside\\libs\\x64;%MINICONDA%\\R\\bin\\x64"
   - appveyor DownloadFile https://cran.r-project.org/bin/windows/Rtools/Rtools34.exe
   - Rtools34.exe /VERYSILENT -NoNewWindow -Wait
-  - cmake -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
+  - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
   - cmake --build . --target test_xtensor_r
   - cmake --build . --target install
   # Test cmake only on x86
