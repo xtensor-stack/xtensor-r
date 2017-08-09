@@ -1,4 +1,5 @@
 language: cpp
+dist: trusty
 matrix:
   include:
     - os: linux
@@ -78,7 +79,12 @@ before_install:
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
         export CXX=clang++ CC=clang PYTHONHOME=$HOME/miniconda;
       fi
-    
+
+before_install:
+    - sudo apt-get install -y gcc-6 g++-6
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+    - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
+ 
 install:
     # Define the version of miniconda to download
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -105,11 +111,15 @@ install:
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
     - make cran
-    #- R CMD check --as-cran ./xtensor_*.tar.gz
     - make -j2 test_xtensor_r
     - make install
-    - cd test
 
 script:
+    - cd test
     - ./test_xtensor_r
-
+    - cd ..
+    - R CMD check --as-cran ./xtensor_*.tar.gz || ( 
+       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00install.out &&
+       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00check.log   &&
+       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/Rdlatex.log
+      )
