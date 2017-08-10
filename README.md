@@ -5,8 +5,6 @@
 [![Documentation](http://readthedocs.org/projects/xtensor-r/badge/?version=latest)](https://xtensor-r.readthedocs.io/en/latest/?badge=latest)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**THIS IS AN EARLY PREVIEW OF THE R BINDINGS, PLEASE DON'T USE IT JUST YET**
-
 R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-dimensional array library.
 
  - `xtensor` is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
@@ -16,24 +14,35 @@ R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-di
      - STL - compliant APIs.
      - A broad coverage of numpy APIs (see [the numpy to xtensor cheat sheet](http://xtensor.readthedocs.io/en/latest/numpy.html)).
 
-The R bindings for `xtensor` are based on the [Rcpp](https://github.com/JuliaInterop/CxxWrap.jl/) C++ library.
+`xtensor-r` can be used either to author C++ extensions for R with [Rcpp](https://github.com/RcppCore/Rcpp), or applications that embed the R interpreter with [RInside](https://github.com/eddelbuettel/rinside).
 
-## Installing from source
+## Installation from Sources
 
-First, assemble the source tarbal for the CRAN package.
+`xtensor-r` is primarily a C++ library that can be installed classically using cmake in any installation prefix. For example, on unix systems
 
 ```bash
-cmake .
+cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ .
+make
+make install
+```
+
+A tarball for the R package archive network (CRAN) can be generated.
+
+```bash
+mkdir build
+cd build
+cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ ..
+make 
 make cran
 ```
 
-It can be installed with
+The generated tarball vendors the headers of the core `xtensor` library. It can be installed with
 
 ```R
 install.packages('xtensor_0.1.0-0.tar.gz')
 ```
 
-Testing the library
+The package can be tested with a simple function call.
 
 ```R 
 library('xtensor')
