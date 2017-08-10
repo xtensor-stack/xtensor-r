@@ -36,9 +36,10 @@ install:
   - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=C:\msys64\mingw64 -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
   - cmake --build . --target test_xtensor_r
   - cmake --build . --target install
-  # Test cmake only on x86
-  #- cmake -G "Nmake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
+  - cmake --build . --target cran
   - cd test
 
 build_script:
   - .\test_xtensor_r
+  - cd ..
+  #- R CMD check --as-cran .\xtensor_*.tar.gz
