@@ -145,8 +145,6 @@ add_custom_target(cran DEPENDS xtensor xtensor-r)
 
 OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
 
-message(STATUS "R command" ${R_COMMAND})
-
 if (XTENSOR_INSTALL_R_PACKAGES)
     # Install Rcpp and devtools
     add_custom_command(
