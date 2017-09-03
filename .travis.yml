@@ -113,9 +113,9 @@ install:
     - mkdir build
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
-    - make cran
-    - make -j2 test_xtensor_r
-    - make install
+    - cmake --build . --target test_xtensor_r
+    - cmake --build . --target install
+    - cmake --build . --target cran
 
 script:
     - cd test
