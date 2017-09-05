@@ -40,6 +40,7 @@ namespace xt
         using inner_strides_type = shape_type;
         using inner_backstrides_type = backstrides_type;
         using temporary_type = rarray<T>;
+        static constexpr layout_type layout = layout_type::column_major;
     };
 
     template <class T>

@@ -50,6 +50,7 @@ namespace xt
         using inner_strides_type = strides_type;
         using inner_backstrides_type = backstrides_type;
         using temporary_type = rtensor<T, N>;
+        static constexpr layout_type layout = layout_type::column_major;
     };
 
     /**
