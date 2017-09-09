@@ -117,8 +117,6 @@ namespace xt
 
         using base_type::begin;
         using base_type::end;
-        using base_type::xbegin;
-        using base_type::xend;
 
         layout_type layout() const;
 
@@ -189,7 +187,7 @@ namespace xt
     inline rarray<T>::rarray(const shape_type& shape, const_reference value)
     {
         init_from_shape(shape);
-        std::fill(begin(), end(), value);
+        std::fill(this->begin(), this->end(), value);
     }
 
     template <class T>
@@ -217,35 +215,35 @@ namespace xt
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 1> t)
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 2> t)
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 3> t)
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 4> t)
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 5> t)
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     template <class T>
