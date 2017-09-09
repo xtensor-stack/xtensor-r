@@ -120,8 +120,6 @@ namespace xt
 
         using base_type::begin;
         using base_type::end;
-        using base_type::xbegin;
-        using base_type::xend;
 
     private:
 
@@ -216,8 +214,7 @@ namespace xt
     inline rtensor<T, N>::rtensor(nested_initializer_list_t<T, N> t)
         : self_type(xt::shape<shape_type>(t))
     {
-        // always using xbegin as it's column_major layout
-        nested_copy(xbegin(), t);
+        nested_copy(this->begin(), t);
     }
 
     /**
