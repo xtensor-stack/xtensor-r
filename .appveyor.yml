@@ -37,9 +37,8 @@ install:
   - if not exist c:\miktex\texmfs\install\miktex\bin\pdflatex.exe appveyor DownloadFile http://mirrors.ctan.org/systems/win32/miktex/setup/miktex-portable.exe
   - if not exist c:\miktex\texmfs\install\miktex\bin\pdflatex.exe 7z x miktex-portable.exe -oC:\miktex >NUL
   - set "PATH=%PATH%;c:\miktex\texmfs\install\miktex\bin"
-  - mpm --install url
-  - mpm --install inconsolata
-  - mpm --install mptopdf
+  # Enable installing miktex  packages on the fly
+  - initexmf --set-config-value [MPM]AutoInstall=1
   # Full build on x64 with msys64
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set R_HOME=%MINICONDA%\\R
