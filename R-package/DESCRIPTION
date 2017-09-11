@@ -4,12 +4,11 @@ Title: Headers for the 'xtensor' Library
 Version: 0.1.0-0
 Author: Johan Mabille, Sylvain Corlay and Wolf Vollprecht
 Maintainer: Sylvain Corlay <sylvain.corlay@gmail.com>
-Description: The 'xtensor' C++ library for numerical analysis with 
+Description: The 'xtensor' C++ library for numerical analysis with
  multi-dimensional array expressions is provided as a header-only
- C++14 library. It offers an extensible expression system enabling 
- lazy broadcasting; an API following the idioms of the C++ standard 
- library; and tools to manipulate array expressions and build upon 
- 'xtensor.
+ C++14 library. It offers an extensible expression system enabling
+ lazy broadcasting; an API following the idioms of the C++ standard
+ library; and tools to manipulate array expressions and build upon 'xtensor'.
 URL: https://github.com/QuantStack/xtensor
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8

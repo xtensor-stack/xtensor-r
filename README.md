@@ -10,7 +10,7 @@ R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-di
  - `xtensor` is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
  - `xtensor-r` enables inplace use of R arrays in C++ with all the benefits from `xtensor`
 
-     - C++ universal function and broadcasting 
+     - C++ universal functions and broadcasting 
      - STL - compliant APIs.
      - A broad coverage of numpy APIs (see [the numpy to xtensor cheat sheet](http://xtensor.readthedocs.io/en/latest/numpy.html)).
 

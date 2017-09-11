@@ -3,32 +3,32 @@
 \alias{xtensor}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  R bindings for the xtensor C++ multi-dimensional array library.
 }
 \description{
-  A more detailed description of what the package does. A length
-  of about one to five lines is recommended.
+  xtensor is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
+  xtensor-r enables inplace use of R arrays in C++ with all the benefits from xtensor
+
+  \itemize{
+    \item C++ universal functions and broadcasting
+    \item  STL - compliant APIs.
+    \item A broad coverage of numpy APIs (see the numpy to xtensor cheat sheet at \url{http://xtensor.readthedocs.io/en/latest/numpy.html}).
+  }
+
+  xtensor-r can be used either to author C++ extensions for R with Rcpp, or applications that embed the R interpreter with RInside.
 }
 \details{
   This section should provide a more detailed overview of how to use the
   package, including the most important functions.
 }
 \author{
-Your Name, email optional.
+Sylvain Corlay, Wolf Vollprecht, Johan Mabille
 
-Maintainer: Your Name <your@email.com>
+Maintainer: Sylvain Corlay <sylvain.corlay@gmail.com>
 }
-\references{
-  This optional section can contain literature or other references for
-  background information.
-}
-\keyword{ package }
+\keyword{numpy}
+\keyword{tensor}
 \seealso{
-  Optional links to other man pages
-}
-\examples{
-  \dontrun{
-     ## Optional simple examples of the most important functions
-     ## These can be in \dontrun{} and \donttest{} blocks.   
-  }
+  Development for \pkg{xtensor} can be followed via the GitHub repository
+  at \url{http://github.com/QuantStack/xtensor}.
 }
