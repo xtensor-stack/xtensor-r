@@ -105,10 +105,11 @@ install:
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
-    - conda install gtest cmake
+    - conda install gtest cmake -c conda-forge
     # Testing
-    - conda install r r-rcpp r-base r-devtools -c r
+    - conda install r r-rcpp r-base r-devtools -c conda-forge
     - conda install xtensor==0.11.0 -c conda-forge
+    - conda update readline -c conda-forge  # Requiring conda-forge version of readline
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build
     - cd build
