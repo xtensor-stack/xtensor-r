@@ -25,6 +25,17 @@ Although ``xtensor-r`` is a header-only library, we provide standardized means t
 
 Besides the xtendor-r headers, all these methods place the `cmake` project configuration file in the right location so that third-party projects can use cmake's find_package to locate xtensor-r headers.
 
+.. image:: cran.svg
+
+Using the CRAN package
+----------------------
+
+A package for xtensor-r is available on CRAN (The Comprehensive R Archive Network).
+
+.. code::
+
+    install.packages("xtensor")
+
 .. image:: conda.svg
 
 Using the conda package
@@ -59,4 +70,20 @@ On Windows platforms, from the source directory:
     cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=/path/to/prefix ..
     nmake
     nmake install
+
+A tarball for the R package archive network (CRAN) can be generated.
+
+.. code::
+
+    mkdir build
+    cd build
+    cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ ..
+    make 
+    make cran
+
+The generated tarball vendors the headers of the core xtensor library. It can be installed with
+
+.. code::
+
+    install.packages('xtensor_0.1.0-0.tar.gz')
 

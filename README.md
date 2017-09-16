@@ -16,6 +16,14 @@ R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-di
 
 `xtensor-r` can be used either to author C++ extensions for R with [Rcpp](https://github.com/RcppCore/Rcpp), or applications that embed the R interpreter with [RInside](https://github.com/eddelbuettel/rinside).
 
+## Installation
+
+`xtensor-r` has been packaged for CRAN (The Comprehensive R Archive Network). It can be installed
+
+```R
+install.packages("xtensor")
+```
+
 ## Installation from Sources
 
 `xtensor-r` is primarily a C++ library that can be installed classically using cmake in any installation prefix. For example, on unix systems
@@ -55,7 +63,7 @@ xtensor::rcpp_hello_xtensor(4:12)
 
 | `xtensor-r`  | `xtensor` | `Rcpp`   |
 |--------------|-----------|----------|
-| master       |  ^0.11.0  | ^0.12.11 |
+| master       |  ^0.11.2  | ^0.12.11 |
 
  - Core `xtensor` headers are vendored in the CRAN package.
  - When using the conda, or debian package managers, xtensor-r has a dependency on xtensor.
