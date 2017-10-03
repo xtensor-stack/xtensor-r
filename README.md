@@ -63,7 +63,8 @@ xtensor::rcpp_hello_xtensor(4:12)
 
 | `xtensor-r`  | `xtensor` | `Rcpp`   |
 |--------------|-----------|----------|
-| master       |  ^0.11.2  | ^0.12.11 |
+| master       |  ^0.12.0  | ^0.12.11 |
+| 0.1.1        |  ^0.11.2  | ^0.12.11 |
 
  - Core `xtensor` headers are vendored in the CRAN package.
  - When using the conda, or debian package managers, xtensor-r has a dependency on xtensor.

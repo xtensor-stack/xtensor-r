@@ -203,7 +203,7 @@ namespace xt
     template <class S>
     inline rtensor<T, N> rtensor<T, N>::from_shape(const S& shape)
     {
-        shape_type temp_shape = forward_sequence<shape_type>(shape);
+        shape_type temp_shape = xtl::forward_sequence<shape_type>(shape);
         return self_type(temp_shape);
     }
 
