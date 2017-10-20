@@ -81,7 +81,7 @@ before_install:
       fi
 
 before_install:
-    - sudo apt-get install -y gcc-6 g++-6 
+    - sudo apt-get install -y gcc-6 g++-6 gfortran-6
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
     - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
     # CXX14 unnecessary with gcc-6.
