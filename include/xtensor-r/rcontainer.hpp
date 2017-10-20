@@ -15,6 +15,8 @@
 #include "xtensor/xbuffer_adaptor.hpp"
 #include "xtensor/xcontainer.hpp"
 
+#include "xtl/xsequence.hpp"
+
 #include <Rcpp.h>
 #include <RcppCommon.h>
 
@@ -176,7 +178,7 @@ namespace xt
     {
         if (shape.size() != this->dimension() || !std::equal(shape.begin(), shape.end(), this->shape().begin()))
         {
-            strides_type strides = make_sequence<strides_type>(shape.size(), size_type(1));
+            strides_type strides = xtl::make_sequence<strides_type>(shape.size(), size_type(1));
             compute_strides(shape, layout_type::column_major, strides);
             reshape(shape, strides);
         }

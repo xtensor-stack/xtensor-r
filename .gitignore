@@ -47,3 +47,5 @@ docs/CMakeCache.txt
 docs/xml/
 docs/build/
 
+# Other
+*.swp

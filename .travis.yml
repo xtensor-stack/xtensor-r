@@ -63,7 +63,7 @@ matrix:
     - compiler: clang
 env:
   global:
-    - MINCONDA_VERSION="latest"
+    - MINCONDA_VERSION="4.3.21"
     - MINCONDA_LINUX="Linux-x86_64"
     - MINCONDA_OSX="MacOSX-x86_64"
 before_install:
@@ -81,7 +81,7 @@ before_install:
       fi
 
 before_install:
-    - sudo apt-get install -y gcc-6 g++-6
+    - sudo apt-get install -y gcc-6 g++-6 gfortran-6
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
     - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
     # CXX14 unnecessary with gcc-6.
@@ -108,7 +108,7 @@ install:
     - conda install gtest cmake -c conda-forge
     # Testing
     - conda install r r-rcpp r-base r-devtools -c conda-forge
-    - conda install xtensor==0.11.2 -c conda-forge
+    - conda install xtensor==0.12.0 -c conda-forge
     - conda update readline -c conda-forge  # Requiring conda-forge version of readline
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build

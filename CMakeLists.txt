@@ -28,6 +28,14 @@ set(${PROJECT_NAME}_VERSION
     ${XTENSOR_R_VERSION_MAJOR}.${XTENSOR_R_VERSION_MINOR}.${XTENSOR_R_VERSION_PATCH})
 message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 
+# Dependencies
+# ============
+
+find_package(xtl REQUIRED)
+message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
+find_package(xtensor REQUIRED)
+message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
+
 # Build
 # =====
 
@@ -49,7 +57,7 @@ endif()
 find_package(R REQUIRED)
 
 if(BUILD_TESTS)
-    find_package(xtensor REQUIRED)
+    include_directories(${xtl_INCLUDE_DIRS})
     include_directories(${xtensor_INCLUDE_DIRS})
     include_directories(${XTENSOR_R_INCLUDE_DIR})
 
@@ -122,9 +130,9 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 
 file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
-set(XTENSOR_TAG 0.11.2)
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
+set(XTENSOR_TAG 0.12.0)
 include(ExternalProject)
 ExternalProject_Add(xtensor
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
@@ -133,6 +141,14 @@ ExternalProject_Add(xtensor
 )
 set_target_properties(xtensor PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
+set(XTL_TAG 0.2.8)
+ExternalProject_Add(xtl
+    GIT_REPOSITORY https://github.com/QuantStack/xtl
+    GIT_TAG ${XTL_TAG}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+)
+set_target_properties(xtl PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
 ExternalProject_Add(xtensor-r
     DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_SOURCE_DIR}
@@ -140,7 +156,7 @@ ExternalProject_Add(xtensor-r
 )
 set_target_properties(xtensor-r PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(cran DEPENDS xtensor xtensor-r)
+add_custom_target(cran DEPENDS xtensor xtl xtensor-r)
 
 OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
 
