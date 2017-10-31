@@ -106,8 +106,8 @@ namespace xt
         static constexpr layout_type static_layout = layout_type::column_major;
         static constexpr bool contiguous_layout = true;
 
-        void reshape(const shape_type& shape);
-        void reshape(const shape_type& shape, const strides_type& strides);
+        template <class S>
+        void reshape(S&& shape);
 
         layout_type layout() const;
 
@@ -174,26 +174,14 @@ namespace xt
      * @param shape the new shape
      */
     template <class D>
-    inline void rcontainer<D>::reshape(const shape_type& shape)
+    template <class S>
+    inline void rcontainer<D>::reshape(S&& shape)
     {
-        if (shape.size() != this->dimension() || !std::equal(shape.begin(), shape.end(), this->shape().begin()))
+        if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
         {
-            strides_type strides = xtl::make_sequence<strides_type>(shape.size(), size_type(1));
-            compute_strides(shape, layout_type::column_major, strides);
-            reshape(shape, strides);
+            derived_type tmp(std::forward<S>(shape));
+            *static_cast<derived_type*>(this) = std::move(tmp);
         }
-    }
-
-    /**
-     * Reshapes the container.
-     * @param shape the new shape
-     * @param strides the new strides
-     */
-    template <class D>
-    inline void rcontainer<D>::reshape(const shape_type& shape, const strides_type& strides)
-    {
-        derived_type tmp(shape);
-        *static_cast<derived_type*>(this) = std::move(tmp);
     }
 
     template <class D>

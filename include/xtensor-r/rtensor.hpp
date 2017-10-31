@@ -113,9 +113,6 @@ namespace xt
         template <class E>
         self_type& operator=(const xexpression<E>& e);
 
-        template <class S>
-        inline void reshape(const S& shape);
-
         layout_type layout() const;
 
         using base_type::begin;
@@ -295,14 +292,6 @@ namespace xt
         return semantic_base::operator=(e);
     }
     //@}
-
-    template <class T, std::size_t N>
-    template <class S>
-    inline void rtensor<T, N>::reshape(const S& shape)
-    {
-        auto tmp = self_type::from_shape(shape);
-        *static_cast<self_type*>(this) = std::move(tmp);
-    }
 
     template <class T, std::size_t N>
     inline layout_type rtensor<T, N>::layout() const

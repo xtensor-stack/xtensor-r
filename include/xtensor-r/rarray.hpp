@@ -112,9 +112,6 @@ namespace xt
         template <class E>
         self_type& operator=(const xexpression<E>& e);
 
-        template <class S = shape_type>
-        void reshape(const S& shape);
-
         using base_type::begin;
         using base_type::end;
 
@@ -259,14 +256,6 @@ namespace xt
     inline auto rarray<T>::operator=(const xexpression<E>& e) -> self_type&
     {
         return semantic_base::operator=(e);
-    }
-
-    template <class T>
-    template <class S>
-    inline void rarray<T>::reshape(const S& shape)
-    {
-        self_type tmp(shape);
-        *static_cast<self_type*>(this) = std::move(tmp);
     }
 
     template <class T>
