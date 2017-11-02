@@ -32,11 +32,11 @@ namespace xt
     template <class T>
     struct xcontainer_inner_types<rarray<T>>
     {
-        using container_type = xbuffer_adaptor<T>;
+        using container_type = xbuffer_adaptor<T*>;
         using shape_type = std::vector<typename container_type::size_type>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
-        using inner_shape_type = xbuffer_adaptor<int>;
+        using inner_shape_type = xbuffer_adaptor<int*>;
         using inner_strides_type = shape_type;
         using inner_backstrides_type = backstrides_type;
         using temporary_type = rarray<T>;

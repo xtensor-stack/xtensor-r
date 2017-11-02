@@ -47,7 +47,7 @@ make cran
 The generated tarball vendors the headers of the core `xtensor` library. It can be installed with
 
 ```R
-install.packages('xtensor_0.1.0-0.tar.gz')
+install.packages('xtensor_0.2.0-0.tar.gz')
 ```
 
 The package can be tested with a simple function call.
@@ -63,7 +63,7 @@ xtensor::rcpp_hello_xtensor(4:12)
 
 | `xtensor-r`  | `xtensor` | `Rcpp`   |
 |--------------|-----------|----------|
-| master       |  ^0.12.0  | ^0.12.11 |
+| master       |  ^0.13.0  | ^0.12.11 |
 | 0.1.1        |  ^0.11.2  | ^0.12.11 |
 
  - Core `xtensor` headers are vendored in the CRAN package.
