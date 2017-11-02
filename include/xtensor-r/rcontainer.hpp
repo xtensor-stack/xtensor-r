@@ -28,7 +28,7 @@ namespace xt
 
     namespace detail
     {
-        inline xbuffer_adaptor<int> r_shape_to_buffer_adaptor(SEXP exp)
+        inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp)
         {
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
@@ -38,11 +38,11 @@ namespace xt
 
             SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
             std::size_t n = (std::size_t)Rf_xlength(shape_sexp);
-            return xbuffer_adaptor<int>(
+            return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
 
-        inline xbuffer_adaptor<int> r_shape_to_buffer_adaptor(SEXP exp, std::size_t n)
+        inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp, std::size_t n)
         {
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
@@ -55,7 +55,7 @@ namespace xt
             {
                 throw std::runtime_error("Could not convert shape. Dimensions don't match.");
             }
-            return xbuffer_adaptor<int>(
+            return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
     }
