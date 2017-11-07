@@ -64,6 +64,8 @@ xtensor::rcpp_hello_xtensor(4:12)
 | `xtensor-r`  | `xtensor` | `Rcpp`   |
 |--------------|-----------|----------|
 | master       |  ^0.13.1  | ^0.12.11 |
+| 0.3.0        |  ^0.13.1  | ^0.12.11 |
+| 0.2.0        |  ^0.12..  | ^0.12.11 |
 | 0.1.1        |  ^0.11.2  | ^0.12.11 |
 
  - Core `xtensor` headers are vendored in the CRAN package.
