@@ -132,7 +132,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-set(XTENSOR_TAG 0.13.1)
+set(XTENSOR_TAG 0.14.1)
 include(ExternalProject)
 ExternalProject_Add(xtensor
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
@@ -141,7 +141,7 @@ ExternalProject_Add(xtensor
 )
 set_target_properties(xtensor PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-set(XTL_TAG 0.3.3)
+set(XTL_TAG 0.3.7)
 ExternalProject_Add(xtl
     GIT_REPOSITORY https://github.com/QuantStack/xtl
     GIT_TAG ${XTL_TAG}
