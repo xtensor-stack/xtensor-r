@@ -106,7 +106,10 @@ namespace xt
         static constexpr layout_type static_layout = layout_type::column_major;
         static constexpr bool contiguous_layout = true;
 
-        template <class S>
+        template <class S = shape_type>
+        void resize(S&& shape);
+
+        template <class S = shape_type>
         void reshape(S&& shape);
 
         layout_type layout() const;
@@ -170,6 +173,21 @@ namespace xt
     }
 
     /**
+     * Resizes the container.
+     * @param shape the new shape
+     */
+    template <class D>
+    template <class S>
+    inline void rcontainer<D>::resize(S&& shape)
+    {
+        if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
+        {
+            derived_type tmp(std::forward<S>(shape));
+            *static_cast<derived_type*>(this) = std::move(tmp);
+        }
+    }
+
+    /**
      * Reshapes the container.
      * @param shape the new shape
      */
@@ -177,6 +195,12 @@ namespace xt
     template <class S>
     inline void rcontainer<D>::reshape(S&& shape)
     {
+        if (compute_size(shape) != this->size())
+        {
+            throw std::runtime_error("Cannot reshape with incorrect number of elements.");
+        }
+
+        // TODO: No need to allocate a new R array.
         if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
         {
             derived_type tmp(std::forward<S>(shape));

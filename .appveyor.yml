@@ -25,11 +25,10 @@ install:
   - ps: sed -i 's|CXX_STD = CXX14||' R-package/src/Makevars.win
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda install gtest cmake -c conda-forge
   # Testing
   - conda install r r-rcpp r-base r-devtools -c conda-forge
   - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix
-  - conda install xtensor==0.14.1 -c conda-forge
+  - conda install xtensor==0.15.1 -c conda-forge
   - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
   - mkdir build
   - cd build

@@ -117,10 +117,10 @@ namespace xt
         EXPECT_EQ(c(1, 1), a1(1, 1) + a2(1, 1));
     }
 
-    TEST(rarray, reshape)
+    TEST(rarray, resize)
     {
         rarray<int> a;
-        test_reshape(a);
+        test_resize(a);
     }
 
     TEST(rarray, access)
@@ -157,10 +157,27 @@ namespace xt
         EXPECT_EQ(2, a1(1));
         EXPECT_EQ(4, a2(1, 1));
     }
+
     // TODO zerod
     // TEST(rarray, zerod)
     // {
     //     rarray<int> a;
     //     EXPECT_EQ(0, a());
     // }
+
+    TEST(rarray, reshape)
+    {
+        rarray<int> a = {{1,2,3}, {4,5,6}};
+        auto ptr = a.raw_data();
+        a.reshape({1, 6});
+        std::vector<std::size_t> sc1({1, 6});
+        EXPECT_TRUE(std::equal(sc1.cbegin(), sc1.cend(), a.shape().cbegin()) && a.shape().size() == 2);
+        // TODO: enable inplace reshape for R arrays.
+        // EXPECT_EQ(ptr, a.raw_data());
+        a.reshape({6});
+        std::vector<std::size_t> sc2 = {6};
+        EXPECT_TRUE(std::equal(sc2.cbegin(), sc2.cend(), a.shape().cbegin()) && a.shape().size() == 1);
+        // TODO: enable inplace reshape for R arrays.
+        // EXPECT_EQ(ptr, a.raw_data());
+    }
 }
