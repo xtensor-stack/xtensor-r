@@ -136,6 +136,11 @@ namespace xt
         rcontainer(rcontainer&&) = default;
         rcontainer& operator=(rcontainer&&) = default;
 
+        // TODO: remove these once xcontainer::derived_cast is protected.
+        derived_type& derived_cast() & noexcept;
+        const derived_type& derived_cast() const & noexcept;
+        derived_type derived_cast() && noexcept;
+
     private:
 
         SEXP m_sexp;
@@ -200,11 +205,11 @@ namespace xt
             throw std::runtime_error("Cannot reshape with incorrect number of elements.");
         }
 
-        // TODO: No need to allocate a new R array.
         if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
         {
-            derived_type tmp(std::forward<S>(shape));
-            *static_cast<derived_type*>(this) = std::move(tmp);
+            auto tmp_shape = Rcpp::IntegerVector(std::begin(shape), std::end(shape));
+            Rf_setAttrib(m_sexp, R_DimSymbol, SEXP(tmp_shape));
+            this->derived_cast().set_shape();
         }
     }
 
@@ -218,6 +223,24 @@ namespace xt
     inline rcontainer<D>::operator SEXP() const
     {
         return m_sexp;
+    }
+
+    template <class D>
+    inline auto rcontainer<D>::derived_cast() & noexcept -> derived_type&
+    {
+        return *static_cast<derived_type*>(this);
+    }
+
+    template <class D>
+    inline auto rcontainer<D>::derived_cast() const & noexcept -> const derived_type&
+    {
+        return *static_cast<const derived_type*>(this);
+    }
+
+    template <class D>
+    inline auto rcontainer<D>::derived_cast() && noexcept -> derived_type
+    {
+        return *static_cast<derived_type*>(this);
     }
 }
 
