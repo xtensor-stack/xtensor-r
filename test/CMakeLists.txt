@@ -80,8 +80,6 @@ endif()
 
 find_package(Threads)
 
-include_directories(${XTENSOR_INCLUDE_DIR})
-include_directories(${XTENSOR_R_INCLUDE_DIR})
 include_directories(${GTEST_INCLUDE_DIRS})
 
 find_package(R REQUIRED)
@@ -101,8 +99,8 @@ set(XTENSOR_R_TESTS
     test_rvectorize.cpp
 )
 set(XTENSOR_R_TARGET test_xtensor_r)
-add_executable(${XTENSOR_R_TARGET} ${XTENSOR_R_TESTS} ${XTENSOR_R_HEADERS} ${XTENSOR_HEADERS})
-target_link_libraries(${XTENSOR_R_TARGET} ${R_LIBRARIES} ${RINSIDE_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+add_executable(${XTENSOR_R_TARGET} ${XTENSOR_R_TESTS} ${XTENSOR_R_HEADERS})
+target_link_libraries(${XTENSOR_R_TARGET} xtensor-r ${R_LIBRARIES} ${RINSIDE_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     add_dependencies(${XTENSOR_R_TARGET} gtest_main)

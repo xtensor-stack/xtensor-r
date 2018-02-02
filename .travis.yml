@@ -87,7 +87,7 @@ before_install:
     # CXX14 unnecessary with gcc-6.
     # Also cannot be set because R uses its compile-time settings.
     - sed -i 's|CXX_STD = CXX14||' R-package/src/Makevars
- 
+
 install:
     # Define the version of miniconda to download
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -108,7 +108,7 @@ install:
     - conda install gtest cmake -c conda-forge
     # Testing
     - conda install r r-rcpp r-base r-devtools -c conda-forge
-    - conda install xtensor==0.14.1 -c conda-forge
+    - conda install xtensor==0.15.1 -c conda-forge
     - conda update readline -c conda-forge  # Requiring conda-forge version of readline
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build
@@ -122,7 +122,7 @@ script:
     - cd test
     - ./test_xtensor_r
     - cd ..
-    - R CMD check --as-cran ./xtensor_*.tar.gz || ( 
+    - R CMD check --as-cran ./xtensor_*.tar.gz || (
        cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00install.out &&
        cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00check.log   &&
        cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/Rdlatex.log

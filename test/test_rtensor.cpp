@@ -135,10 +135,10 @@ namespace xt
         EXPECT_EQ(c(1, 1), a1(1, 1) + a2(1, 1));
     }
 
-    TEST(rtensor, reshape)
+    TEST(rtensor, resize)
     {
         rtensor<int, 3> a;
-        test_reshape<rtensor<int, 3>, container_type>(a);
+        test_resize<rtensor<int, 3>, container_type>(a);
     }
 
     /*TEST(rtensor, transpose)
@@ -177,4 +177,13 @@ namespace xt
     //     EXPECT_EQ(0, a());
     // }
 
+    TEST(rtensor, reshape)
+    {
+        rtensor<int, 2> a = {{1,2,3}, {4,5,6}};
+        auto ptr = a.raw_data();
+        a.reshape({1, 6});
+        // TODO: enable inplace reshape for R arrays.
+        // EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_THROW(a.reshape({6}), std::runtime_error);
+    }
 }

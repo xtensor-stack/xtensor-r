@@ -21,7 +21,7 @@ include(ExternalProject)
 
 ExternalProject_Add(googletest
     GIT_REPOSITORY    https://github.com/SylvainCorlay/googletest.git
-    GIT_TAG           1.8.0-mingw
+    GIT_TAG           1.8.0-mingw-w64
     SOURCE_DIR        "${CMAKE_CURRENT_BINARY_DIR}/googletest-src"
     BINARY_DIR        "${CMAKE_CURRENT_BINARY_DIR}/googletest-build"
     CONFIGURE_COMMAND ""

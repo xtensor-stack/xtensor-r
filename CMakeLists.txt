@@ -24,7 +24,7 @@ foreach(ver ${xtensor_python_version_defines})
         set(XTENSOR_R_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif()
 endforeach()
-set(${PROJECT_NAME}_VERSION 
+set(${PROJECT_NAME}_VERSION
     ${XTENSOR_R_VERSION_MAJOR}.${XTENSOR_R_VERSION_MINOR}.${XTENSOR_R_VERSION_PATCH})
 message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 
@@ -47,6 +47,14 @@ set(XTENSOR_R_HEADERS
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp
 )
 
+add_library(xtensor-r INTERFACE)
+target_include_directories(xtensor-r INTERFACE $<BUILD_INTERFACE:${XTENSOR_R_INCLUDE_DIR}>
+                                               $<INSTALL_INTERFACE:include>)
+
+target_link_libraries(xtensor-r INTERFACE xtensor)
+get_target_property(inc_dir xtensor-r INTERFACE_INCLUDE_DIRECTORIES)
+message(STATUS "${inc_dir}")
+
 OPTION(BUILD_TESTS "xtensor-r test suite" OFF)
 OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
 
@@ -57,10 +65,6 @@ endif()
 find_package(R REQUIRED)
 
 if(BUILD_TESTS)
-    include_directories(${xtl_INCLUDE_DIRS})
-    include_directories(${xtensor_INCLUDE_DIRS})
-    include_directories(${XTENSOR_R_INCLUDE_DIR})
-
     # Locate Rcpp by invoking R
     execute_process(
         COMMAND ${R_COMMAND} -q -e "find.package('Rcpp')"
@@ -101,12 +105,18 @@ endif()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+install(TARGETS xtensor-r
+        EXPORT ${PROJECT_NAME}-targets)
+
+# Makes the project importable from the build directory
+export(EXPORT ${PROJECT_NAME}-targets
+       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
 install(FILES ${XTENSOR_R_HEADERS}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xtensor-r)
 
 set(XTENSOR_R_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE
     STRING "install path for xtensor-rConfig.cmake")
-
 
 configure_package_config_file(${PROJECT_NAME}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
@@ -124,6 +134,9 @@ set(CMAKE_SIZEOF_VOID_P ${_XTENSOR_CMAKE_SIZEOF_VOID_P})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${XTENSOR_R_CMAKECONFIG_INSTALL_DIR})
+install(EXPORT ${PROJECT_NAME}-targets
+        FILE ${PROJECT_NAME}Targets.cmake
+        DESTINATION ${XTENSOR_R_CMAKECONFIG_INSTALL_DIR})
 
 # R Package Target
 # ================
@@ -132,31 +145,31 @@ file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-set(XTENSOR_TAG 0.14.1)
+set(XTENSOR_TAG 0.15.1)
 include(ExternalProject)
-ExternalProject_Add(xtensor
+ExternalProject_Add(xtensor-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
     GIT_TAG ${XTENSOR_TAG}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
 )
-set_target_properties(xtensor PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(xtensor-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-set(XTL_TAG 0.3.7)
-ExternalProject_Add(xtl
+set(XTL_TAG 0.4.0)
+ExternalProject_Add(xtl-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtl
     GIT_TAG ${XTL_TAG}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
 )
-set_target_properties(xtl PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(xtl-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-ExternalProject_Add(xtensor-r
+ExternalProject_Add(xtensor-r-clone
     DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_SOURCE_DIR}
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
 )
-set_target_properties(xtensor-r PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(xtensor-r-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(cran DEPENDS xtensor xtl xtensor-r)
+add_custom_target(cran DEPENDS xtensor-clone xtl-clone xtensor-r-clone)
 
 OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
 
