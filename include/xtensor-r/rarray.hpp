@@ -109,9 +109,6 @@ namespace xt
         template <class E>
         self_type& operator=(const xexpression<E>& e);
 
-        using base_type::begin;
-        using base_type::end;
-
         layout_type layout() const;
 
     private:
