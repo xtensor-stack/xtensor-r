@@ -113,9 +113,6 @@ namespace xt
 
         layout_type layout() const;
 
-        using base_type::begin;
-        using base_type::end;
-
     private:
 
         inner_shape_type m_shape;
@@ -366,6 +363,5 @@ namespace Rcpp
         return SEXP(arr);
     }
 }
-
 
 #endif
