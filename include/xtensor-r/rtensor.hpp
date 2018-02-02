@@ -23,8 +23,6 @@
 #include <Rcpp.h>
 #include <RcppCommon.h>
 
-using namespace Rcpp;
-
 #include "rcontainer.hpp"
 
 namespace xt
@@ -89,7 +87,7 @@ namespace xt
         using inner_strides_type = typename base_type::inner_strides_type;
         using inner_backstrides_type = typename base_type::inner_backstrides_type;
 
-        constexpr static int SXP = traits::r_sexptype_traits<T>::rtype;
+        constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
 
         rtensor();
         rtensor(nested_initializer_list_t<T, N> t);
@@ -138,7 +136,10 @@ namespace xt
         container_type& data_impl() noexcept;
         const container_type& data_impl() const noexcept;
 
+        void set_shape();
+
         friend class xcontainer<rtensor<T, N>>;
+        friend class rcontainer<rtensor<T, N>>;
     };
 
     /***************************
@@ -156,7 +157,7 @@ namespace xt
     inline rtensor<T, N>::rtensor()
         : base_type()
     {
-        auto tmp_shape = IntegerVector(N, 1);
+        auto tmp_shape = Rcpp::IntegerVector(N, 1);
         xt::compute_strides(tmp_shape, layout_type::column_major, m_strides, m_backstrides);
         // Workaround. Rcpp's IntegerVector lacks cbegin() and cend() methods
         // which are used in compute_size().
@@ -164,7 +165,7 @@ namespace xt
         std::size_t sz = compute_size(adaptor);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
 
         m_data[0] = T();
@@ -177,7 +178,7 @@ namespace xt
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
         xt::compute_strides(m_shape, layout_type::column_major, m_strides, m_backstrides);
         std::size_t sz = compute_size(m_shape);
-        m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
     }
 
 
@@ -185,13 +186,13 @@ namespace xt
     template <class S>
     void rtensor<T, N>::init_from_shape(const S& shape)
     {
-        auto tmp_shape = IntegerVector(shape.begin(), shape.end());
+        auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
         xt::compute_strides(shape, layout_type::column_major, m_strides, m_backstrides);
 
         std::size_t sz = compute_size(shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
 
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
     }
@@ -222,6 +223,7 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const shape_type& shape)
+        : base_type()
     {
         init_from_shape(shape);
     }
@@ -235,6 +237,7 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const shape_type& shape, const_reference value)
+        : base_type()
     {
         init_from_shape(shape);
         std::fill(m_data.begin(), m_data.end(), value);
@@ -250,6 +253,7 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const self_type& rhs)
+        : base_type()
     {
         init_from_shape(rhs.shape());
         std::copy(rhs.data().begin(), rhs.data().end(), this->data().begin());
@@ -345,6 +349,12 @@ namespace xt
     inline auto rtensor<T, N>::data_impl() const noexcept -> const container_type&
     {
         return m_data;
+    }
+
+    template <class T, std::size_t N>
+    inline void rtensor<T, N>::set_shape()
+    {
+        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
     }
 }
 

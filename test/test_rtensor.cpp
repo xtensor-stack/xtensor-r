@@ -182,8 +182,7 @@ namespace xt
         rtensor<int, 2> a = {{1,2,3}, {4,5,6}};
         auto ptr = a.raw_data();
         a.reshape({1, 6});
-        // TODO: enable inplace reshape for R arrays.
-        // EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.raw_data());
         EXPECT_THROW(a.reshape({6}), std::runtime_error);
     }
 }

@@ -20,9 +20,6 @@
 #include <Rcpp.h>
 #include <RcppCommon.h>
 
-using namespace Rcpp;
-using namespace xt;
-
 namespace xt
 {
 
@@ -85,7 +82,7 @@ namespace xt
         using stepper = typename iterable_base::stepper;
         using const_stepper = typename iterable_base::const_stepper;
 
-        constexpr static int SXP = traits::r_sexptype_traits<T>::rtype;
+        constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
 
         rarray();
         rarray(SEXP exp);
@@ -133,7 +130,10 @@ namespace xt
         container_type& data_impl() noexcept;
         const container_type& data_impl() const noexcept;
 
+        void set_shape();
+
         friend class xcontainer<rarray<T>>;
+        friend class rcontainer<rarray<T>>;
     };
 
     template <class T>
@@ -154,7 +154,7 @@ namespace xt
         xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(m_shape);
-        m_data = container_type(static_cast<T*>(internal::r_vector_start<SXP>(exp)), sz);
+        m_data = container_type(static_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
     }
 
     template <class T>
@@ -163,25 +163,27 @@ namespace xt
     {
         resize_container(m_strides, shape.size());
         resize_container(m_backstrides, shape.size());
-        auto tmp_shape = IntegerVector(shape.begin(), shape.end());
+        auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
 
         xt::compute_strides(shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(reinterpret_cast<T*>(internal::r_vector_start<SXP>(SEXP(*this))), sz);
+        m_data = container_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
     }
 
     template <class T>
     inline rarray<T>::rarray(const shape_type& shape)
+        : base_type()
     {
         init_from_shape(shape);
     }
 
     template <class T>
     inline rarray<T>::rarray(const shape_type& shape, const_reference value)
+        : base_type()
     {
         init_from_shape(shape);
         std::fill(this->begin(), this->end(), value);
@@ -190,12 +192,14 @@ namespace xt
     template <class T>
     template <class E>
     inline rarray<T>::rarray(const xexpression<E>& e)
+        : base_type()
     {
         semantic_base::assign(e);
     }
 
     template <class T>
     inline rarray<T>::rarray(const self_type& rhs)
+        : base_type()
     {
         init_from_shape(rhs.shape());
         std::copy(rhs.data().cbegin(), rhs.data().cend(), this->data().begin());
@@ -203,6 +207,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(const value_type& t)
+        : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(m_data.begin(), t);
@@ -210,6 +215,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 1> t)
+        : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(this->begin(), t);
@@ -217,6 +223,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 2> t)
+        : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(this->begin(), t);
@@ -224,6 +231,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 3> t)
+        : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(this->begin(), t);
@@ -231,6 +239,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(nested_initializer_list_t<value_type, 4> t)
+        : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(this->begin(), t);
@@ -292,6 +301,12 @@ namespace xt
     inline auto rarray<T>::data_impl() const noexcept -> const container_type&
     {
         return m_data;
+    }
+
+    template <class T>
+    inline void rarray<T>::set_shape()
+    {
+        m_shape = detail::r_shape_to_buffer_adaptor(*this);
     }
 }
 

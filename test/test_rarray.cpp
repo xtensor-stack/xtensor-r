@@ -172,12 +172,10 @@ namespace xt
         a.reshape({1, 6});
         std::vector<std::size_t> sc1({1, 6});
         EXPECT_TRUE(std::equal(sc1.cbegin(), sc1.cend(), a.shape().cbegin()) && a.shape().size() == 2);
-        // TODO: enable inplace reshape for R arrays.
-        // EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.raw_data());
         a.reshape({6});
         std::vector<std::size_t> sc2 = {6};
         EXPECT_TRUE(std::equal(sc2.cbegin(), sc2.cend(), a.shape().cbegin()) && a.shape().size() == 1);
-        // TODO: enable inplace reshape for R arrays.
-        // EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.raw_data());
     }
 }
