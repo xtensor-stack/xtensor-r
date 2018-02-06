@@ -24,8 +24,16 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
-      env: COMPILER=gcc GCC=5
+            - g++-6
+      env: COMPILER=gcc GCC=6
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env: COMPILER=gcc GCC=7
     - os: linux
       addons:
         apt:
