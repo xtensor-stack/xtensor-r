@@ -145,7 +145,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-set(XTENSOR_TAG 0.15.1)
+set(XTENSOR_TAG 0.15.3)
 include(ExternalProject)
 ExternalProject_Add(xtensor-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
