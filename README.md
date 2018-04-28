@@ -10,7 +10,7 @@ R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-di
  - `xtensor` is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
  - `xtensor-r` enables inplace use of R arrays in C++ with all the benefits from `xtensor`
 
-     - C++ universal functions and broadcasting 
+     - C++ universal functions and broadcasting
      - STL - compliant APIs.
      - A broad coverage of numpy APIs (see [the numpy to xtensor cheat sheet](http://xtensor.readthedocs.io/en/latest/numpy.html)).
 
@@ -40,7 +40,7 @@ A tarball for the R package archive network (CRAN) can be generated.
 mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ ..
-make 
+make
 make cran
 ```
 
@@ -52,10 +52,16 @@ install.packages('xtensor_0.2.0-0.tar.gz')
 
 The package can be tested with a simple function call.
 
-```R 
+```R
 library('xtensor')
 xtensor::rcpp_hello_xtensor(4:12)
 ```
+
+## Documentation
+
+To get started with using `xtensor-r`, check out the full documentation
+
+http://xtensor-r.readthedocs.io/
 
 ## Dependencies on `xtensor` and `Rcpp`
 
