@@ -48,7 +48,7 @@ namespace xt
             rarray<int> ca(cm.m_shape, value);
             compare_shape(ca, cm);
             std::vector<int> vec(ca.size(), value);
-            EXPECT_TRUE(std::equal(vec.cbegin(), vec.cend(), ca.data().cbegin()));
+            EXPECT_TRUE(std::equal(vec.cbegin(), vec.cend(), ca.storage().cbegin()));
         }
     }
 
@@ -57,26 +57,26 @@ namespace xt
         column_major_result<> res;
         int value = 2;
         rarray<int> a(res.m_shape, value);
-        
+
         {
             SCOPED_TRACE("copy constructor");
             rarray<int> b(a);
             compare_shape(a, b);
-            EXPECT_EQ(a.data(), b.data());
-            a.data()[0] += 1;
-            EXPECT_NE(a.data()[0], b.data()[0]);
+            EXPECT_EQ(a.storage(), b.storage());
+            a.storage()[0] += 1;
+            EXPECT_NE(a.storage()[0], b.storage()[0]);
         }
 
         {
             SCOPED_TRACE("assignment operator");
             column_major_result<> r;
             rarray<int> c(r.m_shape, 0);
-            EXPECT_NE(a.data(), c.data());
+            EXPECT_NE(a.storage(), c.storage());
             c = a;
             compare_shape(a, c);
-            EXPECT_EQ(a.data(), c.data());
-            a.data()[0] += 1;
-            EXPECT_NE(a.data()[0], c.data()[0]);
+            EXPECT_EQ(a.storage(), c.storage());
+            a.storage()[0] += 1;
+            EXPECT_NE(a.storage()[0], c.storage()[0]);
         }
     }
 
@@ -91,18 +91,18 @@ namespace xt
             rarray<int> tmp(a);
             rarray<int> b(std::move(tmp));
             compare_shape(a, b);
-            EXPECT_EQ(a.data(), b.data());
+            EXPECT_EQ(a.storage(), b.storage());
         }
 
         {
             SCOPED_TRACE("move assignment");
             column_major_result<> r;
             rarray<int> c(r.m_shape, 0);
-            EXPECT_NE(a.data(), c.data());
+            EXPECT_NE(a.storage(), c.storage());
             rarray<int> tmp(a);
             c = std::move(tmp);
             compare_shape(a, c);
-            EXPECT_EQ(a.data(), c.data());
+            EXPECT_EQ(a.storage(), c.storage());
         }
     }
 
@@ -168,14 +168,14 @@ namespace xt
     TEST(rarray, reshape)
     {
         rarray<int> a = {{1,2,3}, {4,5,6}};
-        auto ptr = a.raw_data();
+        auto ptr = a.data();
         a.reshape({1, 6});
         std::vector<std::size_t> sc1({1, 6});
         EXPECT_TRUE(std::equal(sc1.cbegin(), sc1.cend(), a.shape().cbegin()) && a.shape().size() == 2);
-        EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.data());
         a.reshape({6});
         std::vector<std::size_t> sc2 = {6};
         EXPECT_TRUE(std::equal(sc2.cbegin(), sc2.cend(), a.shape().cbegin()) && a.shape().size() == 1);
-        EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.data());
     }
 }

@@ -40,7 +40,7 @@ namespace xt
     template <class T, std::size_t N>
     struct xcontainer_inner_types<rtensor<T, N>>
     {
-        using container_type = xbuffer_adaptor<T*>;
+        using storage_type = xbuffer_adaptor<T*>;
         using shape_type = std::array<int, N>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
@@ -74,7 +74,7 @@ namespace xt
         using self_type = rtensor<T, N>;
         using semantic_base = xcontainer_semantic<self_type>;
         using base_type = rcontainer<self_type>;
-        using container_type = typename base_type::container_type;
+        using storage_type = typename base_type::storage_type;
         using value_type = typename base_type::value_type;
         using reference = typename base_type::reference;
         using const_reference = typename base_type::const_reference;
@@ -118,7 +118,7 @@ namespace xt
         inner_shape_type m_shape;
         inner_strides_type m_strides;
         inner_backstrides_type m_backstrides;
-        container_type m_data;
+        storage_type m_storage;
 
         template <class S>
         void init_from_shape(const S& shape);
@@ -130,8 +130,8 @@ namespace xt
         inner_backstrides_type& backstrides_impl() noexcept;
         const inner_backstrides_type& backstrides_impl() const noexcept;
 
-        container_type& data_impl() noexcept;
-        const container_type& data_impl() const noexcept;
+        storage_type& storage_impl() noexcept;
+        const storage_type& storage_impl() const noexcept;
 
         void set_shape();
 
@@ -162,10 +162,10 @@ namespace xt
         std::size_t sz = compute_size(adaptor);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_storage = storage_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
 
-        m_data[0] = T();
+        m_storage[0] = T();
     }
 
     template <class T, std::size_t N>
@@ -175,7 +175,7 @@ namespace xt
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
         xt::compute_strides(m_shape, layout_type::column_major, m_strides, m_backstrides);
         std::size_t sz = compute_size(m_shape);
-        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_storage = storage_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
     }
 
 
@@ -189,7 +189,7 @@ namespace xt
         std::size_t sz = compute_size(shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
+        m_storage = storage_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
 
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
     }
@@ -237,7 +237,7 @@ namespace xt
         : base_type()
     {
         init_from_shape(shape);
-        std::fill(m_data.begin(), m_data.end(), value);
+        std::fill(m_storage.begin(), m_storage.end(), value);
     }
     //@}
 
@@ -253,7 +253,7 @@ namespace xt
         : base_type()
     {
         init_from_shape(rhs.shape());
-        std::copy(rhs.data().begin(), rhs.data().end(), this->data().begin());
+        std::copy(rhs.storage().begin(), rhs.storage().end(), this->storage().begin());
     }
 
     /**
@@ -337,15 +337,15 @@ namespace xt
     }
 
     template <class T, std::size_t N>
-    inline auto rtensor<T, N>::data_impl() noexcept -> container_type&
+    inline auto rtensor<T, N>::storage_impl() noexcept -> storage_type&
     {
-        return m_data;
+        return m_storage;
     }
 
     template <class T, std::size_t N>
-    inline auto rtensor<T, N>::data_impl() const noexcept -> const container_type&
+    inline auto rtensor<T, N>::storage_impl() const noexcept -> const storage_type&
     {
-        return m_data;
+        return m_storage;
     }
 
     template <class T, std::size_t N>

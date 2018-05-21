@@ -64,7 +64,7 @@ namespace xt
         inline const shape_type& shape() const { return m_shape; }
         inline const strides_type& strides() const { return m_strides; }
         inline const strides_type& backstrides() const { return m_backstrides; }
-        inline const vector_type& data() const { return m_data; }
+        inline const vector_type& storage() const { return m_data; }
     };
 
     template <class C = std::vector<std::size_t>>
@@ -130,7 +130,7 @@ namespace xt
         inline const shape_type& shape() const { return m_shape; }
         inline const strides_type& strides() const { return m_strides; }
         inline const strides_type& backstrides() const { return m_backstrides; }
-        inline const vector_type& data() const { return m_data; }
+        inline const vector_type& storage() const { return m_data; }
     };
 
     template <class V, class R>
@@ -169,7 +169,7 @@ namespace xt
             vec.resize(rm.shape());
 
             assign_array(vec, rm.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), rm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), rm.m_data.cbegin()));
 
             auto vec_copy = vec;
 
@@ -177,7 +177,7 @@ namespace xt
             auto vt = transpose(vec);
             std::reverse(shape_new.begin(), shape_new.end());
             EXPECT_EQ(vt.shape(), shape_new);
-            EXPECT_TRUE(std::equal(vt.data().cbegin(), vt.data().cend(), rm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vt.storage().cbegin(), vt.storage().cend(), rm.m_data.cbegin()));
 
             strides_type new_strides = {rm.m_strides[2],
                                         rm.m_strides[1],
@@ -201,7 +201,7 @@ namespace xt
             vec.resize(rm.shape());
 
             assign_array(vec, rm.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), rm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), rm.m_data.cbegin()));
 
             auto vec_copy = vec;
 
@@ -210,7 +210,7 @@ namespace xt
             auto vt = transpose(vec, {1, 0, 2});
             shape_type shape_new = {a[1], a[0], a[2]};
             EXPECT_TRUE(std::equal(vt.shape().cbegin(), vt.shape().cend(), shape_new.begin()));
-            EXPECT_TRUE(std::equal(vt.data().cbegin(), vt.data().cend(), rm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vt.storage().cbegin(), vt.storage().cend(), rm.m_data.cbegin()));
 
             strides_type new_strides = {rm.m_strides[1],
                                         rm.m_strides[0],
@@ -277,7 +277,7 @@ namespace xt
             column_major_result<C> cm;
             vec.resize(cm.m_shape);
             assign_array(vec, cm.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), cm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), cm.m_data.cbegin()));
             EXPECT_EQ(vec(0, 1, 1), vec(1, 1));
             EXPECT_EQ(vec(2, 1, 3), vec(2, 2, 2, 1, 3));
             test_bound_check(vec);
@@ -288,7 +288,7 @@ namespace xt
             unit_shape_result<C> usr;
             vec.resize(usr.m_shape);
             assign_array(vec, usr.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), usr.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), usr.m_data.cbegin()));
             EXPECT_EQ(vec(0, 1, 0), vec(1, 0));
             EXPECT_EQ(vec(2, 0, 3), vec(2, 2, 2, 0, 3));
             test_bound_check(vec);
@@ -325,7 +325,7 @@ namespace xt
             column_major_result<C> cm;
             vec.resize(cm.m_shape);
             indexed_assign_array(vec, cm.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), cm.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), cm.m_data.cbegin()));
             EXPECT_EQ(vec(0, 1, 1), vec[index1]);
             EXPECT_EQ(vec(2, 1, 3), vec[index2]);
         }
@@ -335,7 +335,7 @@ namespace xt
             unit_shape_result<C> usr;
             vec.resize(usr.m_shape);
             indexed_assign_array(vec, usr.m_assigner);
-            EXPECT_TRUE(std::equal(vec.data().cbegin(), vec.data().cend(), usr.m_data.cbegin()));
+            EXPECT_TRUE(std::equal(vec.storage().cbegin(), vec.storage().cend(), usr.m_data.cbegin()));
             xindex id1 = {1, 0};
             xindex id2 = {2, 2, 2, 0, 3};
             EXPECT_EQ(vec(0, 1, 0), vec[id1]);
@@ -409,8 +409,8 @@ namespace xt
             SCOPED_TRACE("column_major storage iterator");
             column_major_result<C> cm;
             vec.resize(cm.m_shape);
-            std::copy(cm.data().cbegin(), cm.data().cend(), vec.template begin<layout_type::column_major>());
-            EXPECT_TRUE(std::equal(cm.data().cbegin(), cm.data().cend(), vec.data().cbegin()));
+            std::copy(cm.storage().cbegin(), cm.storage().cend(), vec.template begin<layout_type::column_major>());
+            EXPECT_TRUE(std::equal(cm.storage().cbegin(), cm.storage().cend(), vec.storage().cbegin()));
         }
     }
 }

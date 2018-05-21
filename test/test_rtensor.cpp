@@ -56,7 +56,7 @@ namespace xt
             rtensor<int, 3> ca(cm.m_shape, value);
             compare_shape(ca, cm);
             std::vector<int> vec(ca.size(), value);
-            EXPECT_TRUE(std::equal(vec.begin(), vec.end(), ca.data().begin()));
+            EXPECT_TRUE(std::equal(vec.begin(), vec.end(), ca.storage().begin()));
         }
     }
 
@@ -67,7 +67,7 @@ namespace xt
         rtensor<int, 3> cma(cmr.m_shape, value);
         compare_shape(cma, cmr);
         std::vector<int> vec(cma.size(), value);
-        EXPECT_TRUE(std::equal(vec.begin(), vec.end(), cma.data().begin()));
+        EXPECT_TRUE(std::equal(vec.begin(), vec.end(), cma.storage().begin()));
     }
 
     TEST(rtensor, copy_semantic)
@@ -80,21 +80,21 @@ namespace xt
             SCOPED_TRACE("copy constructor");
             rtensor<int, 3> b(a);
             compare_shape(a, b);
-            EXPECT_EQ(a.data(), b.data());
-            a.data()[0] += 1;
-            EXPECT_NE(a.data()[0], b.data()[0]);
+            EXPECT_EQ(a.storage(), b.storage());
+            a.storage()[0] += 1;
+            EXPECT_NE(a.storage()[0], b.storage()[0]);
         }
 
         {
             SCOPED_TRACE("assignment operator");
             column_major_result<container_type> r;
             rtensor<int, 3> c(r.m_shape, 0);
-            EXPECT_NE(a.data(), c.data());
+            EXPECT_NE(a.storage(), c.storage());
             c = a;
             compare_shape(a, c);
-            EXPECT_EQ(a.data(), c.data());
-            a.data()[0] += 1;
-            EXPECT_NE(a.data()[0], c.data()[0]);
+            EXPECT_EQ(a.storage(), c.storage());
+            a.storage()[0] += 1;
+            EXPECT_NE(a.storage()[0], c.storage()[0]);
         }
     }
 
@@ -109,18 +109,18 @@ namespace xt
             rtensor<int, 3> tmp(a);
             rtensor<int, 3> b(std::move(tmp));
             compare_shape(a, b);
-            EXPECT_EQ(a.data(), b.data());
+            EXPECT_EQ(a.storage(), b.storage());
         }
 
         {
             SCOPED_TRACE("move assignment");
             column_major_result<container_type> r;
             rtensor<int, 3> c(r.m_shape, 0);
-            EXPECT_NE(a.data(), c.data());
+            EXPECT_NE(a.storage(), c.storage());
             rtensor<int, 3> tmp(a);
             c = std::move(tmp);
             compare_shape(a, c);
-            EXPECT_EQ(a.data(), c.data());
+            EXPECT_EQ(a.storage(), c.storage());
         }
     }
 
@@ -180,9 +180,9 @@ namespace xt
     TEST(rtensor, reshape)
     {
         rtensor<int, 2> a = {{1,2,3}, {4,5,6}};
-        auto ptr = a.raw_data();
+        auto ptr = a.data();
         a.reshape({1, 6});
-        EXPECT_EQ(ptr, a.raw_data());
+        EXPECT_EQ(ptr, a.data());
         EXPECT_THROW(a.reshape({6}), std::runtime_error);
     }
 }
