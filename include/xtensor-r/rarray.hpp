@@ -29,8 +29,8 @@ namespace xt
     template <class T>
     struct xcontainer_inner_types<rarray<T>>
     {
-        using container_type = xbuffer_adaptor<T*>;
-        using shape_type = std::vector<typename container_type::size_type>;
+        using storage_type = xbuffer_adaptor<T*>;
+        using shape_type = std::vector<typename storage_type::size_type>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
         using inner_shape_type = xbuffer_adaptor<int*>;
@@ -58,14 +58,14 @@ namespace xt
 
         using inner_types = xcontainer_inner_types<self_type>;
 
-        using container_type = typename inner_types::container_type;
-        using value_type = typename container_type::value_type;
-        using reference = typename container_type::reference;
-        using const_reference = typename container_type::const_reference;
-        using pointer = typename container_type::pointer;
-        using const_pointer = typename container_type::const_pointer;
-        using size_type = typename container_type::size_type;
-        using difference_type = typename container_type::difference_type;
+        using storage_type = typename inner_types::storage_type;
+        using value_type = typename storage_type::value_type;
+        using reference = typename storage_type::reference;
+        using const_reference = typename storage_type::const_reference;
+        using pointer = typename storage_type::pointer;
+        using const_pointer = typename storage_type::const_pointer;
+        using size_type = typename storage_type::size_type;
+        using difference_type = typename storage_type::difference_type;
 
         using shape_type = typename inner_types::shape_type;
         using strides_type = typename inner_types::strides_type;
@@ -113,7 +113,7 @@ namespace xt
 
     private:
 
-        container_type m_data;
+        storage_type m_storage;
         inner_shape_type m_shape;
         strides_type m_strides;
         strides_type m_backstrides;
@@ -124,8 +124,8 @@ namespace xt
         const inner_shape_type& shape_impl() const noexcept;
         const inner_strides_type& strides_impl() const noexcept;
         const inner_backstrides_type& backstrides_impl() const noexcept;
-        container_type& data_impl() noexcept;
-        const container_type& data_impl() const noexcept;
+        storage_type& storage_impl() noexcept;
+        const storage_type& storage_impl() const noexcept;
 
         void set_shape();
 
@@ -151,7 +151,7 @@ namespace xt
         xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(m_shape);
-        m_data = container_type(static_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
+        m_storage = storage_type(static_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
     }
 
     template <class T>
@@ -167,7 +167,7 @@ namespace xt
         std::size_t sz = compute_size(shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_data = container_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
+        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
     }
 
@@ -199,7 +199,7 @@ namespace xt
         : base_type()
     {
         init_from_shape(rhs.shape());
-        std::copy(rhs.data().cbegin(), rhs.data().cend(), this->data().begin());
+        std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());
     }
 
     template <class T>
@@ -207,7 +207,7 @@ namespace xt
         : base_type()
     {
         init_from_shape(xt::shape<shape_type>(t));
-        nested_copy(m_data.begin(), t);
+        nested_copy(m_storage.begin(), t);
     }
 
     template <class T>
@@ -289,15 +289,15 @@ namespace xt
     }
 
     template <class T>
-    inline auto rarray<T>::data_impl() noexcept -> container_type&
+    inline auto rarray<T>::storage_impl() noexcept -> storage_type&
     {
-        return m_data;
+        return m_storage;
     }
 
     template <class T>
-    inline auto rarray<T>::data_impl() const noexcept -> const container_type&
+    inline auto rarray<T>::storage_impl() const noexcept -> const storage_type&
     {
-        return m_data;
+        return m_storage;
     }
 
     template <class T>
