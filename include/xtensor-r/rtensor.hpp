@@ -250,7 +250,7 @@ namespace xt
         : base_type()
     {
         init_from_shape(rhs.shape());
-        std::copy(rhs.storage().begin(), rhs.storage().end(), this->storage().begin());
+        std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());
     }
 
     /**

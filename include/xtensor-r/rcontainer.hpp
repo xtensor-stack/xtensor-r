@@ -112,12 +112,6 @@ namespace xt
         layout_type layout() const;
 
         operator SEXP() const;
-
-        using base_type::operator();
-        using base_type::operator[];
-        using base_type::begin;
-        using base_type::end;
-
         void set_sexp(SEXP exp);
 
     protected:
