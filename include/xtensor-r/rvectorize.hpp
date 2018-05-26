@@ -6,8 +6,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef R_VECTORIZE_HPP
-#define R_VECTORIZE_HPP
+#ifndef XTENSOR_R_VECTORIZE_HPP
+#define XTENSOR_R_VECTORIZE_HPP
 
 #include <type_traits>
 

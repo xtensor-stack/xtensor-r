@@ -6,8 +6,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef R_CONTAINER_HPP
-#define R_CONTAINER_HPP
+#ifndef XTENSOR_R_CONTAINER_HPP
+#define XTENSOR_R_CONTAINER_HPP
 
 #include <functional>
 #include <numeric>
@@ -23,16 +23,13 @@
 namespace xt
 {
 
-    using Rcpp::Rcpp_ReplaceObject;
-    using Rcpp::Rcpp_ReleaseObject;
-
     namespace detail
     {
         inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp)
         {
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
-                Rcpp::IntegerVector d = Rcpp::IntegerVector::create(Rf_length(exp));
+                auto d = Rcpp::IntegerVector::create(Rf_length(exp));
                 Rf_setAttrib(exp, R_DimSymbol, d);
             }
 
@@ -46,7 +43,7 @@ namespace xt
         {
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
-                Rcpp::IntegerVector d = Rcpp::IntegerVector::create(Rf_length(exp));
+                auto d = Rcpp::IntegerVector::create(Rf_length(exp));
                 Rf_setAttrib(exp, R_DimSymbol, d);
             }
 
@@ -158,7 +155,7 @@ namespace xt
     rcontainer<D>::rcontainer(SEXP exp)
         : m_sexp(R_NilValue), m_owned(false)
     {
-        m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
+        m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     template <class D>
@@ -166,7 +163,7 @@ namespace xt
     {
         if (m_owned)
         {
-            Rcpp_ReleaseObject(m_sexp);
+            Rcpp::Rcpp_ReleaseObject(m_sexp);
             m_sexp = R_NilValue;
         }
     }
@@ -174,7 +171,7 @@ namespace xt
     template <class D>
     void rcontainer<D>::set_sexp(SEXP exp)
     {
-        m_sexp = Rcpp_ReplaceObject(m_sexp, exp);
+        m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     /**

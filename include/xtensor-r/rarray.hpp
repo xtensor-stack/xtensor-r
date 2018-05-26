@@ -6,8 +6,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef RARRAY_HPP
-#define RARRAY_HPP
+#ifndef XTENSOR_R_ARRAY_HPP
+#define XTENSOR_R_ARRAY_HPP
 
 #include "xtensor/xbuffer_adaptor.hpp"
 #include "xtensor/xcontainer.hpp"
@@ -16,9 +16,6 @@
 #include "xtensor/xutils.hpp"
 
 #include "xtensor-r/rcontainer.hpp"
-
-#include <Rcpp.h>
-#include <RcppCommon.h>
 
 namespace xt
 {
