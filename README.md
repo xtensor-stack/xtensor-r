@@ -1,4 +1,4 @@
-# ![xtensor-r](http://quantstack.net/assets/images/xtensor-r.svg)
+# ![xtensor-r](docs/source/xtensor-r.svg)
 
 [![Travis](https://travis-ci.org/QuantStack/xtensor-r.svg?branch=master)](https://travis-ci.org/QuantStack/xtensor-r)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/5pe90pdw4wddaxx7?svg=true)](https://ci.appveyor.com/project/QuantStack/xtensor-r)
