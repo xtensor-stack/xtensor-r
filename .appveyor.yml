@@ -28,7 +28,7 @@ install:
   # Testing
   - conda install r r-rcpp r-base r-devtools -c conda-forge
   - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix
-  - conda install xtensor==0.16.2 -c conda-forge
+  - conda install xtensor==0.16.3 -c conda-forge
   - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
   - mkdir build
   - cd build
