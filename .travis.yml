@@ -116,7 +116,7 @@ install:
     - conda install gtest cmake -c conda-forge
     # Testing
     - conda install r r-rcpp r-base r-devtools -c conda-forge
-    - conda install xtensor==0.16.2 -c conda-forge
+    - conda install xtensor==0.16.3 -c conda-forge
     - conda update readline -c conda-forge  # Requiring conda-forge version of readline
     - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
     - mkdir build

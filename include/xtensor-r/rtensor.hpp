@@ -153,10 +153,7 @@ namespace xt
     {
         auto tmp_shape = Rcpp::IntegerVector(N, 1);
         xt::compute_strides(tmp_shape, layout_type::column_major, m_strides, m_backstrides);
-        // Workaround. Rcpp's IntegerVector lacks cbegin() and cend() methods
-        // which are used in compute_size().
-        auto adaptor = xbuffer_adaptor<int*>(&(tmp_shape[0]), N);
-        std::size_t sz = compute_size(adaptor);
+        std::size_t sz = compute_size(tmp_shape);
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
         m_storage = storage_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);

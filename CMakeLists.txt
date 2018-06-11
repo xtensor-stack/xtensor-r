@@ -33,7 +33,7 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 
 find_package(xtl 0.4.9 REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-find_package(xtensor 0.16.2 REQUIRED)
+find_package(xtensor 0.16.3 REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 # Build
