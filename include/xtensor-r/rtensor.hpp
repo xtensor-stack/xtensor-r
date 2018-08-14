@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
-#include <iostream>
 
 #include "xtensor/xbuffer_adaptor.hpp"
 #include "xtensor/xio.hpp"

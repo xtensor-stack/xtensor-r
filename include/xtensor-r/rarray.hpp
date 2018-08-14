@@ -9,6 +9,11 @@
 #ifndef XTENSOR_R_ARRAY_HPP
 #define XTENSOR_R_ARRAY_HPP
 
+#include <algorithm>
+#include <cstddef>
+#include <utility>
+#include <vector>
+
 #include "xtensor/xbuffer_adaptor.hpp"
 #include "xtensor/xcontainer.hpp"
 #include "xtensor/xiterator.hpp"
@@ -28,10 +33,10 @@ namespace xt
     {
         using storage_type = xbuffer_adaptor<T*>;
         using shape_type = std::vector<typename storage_type::size_type>;
-        using strides_type = shape_type;
-        using backstrides_type = shape_type;
+        using strides_type = std::vector<typename storage_type::difference_type>;
+        using backstrides_type = std::vector<typename storage_type::difference_type>;
         using inner_shape_type = xbuffer_adaptor<int*>;
-        using inner_strides_type = shape_type;
+        using inner_strides_type = strides_type;
         using inner_backstrides_type = backstrides_type;
         using temporary_type = rarray<T>;
         static constexpr layout_type layout = layout_type::column_major;
