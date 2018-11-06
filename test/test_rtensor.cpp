@@ -185,4 +185,12 @@ namespace xt
         EXPECT_EQ(ptr, a.data());
         EXPECT_THROW(a.reshape({6}), std::runtime_error);
     }
+
+    TEST(rtensor, from_shape)
+    {
+        auto a = rtensor<int, 2>::from_shape({4, 5});
+        EXPECT_EQ(a.shape()[0], 4);
+        EXPECT_EQ(a.shape()[1], 5);
+        EXPECT_EQ(a.size(), 20);
+    }
 }
