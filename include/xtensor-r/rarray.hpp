@@ -99,8 +99,8 @@ namespace xt
         rarray(nested_initializer_list_t<value_type, 4> t);
         rarray(nested_initializer_list_t<value_type, 5> t);
 
-        template <class S>
-        static self_type from_shape(const S& shape);
+        template <class S = shape_type>
+        static rarray from_shape(const S& shape);
 
         template <class E>
         rarray(const xexpression<E>& e);
