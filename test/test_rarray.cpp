@@ -178,4 +178,12 @@ namespace xt
         EXPECT_TRUE(std::equal(sc2.cbegin(), sc2.cend(), a.shape().cbegin()) && a.shape().size() == 1);
         EXPECT_EQ(ptr, a.data());
     }
+
+    TEST(rarray, from_shape)
+    {
+        auto a = rarray<int>::from_shape({4, 5});
+        EXPECT_EQ(a.shape()[0], 4);
+        EXPECT_EQ(a.shape()[1], 5);
+        EXPECT_EQ(a.size(), 20);
+    }
 }

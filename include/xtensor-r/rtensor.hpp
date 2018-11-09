@@ -92,8 +92,8 @@ namespace xt
         explicit rtensor(const shape_type& shape);
         explicit rtensor(const shape_type& shape, const_reference value);
 
-        template <class S>
-        static self_type from_shape(const S& shape);
+        template <class S = shape_type>
+        static rtensor from_shape(S&& shape);
 
         rtensor(const self_type& rhs);
         self_type& operator=(const self_type& rhs);
@@ -189,7 +189,7 @@ namespace xt
 
     template <class T, std::size_t N>
     template <class S>
-    inline rtensor<T, N> rtensor<T, N>::from_shape(const S& shape)
+    inline rtensor<T, N> rtensor<T, N>::from_shape(S&& shape)
     {
         shape_type temp_shape = xtl::forward_sequence<shape_type>(shape);
         return self_type(temp_shape);

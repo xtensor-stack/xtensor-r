@@ -99,6 +99,9 @@ namespace xt
         rarray(nested_initializer_list_t<value_type, 4> t);
         rarray(nested_initializer_list_t<value_type, 5> t);
 
+        template <class S = shape_type>
+        static rarray from_shape(const S& shape);
+
         template <class E>
         rarray(const xexpression<E>& e);
 
@@ -249,6 +252,13 @@ namespace xt
     {
         init_from_shape(xt::shape<shape_type>(t));
         nested_copy(this->begin(), t);
+    }
+
+    template <class T>
+    template <class S>
+    inline rarray<T> rarray<T>::from_shape(const S& shape)
+    {
+        return self_type(xtl::forward_sequence<shape_type>(shape));
     }
 
     template <class T>
