@@ -9,6 +9,7 @@
 #ifndef XTENSOR_R_CONTAINER_HPP
 #define XTENSOR_R_CONTAINER_HPP
 
+#include <complex>
 #include <functional>
 #include <numeric>
 
@@ -86,6 +87,13 @@ namespace xt
         using size_type = typename storage_type::size_type;
         using difference_type = typename storage_type::difference_type;
 
+#ifndef XTENSOR_R_ALLOW_REINTERPRETATION
+        static_assert(xtl::disjunction<std::is_same<value_type, int32_t>,
+                                       std::is_same<value_type, double>,
+                                       std::is_same<value_type, bool>,
+                                       std::is_same<value_type, std::complex<double>>>::value == true,
+                      "R containers can only be of type bool, int, double, complex<double>.");
+#endif
         using shape_type = typename inner_types::shape_type;
         using strides_type = typename inner_types::strides_type;
         using backstrides_type = typename inner_types::backstrides_type;
@@ -145,10 +153,22 @@ namespace xt
     {
     }
 
+    template <class T>
+    const char* type_to_string(T) { return "unregistered type."; }
+    const char* type_to_string(double) { return "double (Numeric)"; }
+    const char* type_to_string(int) { return "32 bit int (Integer)"; }
+    const char* type_to_string(bool) { return "bool (Logical)"; }
+    const char* type_to_string(std::complex<double>) { return "std::complex<double>> (Complex)"; }
+
     template <class D>
     rcontainer<D>::rcontainer(SEXP exp)
         : m_sexp(R_NilValue), m_owned(false)
     {
+        if (TYPEOF(exp) != D::SXP)
+        {
+            Rcpp::stop("R input has the wrong type. Expected %s", type_to_string(value_type{}));
+        }
+
         m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 
