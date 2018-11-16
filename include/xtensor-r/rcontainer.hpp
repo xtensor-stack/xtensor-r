@@ -56,6 +56,28 @@ namespace xt
             return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
+
+        template <class T>
+        inline const char* type_to_string(T) { return "unregistered type."; }
+        inline const char* type_to_string(Rbyte) { return "Raw (Rbyte)"; }
+        inline const char* type_to_string(double) { return "Numeric (double)"; }
+        inline const char* type_to_string(int) { return "Integer (int32)"; }
+        inline const char* type_to_string(bool) { return "Logical (bool)"; }
+        inline const char* type_to_string(std::complex<double>) { return "Complex (std::complex<double>>)"; }
+
+        inline const char* rtype_to_string(int rtype)
+        {
+            switch(rtype)
+            {
+                case REALSXP: return "Real";
+                case INTSXP: return "Int";
+                case LGLSXP: return "Logical";
+                case STRSXP: return "String";
+                case CPLXSXP: return "Complex";
+                case RAWSXP: return "Raw";
+                default: return "Unknown / Unmapped";
+            }
+        }
     }
 
 
@@ -91,7 +113,7 @@ namespace xt
         static_assert(xtl::disjunction<std::is_same<value_type, int32_t>,
                                        std::is_same<value_type, double>,
                                        std::is_same<value_type, Rbyte>,
-                                       std::is_same<value_type, bool>,
+                                       // std::is_same<value_type, bool>, NOT YET IMPLEMENTED!
                                        std::is_same<value_type, std::complex<double>>>::value == true,
                       "R containers can only be of type bool, int, double, complex<double>.");
 #endif
@@ -149,47 +171,21 @@ namespace xt
 
 
     template <class D>
-    rcontainer<D>::rcontainer()
+    inline rcontainer<D>::rcontainer()
         : m_sexp(R_NilValue), m_owned(true)
     {
     }
 
-    template <class T>
-    const char* type_to_string(T) { return "unregistered type."; }
-    const char* type_to_string(Rbyte) { return "Rbyte (Raw)"; }
-    const char* type_to_string(double) { return "double (Numeric)"; }
-    const char* type_to_string(int) { return "32 bit int (Integer)"; }
-    const char* type_to_string(bool) { return "bool (Logical)"; }
-    const char* type_to_string(std::complex<double>) { return "std::complex<double>> (Complex)"; }
-
-    const char* rtype_to_string(int rtype)
-    {
-        switch(rtype)
-        {
-            case REALSXP: return "REALSXP";
-            case INTSXP: return "INTSXP";
-            case LGLSXP: return "LGCSXP";
-            case STRSXP: return "STRSXP";
-            case CPLXSXP: return "CPLXSXP";
-            case RAWSXP: return "RAWSXP";
-        }
-    }
-
-
     template <class D>
-    rcontainer<D>::rcontainer(SEXP exp)
+    inline rcontainer<D>::rcontainer(SEXP exp)
         : m_sexp(R_NilValue), m_owned(false)
     {
-        if (TYPEOF(exp) != D::SXP)
-        {
-            Rcpp::stop("R input has the wrong type. Expected %s, got %s", type_to_string(value_type{}), rtype_to_string(TYPEOF(exp)));
-        }
-
+        set_sexp(exp);
         m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     template <class D>
-    rcontainer<D>::~rcontainer()
+    inline rcontainer<D>::~rcontainer()
     {
         if (m_owned)
         {
@@ -199,8 +195,14 @@ namespace xt
     }
 
     template <class D>
-    void rcontainer<D>::set_sexp(SEXP exp)
+    inline void rcontainer<D>::set_sexp(SEXP exp)
     {
+        if (TYPEOF(exp) != D::SXP)
+        {
+            Rcpp::stop("R input has the wrong type. Expected %s, got %s",
+                       detail::type_to_string(value_type{}), detail::rtype_to_string(TYPEOF(exp)));
+        }
+
         m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 

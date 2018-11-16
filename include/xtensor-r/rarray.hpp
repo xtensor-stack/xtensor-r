@@ -156,7 +156,7 @@ namespace xt
         xt::compute_strides(m_shape, layout(), m_strides, m_backstrides);
 
         std::size_t sz = compute_size(m_shape);
-        m_storage = storage_type(static_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
+        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
     }
 
     template <class T>
@@ -322,7 +322,7 @@ namespace xt
 namespace Rcpp
 {
     template <typename T>
-    SEXP wrap(const xt::rarray<T>& arr)
+    inline SEXP wrap(const xt::rarray<T>& arr)
     {
         return SEXP(arr);
     }
