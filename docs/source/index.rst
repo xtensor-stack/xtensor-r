@@ -58,6 +58,7 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
 
    basic_usage
    array_tensor
+   r_peculiarities
 
 .. toctree::
    :caption: API REFERENCE

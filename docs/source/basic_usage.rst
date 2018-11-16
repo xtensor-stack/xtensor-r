@@ -44,3 +44,6 @@ Example : Use an algorithm of the C++ library on a R array inplace
 .. code::
 
     1.2853996391883833
+
+Note that R places some restriction on what C++ types are usable. We've noted the
+differences in :ref:`r-pec`.
