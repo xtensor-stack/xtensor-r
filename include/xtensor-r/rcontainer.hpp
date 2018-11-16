@@ -9,6 +9,7 @@
 #ifndef XTENSOR_R_CONTAINER_HPP
 #define XTENSOR_R_CONTAINER_HPP
 
+#include <complex>
 #include <functional>
 #include <numeric>
 
@@ -55,6 +56,28 @@ namespace xt
             return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
+
+        template <class T>
+        inline const char* type_to_string(T) { return "unregistered type."; }
+        inline const char* type_to_string(Rbyte) { return "Raw (Rbyte)"; }
+        inline const char* type_to_string(double) { return "Numeric (double)"; }
+        inline const char* type_to_string(int) { return "Integer (int32)"; }
+        inline const char* type_to_string(bool) { return "Logical (bool)"; }
+        inline const char* type_to_string(std::complex<double>) { return "Complex (std::complex<double>>)"; }
+
+        inline const char* rtype_to_string(int rtype)
+        {
+            switch(rtype)
+            {
+                case REALSXP: return "Real";
+                case INTSXP: return "Int";
+                case LGLSXP: return "Logical";
+                case STRSXP: return "String";
+                case CPLXSXP: return "Complex";
+                case RAWSXP: return "Raw";
+                default: return "Unknown / Unmapped";
+            }
+        }
     }
 
 
@@ -86,6 +109,14 @@ namespace xt
         using size_type = typename storage_type::size_type;
         using difference_type = typename storage_type::difference_type;
 
+#ifndef XTENSOR_R_ALLOW_REINTERPRETATION
+        static_assert(xtl::disjunction<std::is_same<value_type, int32_t>,
+                                       std::is_same<value_type, double>,
+                                       std::is_same<value_type, Rbyte>,
+                                       // std::is_same<value_type, bool>, NOT YET IMPLEMENTED!
+                                       std::is_same<value_type, std::complex<double>>>::value == true,
+                      "R containers can only be of type bool, int, double, complex<double>.");
+#endif
         using shape_type = typename inner_types::shape_type;
         using strides_type = typename inner_types::strides_type;
         using backstrides_type = typename inner_types::backstrides_type;
@@ -140,20 +171,21 @@ namespace xt
 
 
     template <class D>
-    rcontainer<D>::rcontainer()
+    inline rcontainer<D>::rcontainer()
         : m_sexp(R_NilValue), m_owned(true)
     {
     }
 
     template <class D>
-    rcontainer<D>::rcontainer(SEXP exp)
+    inline rcontainer<D>::rcontainer(SEXP exp)
         : m_sexp(R_NilValue), m_owned(false)
     {
+        set_sexp(exp);
         m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 
     template <class D>
-    rcontainer<D>::~rcontainer()
+    inline rcontainer<D>::~rcontainer()
     {
         if (m_owned)
         {
@@ -163,8 +195,14 @@ namespace xt
     }
 
     template <class D>
-    void rcontainer<D>::set_sexp(SEXP exp)
+    inline void rcontainer<D>::set_sexp(SEXP exp)
     {
+        if (TYPEOF(exp) != D::SXP)
+        {
+            Rcpp::stop("R input has the wrong type. Expected %s, got %s",
+                       detail::type_to_string(value_type{}), detail::rtype_to_string(TYPEOF(exp)));
+        }
+
         m_sexp = Rcpp::Rcpp_ReplaceObject(m_sexp, exp);
     }
 

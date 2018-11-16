@@ -33,7 +33,7 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 
 find_package(xtl 0.4.16 REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-find_package(xtensor 0.18.2 REQUIRED)
+find_package(xtensor 0.18.3 REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 # Build
@@ -78,7 +78,7 @@ if(BUILD_TESTS)
         string(REGEX REPLACE "\"" "" RCPP_LOCATION_LINE ${RCPP_LOCATION_LINE})
         string(CONCAT Rcpp_INCLUDE_DIRS ${RCPP_LOCATION_LINE} "/include/")
         message("RCpp Include Directory: " ${Rcpp_INCLUDE_DIRS})
-        include_directories(${Rcpp_INCLUDE_DIRS})
+        include_directories(SYSTEM ${Rcpp_INCLUDE_DIRS})
     endif()
 
 
@@ -102,7 +102,7 @@ if(BUILD_TESTS)
             HINTS ${RINSIDE_LOCATION_LINE}/lib ${RINSIDE_LOCATION_LINE}/libs/${R_LIB_ARCH}
         )
         set(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_SUFFIXES})
-        include_directories(${RInside_INCLUDE_DIRS})
+        include_directories(SYSTEM ${RInside_INCLUDE_DIRS})
     endif()
 
     # Include the tests
@@ -155,7 +155,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-set(XTENSOR_TAG 0.18.2)
+set(XTENSOR_TAG 0.18.3)
 include(ExternalProject)
 ExternalProject_Add(xtensor-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
