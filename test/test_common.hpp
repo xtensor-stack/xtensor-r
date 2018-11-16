@@ -10,7 +10,7 @@
 #define TEST_COMMON_HPP
 
 #include "xtensor/xlayout.hpp"
-#include "xtensor/xstrided_view.hpp"
+#include "xtensor/xmanipulation.hpp"
 
 #include "xtl/xsequence.hpp"
 
@@ -32,7 +32,8 @@ namespace xt
     struct layout_result
     {
         using vector_type = uvector<int>;
-        using size_type = typename C::value_type;
+        using value_type = typename C::value_type;
+        using size_type = typename C::size_type;
         using shape_type = C;
         using strides_type = C;
 
@@ -42,7 +43,7 @@ namespace xt
         {
             m_shape = {3, 2, 4};
             m_assigner.resize(m_shape[0]);
-            for (size_type i = 0; i < m_shape[0]; ++i)
+            for (value_type i = 0; i < m_shape[0]; ++i)
             {
                 m_assigner[i].resize(m_shape[1]);
             }
@@ -98,7 +99,7 @@ namespace xt
     struct unit_shape_result
     {
         using vector_type = std::vector<int>;
-        using size_type = typename C::value_type;
+        using size_type = typename C::size_type;
         using shape_type = C;
         using strides_type = C;
 

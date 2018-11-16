@@ -84,7 +84,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 find_package(R REQUIRED)
 
-include_directories(${R_INCLUDE_DIR})
+include_directories(${R_INCLUDE_DIR} SYSTEM)
 
 link_directories(${R_ROOT_DIR}/lib)
 link_directories(${R_ROOT_DIR}/bin/${R_LIB_ARCH})

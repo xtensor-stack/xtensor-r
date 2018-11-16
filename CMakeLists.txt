@@ -78,7 +78,7 @@ if(BUILD_TESTS)
         string(REGEX REPLACE "\"" "" RCPP_LOCATION_LINE ${RCPP_LOCATION_LINE})
         string(CONCAT Rcpp_INCLUDE_DIRS ${RCPP_LOCATION_LINE} "/include/")
         message("RCpp Include Directory: " ${Rcpp_INCLUDE_DIRS})
-        include_directories(${Rcpp_INCLUDE_DIRS})
+        include_directories(SYSTEM ${Rcpp_INCLUDE_DIRS})
     endif()
 
 
@@ -102,7 +102,7 @@ if(BUILD_TESTS)
             HINTS ${RINSIDE_LOCATION_LINE}/lib ${RINSIDE_LOCATION_LINE}/libs/${R_LIB_ARCH}
         )
         set(CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_SUFFIXES})
-        include_directories(${RInside_INCLUDE_DIRS})
+        include_directories(SYSTEM ${RInside_INCLUDE_DIRS})
     endif()
 
     # Include the tests

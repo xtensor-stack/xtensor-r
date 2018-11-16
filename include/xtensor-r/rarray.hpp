@@ -201,7 +201,7 @@ namespace xt
 
     template <class T>
     inline rarray<T>::rarray(const self_type& rhs)
-        : base_type()
+        : base_type(rhs), semantic_base(rhs)
     {
         init_from_shape(rhs.shape());
         std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());

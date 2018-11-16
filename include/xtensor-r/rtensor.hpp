@@ -156,7 +156,7 @@ namespace xt
 
         base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
 
-        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(exp)), sz);
+        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
 
         m_storage[0] = T();
@@ -244,7 +244,7 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const self_type& rhs)
-        : base_type()
+        : base_type(), semantic_base(rhs)
     {
         init_from_shape(rhs.shape());
         std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());
