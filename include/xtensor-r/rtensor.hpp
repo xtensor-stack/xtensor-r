@@ -71,7 +71,10 @@ namespace xt
         using self_type = rtensor<T, N>;
         using semantic_base = xcontainer_semantic<self_type>;
         using base_type = rcontainer<self_type>;
-        using underlying_type = typename base_type::underlying_type;
+
+        using inner_types = xcontainer_inner_types<self_type>;
+        using underlying_type = typename inner_types::underlying_type;
+
         using storage_type = typename base_type::storage_type;
         using value_type = typename base_type::value_type;
         using reference = typename base_type::reference;
