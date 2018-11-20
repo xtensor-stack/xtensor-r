@@ -25,8 +25,39 @@
 
 #include "rcpp_extensions.hpp"
 
+// Fake type for R logicals
+struct rlogical {};
+
+// This handles the conversion of xtensor back to R type
+// When an xtensor with a T of rlogical is seen, the retrieved rtype
+// is LGLSXP (even though it is stored internally as an int in xtensor)
+namespace Rcpp
+{
+    namespace traits
+    {
+        template<> struct r_sexptype_traits<rlogical>{ enum{ rtype = LGLSXP }; };
+    }
+}
+
 namespace xt
 {
+
+    // R stores logicals as int32. This ensures that when a logical is seen,
+    // the internal xtensor storage type uses an int.
+    namespace r_detail
+    {
+        template <class T>
+        struct get_underlying_value_type_r
+        {
+            using type = T;
+        };
+
+        template <>
+        struct get_underlying_value_type_r<rlogical>
+        {
+            using type = int;
+        };
+    }
 
     namespace detail
     {
@@ -84,6 +115,7 @@ namespace xt
 
         using base_type = xcontainer<D>;
         using inner_types = xcontainer_inner_types<D>;
+        using r_type = typename inner_types::r_type;
         using storage_type = typename inner_types::storage_type;
         using value_type = typename storage_type::value_type;
         using reference = typename storage_type::reference;
@@ -94,12 +126,12 @@ namespace xt
         using difference_type = typename storage_type::difference_type;
 
 #ifndef XTENSOR_R_ALLOW_REINTERPRETATION
-        static_assert(xtl::disjunction<std::is_same<value_type, int32_t>,
-                                       std::is_same<value_type, double>,
-                                       std::is_same<value_type, Rbyte>,
-                                        // std::is_same<value_type, bool>, // NOT YET IMPLEMENTED!
-                                       std::is_same<value_type, std::complex<double>>>::value == true,
-                      "R containers can only be of type bool, int, double, complex<double>.");
+        static_assert(xtl::disjunction<std::is_same<r_type, int32_t>,
+                                       std::is_same<r_type, double>,
+                                       std::is_same<r_type, Rbyte>,
+                                       std::is_same<r_type, rlogical>,
+                                       std::is_same<r_type, std::complex<double>>>::value == true,
+                      "R containers can only be of type logical, int, double, complex<double>.");
 #endif
         using shape_type = typename inner_types::shape_type;
         using strides_type = typename inner_types::strides_type;
@@ -145,6 +177,7 @@ namespace xt
         const derived_type& derived_cast() const & noexcept;
         derived_type derived_cast() && noexcept;
     };
+
 
     /**
      * Resizes the container.
