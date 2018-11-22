@@ -14,7 +14,6 @@
 #include <cstddef>
 
 #include "xtensor/xbuffer_adaptor.hpp"
-#include "xtensor/xio.hpp"
 #include "xtensor/xiterator.hpp"
 #include "xtensor/xsemantic.hpp"
 #include "xtensor/xutils.hpp"
@@ -109,8 +108,6 @@ namespace xt
 
         layout_type layout() const;
 
-        void update(SEXP new_sexp); // called when the stored SEXP changes
-
     private:
 
         inner_shape_type m_shape;
@@ -131,10 +128,12 @@ namespace xt
         storage_type& storage_impl() noexcept;
         const storage_type& storage_impl() const noexcept;
 
-        void set_shape();
+        void update(SEXP new_sexp) noexcept; // called when the stored SEXP changes
+        void update_shape_and_strides() noexcept;
 
         friend class xcontainer<rtensor<T, N>>;
-        friend class rcontainer<rtensor<T, N>>;
+        friend class rcontainer<rtensor<T, N>, Rcpp::PreserveStorage>;
+        friend class rcontainer<rtensor<T, N>, Rcpp::PreserveStorage>::rstorage;
     };
 
     /***************************
@@ -160,14 +159,6 @@ namespace xt
     inline rtensor<T, N>::rtensor(SEXP exp)
     {
         base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
-    }
-
-    template <class T, std::size_t N>
-    inline void rtensor<T, N>::update(SEXP new_sexp)
-    {
-        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
-        std::size_t sz = xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
-        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(new_sexp)), sz);
     }
 
     template <class T, std::size_t N>
@@ -332,9 +323,18 @@ namespace xt
     }
 
     template <class T, std::size_t N>
-    inline void rtensor<T, N>::set_shape()
+    inline void rtensor<T, N>::update(SEXP new_sexp) noexcept
     {
         m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
+        std::size_t sz = xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
+        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(new_sexp)), sz);
+    }
+
+    template <class T, std::size_t N>
+    inline void rtensor<T, N>::update_shape_and_strides() noexcept
+    {
+        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
+        xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
     }
 }
 

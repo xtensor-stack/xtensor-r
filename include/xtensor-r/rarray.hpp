@@ -33,9 +33,9 @@ namespace xt
     {
         using storage_type = xbuffer_adaptor<T*>;
         constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
-        using shape_type = std::vector<typename storage_type::size_type>;
-        using strides_type = std::vector<typename storage_type::difference_type>;
-        using backstrides_type = std::vector<typename storage_type::difference_type>;
+        using shape_type = xt::dynamic_shape<typename storage_type::size_type>;
+        using strides_type = xt::dynamic_shape<typename storage_type::difference_type>;
+        using backstrides_type = xt::dynamic_shape<typename storage_type::difference_type>;
 
         using shape_value_type = typename Rcpp::traits::storage_type<INTSXP>::type;
         using inner_shape_type = xbuffer_adaptor<shape_value_type*>;
@@ -119,8 +119,6 @@ namespace xt
 
         layout_type layout() const;
 
-        void update(SEXP new_sexp); // called when the stored SEXP changes
-
     private:
 
         storage_type m_storage;
@@ -137,10 +135,12 @@ namespace xt
         storage_type& storage_impl() noexcept;
         const storage_type& storage_impl() const noexcept;
 
-        void set_shape();
+        void update(SEXP new_sexp) noexcept; // called when the stored SEXP changes
+        void update_shape_and_strides() noexcept;
 
         friend class xcontainer<rarray<T>>;
-        friend class rcontainer<rarray<T>>;
+        friend class rcontainer<rarray<T>, Rcpp::PreserveStorage>;
+        friend class rcontainer<rarray<T>, Rcpp::PreserveStorage>::rstorage;
     };
 
     template <class T>
@@ -155,16 +155,6 @@ namespace xt
     {
         auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
         base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
-    }
-
-    template <class T>
-    inline void rarray<T>::update(SEXP new_sexp)
-    {
-        this->m_shape = detail::r_shape_to_buffer_adaptor(new_sexp);
-        resize_container(m_strides, m_shape.size());
-        resize_container(m_backstrides, m_shape.size());
-        std::size_t sz = xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
-        this->m_storage = storage_type(reinterpret_cast<value_type*>(Rcpp::internal::r_vector_start<SXP>(new_sexp)), sz);
     }
 
     template <class T>
@@ -296,9 +286,20 @@ namespace xt
     }
 
     template <class T>
-    inline void rarray<T>::set_shape()
+    inline void rarray<T>::update(SEXP new_sexp) noexcept
+    {
+        this->m_shape = detail::r_shape_to_buffer_adaptor(new_sexp);
+        resize_container(m_strides, m_shape.size());
+        resize_container(m_backstrides, m_shape.size());
+        std::size_t sz = xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
+        this->m_storage = storage_type(reinterpret_cast<value_type*>(Rcpp::internal::r_vector_start<SXP>(new_sexp)), sz);
+    }
+
+    template <class T>
+    inline void rarray<T>::update_shape_and_strides() noexcept
     {
         m_shape = detail::r_shape_to_buffer_adaptor(*this);
+        xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
     }
 }
 

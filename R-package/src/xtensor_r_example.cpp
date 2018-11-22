@@ -15,7 +15,6 @@ xt::rtensor<double, 2> xtensor_r_example(xt::rtensor<int, 1> tens)
 {
     auto t = xt::rtensor<double, 2>({{1, 2, 3}, {5, 5, 5}});
     auto x = xt::rarray<double>({{1, 2, 3}, {5, 5, 5}});
-
     xt::rarray<double> rarr = t * x + 2;
     return t * x;
 }

@@ -18,12 +18,12 @@
 
 #include "xtl/xsequence.hpp"
 
-#if XTENSOR_WARN_ON_COERCE
-#define RCPP_WARN_ON_COERCE
-#endif
+#include "xtensor_r_config.hpp"
 
 #include <Rcpp.h>
 #include <RcppCommon.h>
+
+#include "rcpp_extensions.hpp"
 
 namespace xt
 {
@@ -61,7 +61,6 @@ namespace xt
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
         }
     }
-
 
     /**
      * @class rcontainer
@@ -179,7 +178,7 @@ namespace xt
         {
             auto tmp_shape = Rcpp::IntegerVector(std::begin(shape), std::end(shape));
             Rf_setAttrib(rstorage::get__(), R_DimSymbol, SEXP(tmp_shape));
-            this->derived_cast().set_shape();
+            this->derived_cast().update_shape_and_strides();
         }
     }
 

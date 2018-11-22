@@ -42,6 +42,7 @@ message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 set(XTENSOR_R_HEADERS
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rarray.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rcontainer.hpp
+    ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rcpp_extensions.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rtensor.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/rvectorize.hpp
     ${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp
