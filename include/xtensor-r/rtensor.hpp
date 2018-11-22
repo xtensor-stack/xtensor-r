@@ -109,6 +109,8 @@ namespace xt
 
         layout_type layout() const;
 
+        void update(SEXP new_sexp); // called when the stored SEXP changes
+
     private:
 
         inner_shape_type m_shape;
@@ -148,44 +150,33 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor()
-        : base_type()
     {
         auto tmp_shape = Rcpp::IntegerVector(N, 1);
-        xt::compute_strides(tmp_shape, layout_type::column_major, m_strides, m_backstrides);
-        std::size_t sz = compute_size(tmp_shape);
-
-        base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-
-        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
-        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
-
+        base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
         m_storage[0] = T();
     }
 
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(SEXP exp)
-        : base_type(exp)
     {
-        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
-        xt::compute_strides(m_shape, layout_type::column_major, m_strides, m_backstrides);
-        std::size_t sz = compute_size(m_shape);
-        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(SEXP(*this))), sz);
+        base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
     }
 
+    template <class T, std::size_t N>
+    inline void rtensor<T, N>::update(SEXP new_sexp)
+    {
+        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
+        std::size_t sz = xt::compute_strides<layout_type::column_major>(m_shape, layout_type::column_major, m_strides, m_backstrides);
+        m_storage = storage_type(reinterpret_cast<T*>(Rcpp::internal::r_vector_start<SXP>(new_sexp)), sz);
+    }
 
     template <class T, std::size_t N>
     template <class S>
     inline void rtensor<T, N>::init_from_shape(const S& shape)
     {
         auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
-        xt::compute_strides(shape, layout_type::column_major, m_strides, m_backstrides);
-
-        std::size_t sz = compute_size(shape);
-
-        base_type::set_sexp(Rf_allocArray(SXP, SEXP(tmp_shape)));
-        m_storage = storage_type(Rcpp::internal::r_vector_start<SXP>(SEXP(*this)), sz);
-
-        m_shape = detail::r_shape_to_buffer_adaptor(*this, N);
+        base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        // everything else is handled by update()
     }
 
     template <class T, std::size_t N>
@@ -214,7 +205,6 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const shape_type& shape)
-        : base_type()
     {
         init_from_shape(shape);
     }
@@ -228,7 +218,6 @@ namespace xt
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(const shape_type& shape, const_reference value)
-        : base_type()
     {
         init_from_shape(shape);
         std::fill(m_storage.begin(), m_storage.end(), value);
