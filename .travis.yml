@@ -118,13 +118,17 @@ install:
     - conda install r r-rcpp r-base r-devtools -c conda-forge
     - conda install xtensor==0.18.3 -c conda-forge
     - conda update readline -c conda-forge  # Requiring conda-forge version of readline
-    - R -e "install.packages('RInside', repos='http://cran.us.r-project.org')"
+    - R -e "install.packages(c('RInside', 'testthat'), repos='http://cran.us.r-project.org')"
     - mkdir build
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
     - cmake --build . --target test_xtensor_r
     - cmake --build . --target install
     - cmake --build . --target cran
+    - mkdir ~/.R
+    - touch ~/.R/Makevars
+    - echo "CXX14=$CXX" >> ~/.R/Makevars
+    - echo "CXX14FLAGS=-fPIC -O2" >> ~/.R/Makevars
 
 script:
     - cd test
@@ -135,3 +139,4 @@ script:
        cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00check.log   &&
        cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/Rdlatex.log
       )
+    - cd ../test/; Rscript unittest.R
