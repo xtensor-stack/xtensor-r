@@ -9,7 +9,6 @@
 #ifndef XTENSOR_R_RCPP_EXTENSIONS_HPP
 #define XTENSOR_R_RCPP_EXTENSIONS_HPP
 
-
 #include <Rcpp.h>
 
 namespace xt
@@ -30,8 +29,8 @@ namespace Rcpp
         template <class T>
         class Exporter<xt::rarray<T>>
         {
-        
         public:
+
             Exporter(SEXP x)
                 : m_sexp(x)
             {
@@ -43,14 +42,15 @@ namespace Rcpp
             }
 
         private:
+
             SEXP m_sexp;
         };
 
         template <class T, std::size_t N>
         class Exporter<xt::rtensor<T, N>>
-        {
-        
+        { 
         public:
+
             Exporter(SEXP x)
                 : m_sexp(x)
             {
@@ -62,10 +62,10 @@ namespace Rcpp
             }
 
         private:
+
             SEXP m_sexp;
         };
     }
 }
-
 
 #endif
