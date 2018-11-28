@@ -35,7 +35,13 @@ namespace Rcpp
 {
     namespace traits
     {
-        template<> struct r_sexptype_traits<rlogical>{ enum{ rtype = LGLSXP }; };
+        template<> struct r_sexptype_traits<rlogical>
+        { 
+            enum
+            { 
+                rtype = LGLSXP 
+            }; 
+        };
     }
 }
 
@@ -131,7 +137,7 @@ namespace xt
                                        std::is_same<r_type, Rbyte>,
                                        std::is_same<r_type, rlogical>,
                                        std::is_same<r_type, std::complex<double>>>::value == true,
-                      "R containers can only be of type logical, int, double, complex<double>.");
+                      "R containers can only be of type rlogical, int, double, std::complex<double>.");
 #endif
         using shape_type = typename inner_types::shape_type;
         using strides_type = typename inner_types::strides_type;
