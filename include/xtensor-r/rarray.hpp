@@ -119,6 +119,9 @@ namespace xt
 
         layout_type layout() const;
 
+        // Internal method, called when the stored SEXP changes
+        void update(SEXP new_sexp) noexcept;
+
     private:
 
         storage_type m_storage;
@@ -135,12 +138,10 @@ namespace xt
         storage_type& storage_impl() noexcept;
         const storage_type& storage_impl() const noexcept;
 
-        void update(SEXP new_sexp) noexcept; // called when the stored SEXP changes
         void update_shape_and_strides() noexcept;
 
         friend class xcontainer<rarray<T>>;
         friend class rcontainer<rarray<T>, Rcpp::PreserveStorage>;
-        friend class rcontainer<rarray<T>, Rcpp::PreserveStorage>::rstorage;
     };
 
     template <class T>

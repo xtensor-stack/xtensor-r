@@ -108,6 +108,9 @@ namespace xt
 
         layout_type layout() const;
 
+        // Internal method, called when the stored SEXP changes
+        void update(SEXP new_sexp) noexcept;
+
     private:
 
         inner_shape_type m_shape;
@@ -128,12 +131,10 @@ namespace xt
         storage_type& storage_impl() noexcept;
         const storage_type& storage_impl() const noexcept;
 
-        void update(SEXP new_sexp) noexcept; // called when the stored SEXP changes
         void update_shape_and_strides() noexcept;
 
         friend class xcontainer<rtensor<T, N>>;
         friend class rcontainer<rtensor<T, N>, Rcpp::PreserveStorage>;
-        friend class rcontainer<rtensor<T, N>, Rcpp::PreserveStorage>::rstorage;
     };
 
     /***************************
