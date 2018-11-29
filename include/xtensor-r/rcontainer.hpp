@@ -37,10 +37,7 @@ namespace Rcpp
     {
         template<> struct r_sexptype_traits<rlogical>
         { 
-            enum
-            { 
-                rtype = LGLSXP 
-            }; 
+            static constexpr int rtype = LGLSXP;
         };
     }
 }
