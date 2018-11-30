@@ -35,7 +35,9 @@ namespace xt
     template <class T, std::size_t N>
     struct xcontainer_inner_types<rtensor<T, N>>
     {
-        using storage_type = xbuffer_adaptor<T*>;
+        using r_type = T;
+        using underlying_type = r_detail::get_underlying_value_type_r<T>;
+        using storage_type = xbuffer_adaptor<typename underlying_type::type*>;
         using shape_type = std::array<int, N>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
@@ -69,6 +71,10 @@ namespace xt
         using self_type = rtensor<T, N>;
         using semantic_base = xcontainer_semantic<self_type>;
         using base_type = rcontainer<self_type>;
+
+        using inner_types = xcontainer_inner_types<self_type>;
+        using underlying_type = typename inner_types::underlying_type;
+
         using storage_type = typename base_type::storage_type;
         using value_type = typename base_type::value_type;
         using reference = typename base_type::reference;

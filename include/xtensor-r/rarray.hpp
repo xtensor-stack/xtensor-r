@@ -24,14 +24,15 @@
 
 namespace xt
 {
-
     template <class T>
     class rarray;
 
     template <class T>
     struct xcontainer_inner_types<rarray<T>>
     {
-        using storage_type = xbuffer_adaptor<T*>;
+        using r_type = T;
+        using underlying_type = r_detail::get_underlying_value_type_r<T>;
+        using storage_type = xbuffer_adaptor<typename underlying_type::type*>;
         constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
         using shape_type = xt::dynamic_shape<typename storage_type::size_type>;
         using strides_type = xt::dynamic_shape<typename storage_type::difference_type>;
@@ -63,6 +64,7 @@ namespace xt
 
         using inner_types = xcontainer_inner_types<self_type>;
 
+        using underlying_type = typename inner_types::underlying_type;
         using storage_type = typename inner_types::storage_type;
         using value_type = typename storage_type::value_type;
         using reference = typename storage_type::reference;

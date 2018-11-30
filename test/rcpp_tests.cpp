@@ -43,6 +43,14 @@ int call_int(xt::rarray<int>& x)
 }
 
 // [[Rcpp::export]]
+int call_lgl(xt::rarray<rlogical>& x)
+{
+    xassert(x(0, 0) == 1);
+    x(1, 1) = 0;
+    return 1;
+}
+
+// [[Rcpp::export]]
 int call_stdcomplex(xt::rarray<std::complex<double>>& x)
 {
     using cplx = std::complex<double>;

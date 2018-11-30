@@ -37,6 +37,13 @@ test_that("call_int", {
 	expect_equal(x[2, 2], 35)
 })
 
+x <- array(TRUE, c(2, 5))
+
+test_that("call_lgl", {
+  call_lgl(x)
+  expect_equal(x[2, 2], FALSE)
+})
+
 x <- array(as.complex(1:10), c(2, 5))
 
 x[1, 1] <- 0 + 1i
