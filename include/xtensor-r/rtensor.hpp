@@ -165,6 +165,7 @@ namespace xt
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(SEXP exp)
     {
+        detail::check_coercion<SXP>(exp);
         base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
     }
 

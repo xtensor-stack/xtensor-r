@@ -149,6 +149,7 @@ namespace xt
     template <class T>
     inline rarray<T>::rarray(SEXP exp)
     {
+        detail::check_coercion<SXP>(exp);
         base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
     }
 
