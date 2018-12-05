@@ -234,7 +234,7 @@ namespace xt
     template <class S>
     inline rarray<T> rarray<T>::from_shape(const S& shape)
     {
-        return self_type(xtl::forward_sequence<shape_type>(shape));
+        return self_type(xtl::forward_sequence<shape_type, decltype(shape)>(shape));
     }
 
     template <class T>
