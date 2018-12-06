@@ -40,9 +40,9 @@ install:
   - initexmf --set-config-value [MPM]AutoInstall=1
   # Full build on x64 with msys64
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - set R_HOME=%MINICONDA%\\R
+  - set R_HOME=%MINICONDA%\\Lib\\R
   - set MINGW_PATH=%MINICONDA%\\Library\\mingw-w64\\bin
-  - "set PATH=%PATH%;%MINGW_PATH%;%MINICONDA%\\R\\library\\RInside\\libs\\x64;%MINICONDA%\\R\\bin\\x64"
+  - "set PATH=%PATH%;%MINGW_PATH%;%MINICONDA%\\Lib\\R\\library\\RInside\\libs\\x64;%MINICONDA%\\Lib\\R\\bin\\x64"
   - appveyor DownloadFile https://cran.r-project.org/bin/windows/Rtools/Rtools34.exe
   - Rtools34.exe /VERYSILENT -NoNewWindow -Wait
   - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=%MINGW_PATH% -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
