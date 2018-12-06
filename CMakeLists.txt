@@ -15,6 +15,8 @@ set(XTENSOR_R_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Versionning
 # ===========
 
+set(XTENSOR_TAG 0.19.0)
+
 set(XTENSOR_R_CONFIG_FILE
     "${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp")
 file(STRINGS ${XTENSOR_R_CONFIG_FILE} xtensor_python_version_defines
@@ -33,7 +35,7 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 
 find_package(xtl 0.4.16 REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-find_package(xtensor 0.18.3 REQUIRED)
+find_package(xtensor ${XTENSOR_TAG} REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 # Build
@@ -156,7 +158,6 @@ file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-set(XTENSOR_TAG 0.18.3)
 include(ExternalProject)
 ExternalProject_Add(xtensor-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtensor
