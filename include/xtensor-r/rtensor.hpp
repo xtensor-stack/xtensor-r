@@ -165,6 +165,7 @@ namespace xt
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor(SEXP exp)
     {
+        detail::check_coercion<SXP>(exp);
         base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
     }
 
@@ -181,7 +182,7 @@ namespace xt
     template <class S>
     inline rtensor<T, N> rtensor<T, N>::from_shape(S&& shape)
     {
-        shape_type temp_shape = xtl::forward_sequence<shape_type>(shape);
+        shape_type temp_shape = xtl::forward_sequence<shape_type, S>(shape);
         return self_type(temp_shape);
     }
 

@@ -105,7 +105,7 @@ namespace xt
         rarray(nested_initializer_list_t<value_type, 5> t);
 
         template <class S = shape_type>
-        static rarray from_shape(const S& shape);
+        static rarray from_shape(S&& shape);
 
         template <class E>
         rarray(const xexpression<E>& e);
@@ -149,6 +149,7 @@ namespace xt
     template <class T>
     inline rarray<T>::rarray(SEXP exp)
     {
+        detail::check_coercion<SXP>(exp);
         base_type::rstorage::set__(Rcpp::r_cast<SXP>(exp));
     }
 
@@ -232,9 +233,9 @@ namespace xt
 
     template <class T>
     template <class S>
-    inline rarray<T> rarray<T>::from_shape(const S& shape)
+    inline rarray<T> rarray<T>::from_shape(S&& shape)
     {
-        return self_type(xtl::forward_sequence<shape_type>(shape));
+        return self_type(xtl::forward_sequence<shape_type, S>(shape));
     }
 
     template <class T>

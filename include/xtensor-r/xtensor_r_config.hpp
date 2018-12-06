@@ -14,7 +14,7 @@
 #define XTENSOR_R_VERSION_PATCH 2
 
 #ifndef XTENSOR_WARN_ON_COERCE
-#define RCPP_WARN_ON_COERCE 1
+#define XTENSOR_WARN_ON_COERCE 1
 #endif
 
 #endif

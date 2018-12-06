@@ -36,7 +36,7 @@ namespace Rcpp
     namespace traits
     {
         template<> struct r_sexptype_traits<rlogical>
-        { 
+        {
             static constexpr int rtype = LGLSXP;
         };
     }
@@ -93,6 +93,19 @@ namespace xt
             }
             return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
+        }
+
+        template <int SXP>
+        inline void check_coercion(SEXP exp)
+        {
+        #if XTENSOR_WARN_ON_COERCE
+            if (TYPEOF(exp) != SXP)
+            {
+                Rcpp::warning("Coerced object from '%s' to '%s'. Avoid for speed & in-place operations.",
+                    Rf_type2char(TYPEOF(exp)),
+                    Rf_type2char(SXP));
+            }
+        #endif
         }
     }
 
@@ -192,7 +205,7 @@ namespace xt
     {
         if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
         {
-            derived_type tmp(xtl::forward_sequence<shape_type>(shape));
+            derived_type tmp(xtl::forward_sequence<shape_type, S>(shape));
             *static_cast<derived_type*>(this) = std::move(tmp);
         }
     }
