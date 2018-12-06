@@ -15,7 +15,9 @@ set(XTENSOR_R_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Versionning
 # ===========
 
+# FOR THE CRAN PACKAGE, SET VERSIONS HERE
 set(XTENSOR_TAG 0.19.0)
+set(XTL_TAG 0.5.2)
 
 set(XTENSOR_R_CONFIG_FILE
     "${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp")
@@ -33,7 +35,7 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 # Dependencies
 # ============
 
-find_package(xtl 0.4.16 REQUIRED)
+find_package(xtl ${XTL_TAG} REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
 find_package(xtensor ${XTENSOR_TAG} REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
@@ -166,7 +168,6 @@ ExternalProject_Add(xtensor-clone
 )
 set_target_properties(xtensor-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-set(XTL_TAG 0.4.16)
 ExternalProject_Add(xtl-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtl
     GIT_TAG ${XTL_TAG}
