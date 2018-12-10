@@ -203,7 +203,8 @@ namespace xt
     template <class S>
     inline void rcontainer<D, SP>::resize(S&& shape)
     {
-        if (shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
+        // if SEXP not initialized, it will be NULL (e.g. in constructor)
+        if (Rf_isNull(*this) || shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
         {
             derived_type tmp(xtl::forward_sequence<shape_type, S>(shape));
             *static_cast<derived_type*>(this) = std::move(tmp);

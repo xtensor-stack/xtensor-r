@@ -173,8 +173,16 @@ namespace xt
     template <class S>
     inline void rtensor<T, N>::init_from_shape(const S& shape)
     {
-        auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
-        base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        if (shape.size() == 0)
+        {
+            Rcpp::IntegerVector tmp_shape = { 1 };
+            base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        }
+        else
+        {
+            auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
+            base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        }
         // everything else is handled by update()
     }
 
