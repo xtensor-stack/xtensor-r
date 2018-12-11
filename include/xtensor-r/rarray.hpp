@@ -159,8 +159,7 @@ namespace xt
     {
         if (shape.size() == 0)
         {
-            Rcpp::IntegerVector tmp_shape = { 1 };
-            base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+            base_type::rstorage::set__(Rf_allocVector(SXP, 1));
         }
         else
         {

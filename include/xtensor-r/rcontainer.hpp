@@ -68,6 +68,12 @@ namespace xt
         {
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
+                // This is a 0D scalar
+                if (Rf_xlength(exp) == 1)
+                {
+                    return xbuffer_adaptor<int*>(nullptr, 0);
+                }
+
                 auto d = Rcpp::IntegerVector::create(Rf_length(exp));
                 Rf_setAttrib(exp, R_DimSymbol, d);
             }
@@ -80,6 +86,10 @@ namespace xt
 
         inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp, std::size_t n)
         {
+            if (n == 0)
+            {
+                return xbuffer_adaptor<int*>(nullptr, 0);
+            }
             if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
             {
                 auto d = Rcpp::IntegerVector::create(Rf_length(exp));

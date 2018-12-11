@@ -56,5 +56,5 @@ test_that("call_stdcomplex", {
 
 test_that("reduce_1d", {
 	res1d <- reduce_1d()
-	expect_equal(res1d, array(10))
+	expect_equal(res1d, 10)
 })
