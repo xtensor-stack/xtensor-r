@@ -14,8 +14,8 @@ Example : Use an algorithm of the C++ library on a R array inplace
 
 .. code::
 
-
     #include <numeric>                    // Standard library import for std::accumulate
+    #define STRICT_R_HEADERS              // Otherwise a PI macro is defined in R
     #include "xtensor/xmath.hpp"          // xtensor import for the C++ universal functions
     #include "xtensor-r/rarray.hpp"       // R bindings
     #include <Rcpp.h>

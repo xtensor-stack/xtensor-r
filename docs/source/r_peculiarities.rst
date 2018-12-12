@@ -39,3 +39,19 @@ R supports NaN and NA for all types (except the Raw Vector). xtensor does not ye
 support NaNs for numbers other than double, and does not support NA (missing value)
 for any R type. We have support for missing values in the core xtensor library
 and we hope to add support for R's missing values in the future.
+
+R defining PI as macro
+----------------------
+
+Ancient versions of S used to define a ``PI`` macro. This macro collides with
+xtensor, as xtensor is using PI as a variable name in the numeric constants.
+
+If you're encountering this issue, either reorder your headers so that the xmath
+header of xtensor is included before Rcpp / xtensor-r or use the following define
+before including xtensor-r and Rcpp:
+
+.. code::
+
+	#define STRICT_R_HEADERS
+
+This prevents the PI macro definition.
