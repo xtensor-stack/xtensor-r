@@ -57,7 +57,7 @@ install.packages("xtensor")
 or from the repository using devtools:
 
 ```R
-devtools.install_github("QuantStack/xtensor-r", ref="package")
+devtools::install_github("QuantStack/xtensor-r", ref="package")
 ```
 
 ## Installation from Sources
