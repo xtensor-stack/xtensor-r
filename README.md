@@ -16,12 +16,48 @@ R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-di
 
 `xtensor-r` can be used either to author C++ extensions for R with [Rcpp](https://github.com/RcppCore/Rcpp), or applications that embed the R interpreter with [RInside](https://github.com/eddelbuettel/rinside).
 
+## Example
+
+```cpp
+#include <numeric>                    // Standard library import for std::accumulate
+#define STRICT_R_HEADERS              // Otherwise a PI macro is defined in R
+#include "xtensor/xmath.hpp"          // xtensor import for the C++ universal functions
+#include "xtensor-r/rarray.hpp"       // R bindings
+
+#include <Rcpp.h>
+
+using namespace Rcpp;
+
+// [[Rcpp::plugins(cpp14)]]
+
+// [[Rcpp::export]]
+double sum_of_sines(xt::rarray<double>& m)
+{
+    auto sines = xt::sin(m);  // sines does not actually hold values.
+    return std::accumulate(sines.cbegin(), sines.cend(), 0.0);
+}
+```
+
+```R
+v <- matrix(0:14, nrow=3, ncol=5)
+s <- sum_of_sines(v)
+s
+
+# prints 1.2853996391883833
+```
+
 ## Installation
 
 `xtensor-r` has been packaged for CRAN (The Comprehensive R Archive Network). It can be installed
 
 ```R
 install.packages("xtensor")
+```
+
+or from the repository using devtools:
+
+```R
+devtools.install_github("QuantStack/xtensor-r", ref="package")
 ```
 
 ## Installation from Sources
