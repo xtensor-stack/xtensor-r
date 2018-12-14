@@ -16,8 +16,8 @@ set(XTENSOR_R_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # ===========
 
 # FOR THE CRAN PACKAGE, SET VERSIONS HERE
-set(XTENSOR_TAG 0.19.0)
-set(XTL_TAG 0.5.2)
+set(XTENSOR_VERSION 0.19.0)
+set(XTL_VERSION 0.5.2)
 
 set(XTENSOR_R_CONFIG_FILE
     "${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp")
@@ -35,9 +35,9 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 # Dependencies
 # ============
 
-find_package(xtl ${XTL_TAG} REQUIRED)
+find_package(xtl ${XTL_VERSION} REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-find_package(xtensor ${XTENSOR_TAG} REQUIRED)
+find_package(xtensor ${XTENSOR_VERSION} REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 # Build
@@ -153,39 +153,49 @@ install(EXPORT ${PROJECT_NAME}-targets
         FILE ${PROJECT_NAME}Targets.cmake
         DESTINATION ${XTENSOR_R_CMAKECONFIG_INSTALL_DIR})
 
-# R Package Target
-# ================
+# CRAN Package Target
+# ===================
 
-file(COPY ${CMAKE_SOURCE_DIR}/R-package DESTINATION ${CMAKE_BINARY_DIR})
+add_custom_target(cran)
+set_target_properties(cran PROPERTIES EXCLUDE_FROM_ALL TRUE)
+OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
 
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
+set(CRAN_EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/R-package/inst)
 
-include(ExternalProject)
-ExternalProject_Add(xtensor-clone
-    GIT_REPOSITORY https://github.com/QuantStack/xtensor
-    GIT_TAG ${XTENSOR_TAG}
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+# Copy R-package ot build directory
+add_custom_command(
+    TARGET cran
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/R-package ${CMAKE_BINARY_DIR}
 )
-set_target_properties(xtensor-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+# Vendor xtl, xtensor, and xtensor-r into the R package
+include(ExternalProject)
 
 ExternalProject_Add(xtl-clone
     GIT_REPOSITORY https://github.com/QuantStack/xtl
-    GIT_TAG ${XTL_TAG}
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+    GIT_TAG ${XTL_VERSION}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CRAN_EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
 )
 set_target_properties(xtl-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+ExternalProject_Add(xtensor-clone
+    GIT_REPOSITORY https://github.com/QuantStack/xtensor
+    GIT_TAG ${XTENSOR_VERSION}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CRAN_EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+)
+set_target_properties(xtensor-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 ExternalProject_Add(xtensor-r-clone
     DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_SOURCE_DIR}
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CRAN_EXTERNAL_INSTALL_LOCATION} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
 )
 set_target_properties(xtensor-r-clone PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-add_custom_target(cran DEPENDS xtensor-clone xtl-clone xtensor-r-clone)
+add_dependencies(cran xtl-clone xtensor-clone xtensor-r-clone)
 
-OPTION(XTENSOR_INSTALL_R_PACKAGES "Install Rcpp and devtools from CRAN" ON)
-
+# Optionally install tools required to build packages
 if (XTENSOR_INSTALL_R_PACKAGES)
     # Install Rcpp and devtools
     add_custom_command(
