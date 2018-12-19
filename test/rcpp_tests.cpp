@@ -1,4 +1,5 @@
 // [[Rcpp::plugins(cpp14)]]
+// [[Rcpp::depends(xtensor)]]
 
 #include "xtensor-r/rcontainer.hpp"
 #include "xtensor-r/rarray.hpp"
@@ -10,7 +11,6 @@ int modify_cpp(xt::rarray<double>& x)
     // check that passing by reference works correctly
     x(0, 0)  = -1000;
     x(9, 2) = 1000;
-
     return 1;
 }
 
@@ -56,7 +56,6 @@ int call_stdcomplex(xt::rarray<std::complex<double>>& x)
     using cplx = std::complex<double>;
     xassert(x(0, 0) == cplx(0., 1.));
     xassert(x(1, 2) == cplx(1., 5.));
-
     x(0, 2) = cplx(-10., -100.);
     return 1;
 }
