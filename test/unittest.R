@@ -53,3 +53,8 @@ test_that("call_stdcomplex", {
 	call_stdcomplex(x)
 	expect_equal(x[1, 3], -10+-100i)
 })
+
+test_that("reduce_1d", {
+	res1d <- reduce_1d()
+	expect_equal(res1d, 10)
+})

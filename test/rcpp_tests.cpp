@@ -3,6 +3,7 @@
 
 #include "xtensor-r/rcontainer.hpp"
 #include "xtensor-r/rarray.hpp"
+#include "xtensor/xmath.hpp"
 #include "xtensor/xio.hpp"
 
 // [[Rcpp::export]]
@@ -58,4 +59,11 @@ int call_stdcomplex(xt::rarray<std::complex<double>>& x)
     xassert(x(1, 2) == cplx(1., 5.));
     x(0, 2) = cplx(-10., -100.);
     return 1;
+}
+
+// [[Rcpp::export]]
+xt::rarray<double> reduce_1d()
+{
+    xt::rarray<double> a = {1, 2, 3, 4};
+    return xt::sum(a, 0);
 }

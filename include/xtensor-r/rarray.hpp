@@ -157,8 +157,15 @@ namespace xt
     template <class S>
     inline void rarray<T>::init_from_shape(const S& shape)
     {
-        auto tmp_shape = Rcpp::IntegerVector(shape.begin(), shape.end());
-        base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        if (shape.size() == 0)
+        {
+            base_type::rstorage::set__(Rf_allocVector(SXP, 1));
+        }
+        else
+        {
+            Rcpp::IntegerVector tmp_shape(shape.begin(), shape.end());
+            base_type::rstorage::set__(Rf_allocArray(SXP, SEXP(tmp_shape)));
+        }
     }
 
     template <class T>
