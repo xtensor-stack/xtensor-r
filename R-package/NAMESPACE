@@ -1,3 +1,0 @@
-useDynLib(xtensor)
-exportPattern("^[[:alpha:]]+")
-importFrom(Rcpp, evalCpp)

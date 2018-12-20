@@ -20,9 +20,6 @@ init:
   #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
-  # CXX14 unnecessary with MSVC
-  # Also cannot be set because R uses its compile-time settings.
-  - ps: sed -i 's|CXX_STD = CXX14||' R-package/src/Makevars.win
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   # Testing
@@ -43,19 +40,10 @@ install:
   - set R_HOME=%MINICONDA%\\Lib\\R
   - set MINGW_PATH=%MINICONDA%\\Library\\mingw-w64\\bin
   - "set PATH=%PATH%;%MINGW_PATH%;%MINICONDA%\\Lib\\R\\library\\RInside\\libs\\x64;%MINICONDA%\\Lib\\R\\bin\\x64"
-  - appveyor DownloadFile https://cran.r-project.org/bin/windows/Rtools/Rtools34.exe
-  - Rtools34.exe /VERYSILENT -NoNewWindow -Wait
   - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=%MINGW_PATH% -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -DDOWNLOAD_GTEST=ON ..
   - cmake --build . --target test_xtensor_r
   - cmake --build . --target install
-  - cmake --build . --target cran
   - cd test
 
 build_script:
   - .\test_xtensor_r
-  - cd ..
-  - R CMD check --as-cran .\xtensor_*.tar.gz
-
-# To enable RDP
-#on_finish:
-#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
