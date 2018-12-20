@@ -92,9 +92,6 @@ before_install:
     - sudo apt-get install -y gcc-6 g++-6 gfortran-6
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
     - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
-    # CXX14 unnecessary with gcc-6.
-    # Also cannot be set because R uses its compile-time settings.
-    - sed -i 's|CXX_STD = CXX14||' R-package/src/Makevars
 
 install:
     # Define the version of miniconda to download
@@ -116,28 +113,15 @@ install:
     - conda install gtest cmake -c conda-forge
     # Testing
     - conda install r r-rcpp r-base r-devtools -c conda-forge
-    - conda install xtensor==0.19.0 -c conda-forge
     - conda update readline -c conda-forge  # Requiring conda-forge version of readline
-    - R -e "install.packages(c('RInside', 'testthat'), repos='http://cran.us.r-project.org')"
+    - conda install xtensor==0.19.0 -c conda-forge
+    - R -e "install.packages(c('RInside'), repos='http://cran.us.r-project.org')"
     - mkdir build
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D BUILD_TESTS=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
     - cmake --build . --target test_xtensor_r
     - cmake --build . --target install
-    - cmake --build . --target cran
-    - mkdir ~/.R
-    - touch ~/.R/Makevars
-    - echo "CXX14=$CXX" >> ~/.R/Makevars
-    - echo "CXX14FLAGS=-fPIC -O2" >> ~/.R/Makevars
 
 script:
     - cd test
     - ./test_xtensor_r
-    - cd ..
-    - R CMD check --as-cran ./xtensor_*.tar.gz || (
-       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00install.out &&
-       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/00check.log   &&
-       cat /home/travis/build/QuantStack/xtensor-r/build/xtensor.Rcheck/Rdlatex.log
-      )
-    - R CMD INSTALL ./xtensor_*.tar.gz
-    - cd ../test/; Rscript unittest.R

@@ -1,4 +1,0 @@
-## -*- mode: makefile; -*-
-
-PKG_CXXFLAGS = -I../inst/include --std=c++14
-# CXX_STD = CXX14

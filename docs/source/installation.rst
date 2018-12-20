@@ -21,20 +21,9 @@
 Installation
 ============
 
-Although ``xtensor-r`` is a header-only library, we provide standardized means to install it, with package managers or with cmake.
+``xtensor-r`` is a header-only C++ library. We maintain the conda package for xtensor-r and its dependencies.
 
 Besides the xtendor-r headers, all these methods place the `cmake` project configuration file in the right location so that third-party projects can use cmake's find_package to locate xtensor-r headers.
-
-.. image:: cran.svg
-
-Using the CRAN package
-----------------------
-
-A package for xtensor-r is available on CRAN (The Comprehensive R Archive Network).
-
-.. code::
-
-    install.packages("xtensor")
 
 .. image:: conda.svg
 
@@ -71,19 +60,23 @@ On Windows platforms, from the source directory:
     nmake
     nmake install
 
-A tarball for the R package archive network (CRAN) can be generated.
+.. image:: cran.svg
+
+Using the R package
+-------------------
+
+We also provide a R package for xtensor, which has been packaged for both conda and CRAN (Comprehensive R Archive Network). The repository for the R package is https://github.com/QuantStack/Xtensor.R.
+
+To install the conda package:
 
 .. code::
 
-    mkdir build
-    cd build
-    cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ ..
-    make 
-    make cran
+    conda install r-xtensor -c conda-forge
 
-The generated tarball vendors the headers of the core xtensor library. It can be installed with
+To install the R package from CRAN
 
 .. code::
 
-    install.packages('xtensor_0.1.0-0.tar.gz')
+    install.packages("xtensor")
+
 

@@ -48,21 +48,15 @@ s
 
 ## Installation
 
-`xtensor-r` has been packaged for CRAN (The Comprehensive R Archive Network). It can be installed
+### Installation of the standalone C++ library
 
-```R
-install.packages("xtensor")
+`xtensor-r` a header-only C++ library. It has been packaged for the conda package manager.
+
+```bash
+conda install xtensor-r -c conda-forge
 ```
 
-or from the repository using devtools:
-
-```R
-devtools::install_github("QuantStack/xtensor-r", ref="package")
-```
-
-## Installation from Sources
-
-`xtensor-r` is primarily a C++ library that can be installed classically using cmake in any installation prefix. For example, on unix systems
+`xtensor-r` can be installed from source with cmake in any installation prefix. For example, on unix systems
 
 ```bash
 cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ .
@@ -70,28 +64,29 @@ make
 make install
 ```
 
-A tarball for the R package archive network (CRAN) can be generated.
+### Installation of the R package
+
+We also provide a R package for xtensor, which has been packaged for both conda and CRAN (Comprehensive R Archive Network). The repository for the R package is https://github.com/QuantStack/Xtensor.R.
+
+To install the conda package:
 
 ```bash
-mkdir build
-cd build
-cmake -D CMAKE_INSTALL_PREFIX=/prefix/path/ ..
-make
-make cran
+conda install r-xtensor -c conda-forge
 ```
 
-The generated tarball vendors the headers of the core `xtensor` library. It can be installed with
+To install the R package from CRAN
 
 ```R
-install.packages('xtensor_0.9.0-0.tar.gz')
+install.packages("xtensor")
 ```
 
-The package can be tested with a simple function call.
+or from its GitHub repository using devtools
 
 ```R
-library('xtensor')
-xtensor::rcpp_hello_xtensor(4:12)
+devtools::install_github("QuantStack/Xtensor.R")
 ```
+
+The CRAN package vendors the headers for `xtensor-r`, xtensor`, `xtl` and `xsimd`.
 
 ## Documentation
 
