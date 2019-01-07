@@ -66,7 +66,10 @@ namespace xt
     {
         inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp)
         {
-            if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
+            SEXP shape_sexp;
+            SEXP dim = Rf_getAttrib(exp, R_DimSymbol);
+
+            if (Rf_isNull(dim))
             {
                 // This is a 0D scalar
                 if (Rf_xlength(exp) == 1)
@@ -74,11 +77,13 @@ namespace xt
                     return xbuffer_adaptor<int*>(nullptr, 0);
                 }
 
-                auto d = Rcpp::IntegerVector::create(Rf_length(exp));
-                Rf_setAttrib(exp, R_DimSymbol, d);
+                shape_sexp = Rcpp::IntegerVector::create(Rf_length(exp));
+            }
+            else
+            {
+                shape_sexp = dim;
             }
 
-            SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
             std::size_t n = (std::size_t)Rf_xlength(shape_sexp);
             return xbuffer_adaptor<int*>(
                 Rcpp::internal::r_vector_start<INTSXP>(shape_sexp), n);
@@ -86,17 +91,22 @@ namespace xt
 
         inline xbuffer_adaptor<int*> r_shape_to_buffer_adaptor(SEXP exp, std::size_t n)
         {
+            SEXP shape_sexp;
+            SEXP dim = Rf_getAttrib(exp, R_DimSymbol);
+
             if (n == 0)
             {
                 return xbuffer_adaptor<int*>(nullptr, 0);
             }
-            if (Rf_isNull(Rf_getAttrib(exp, R_DimSymbol)))
+
+            if (Rf_isNull(dim))
             {
-                auto d = Rcpp::IntegerVector::create(Rf_length(exp));
-                Rf_setAttrib(exp, R_DimSymbol, d);
+                shape_sexp = Rcpp::IntegerVector::create(Rf_length(exp));
+            }
+            else {
+                shape_sexp = dim;
             }
 
-            SEXP shape_sexp = Rf_getAttrib(exp, R_DimSymbol);
             if (n != (std::size_t)Rf_xlength(shape_sexp))
             {
                 throw std::runtime_error("Could not convert shape for rtensor. Dimensions don't match.");
