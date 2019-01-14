@@ -25,7 +25,7 @@ install:
   # Testing
   - conda install r r-rcpp r-rinside r-devtools -c conda-forge
   - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix
-  - conda install xtensor==0.19.0 -c conda-forge
+  - conda install xtensor==0.19.1 -c conda-forge
   - mkdir build
   - cd build
   # Install miktex
