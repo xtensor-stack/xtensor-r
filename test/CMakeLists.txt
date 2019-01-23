@@ -70,7 +70,7 @@ if (DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     # Add googletest directly to our build. This defines
     # the gtest and gtest_main targets.
     add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                     ${CMAKE_CURRENT_BINARY_DIR}/googletest-build)
+                     ${CMAKE_CURRENT_BINARY_DIR}/googletest-build EXCLUDE_FROM_ALL)
 
     set(GTEST_INCLUDE_DIRS "${gtest_SOURCE_DIR}/include")
     set(GTEST_BOTH_LIBRARIES gtest_main gtest)
@@ -98,16 +98,16 @@ set(XTENSOR_R_TESTS
     test_rtensor.cpp
     test_rvectorize.cpp
 )
-set(XTENSOR_R_TARGET test_xtensor_r)
-add_executable(${XTENSOR_R_TARGET} ${XTENSOR_R_TESTS} ${XTENSOR_R_HEADERS})
-target_link_libraries(${XTENSOR_R_TARGET} xtensor-r ${R_LIBRARIES} ${RINSIDE_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_xtensor_r ${XTENSOR_R_TESTS} ${XTENSOR_R_HEADERS})
+target_link_libraries(test_xtensor_r xtensor-r ${R_LIBRARIES} ${RINSIDE_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    add_dependencies(${XTENSOR_R_TARGET} gtest_main)
+    add_dependencies(test_xtensor_r gtest_main)
 endif()
 
 if(UNIX)
-    add_custom_target(xtest COMMAND export R_HOME=${R_HOME} && ./test_xtensor_r DEPENDS ${XTENSOR_R_TARGET})
+    add_custom_target(xtest COMMAND export R_HOME=${R_HOME} && ./test_xtensor_r DEPENDS test_xtensor_r)
 else()
-    add_custom_target(xtest COMMAND set R_HOME=${R_HOME} && .\\test_xtensor_r DEPENDS ${XTENSOR_R_TARGET})
+    add_custom_target(xtest COMMAND set R_HOME=${R_HOME} && .\\test_xtensor_r DEPENDS test_xtensor_r)
 endif()
