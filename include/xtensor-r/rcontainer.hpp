@@ -103,7 +103,8 @@ namespace xt
             {
                 shape_sexp = Rcpp::IntegerVector::create(Rf_length(exp));
             }
-            else {
+            else 
+            {
                 shape_sexp = dim;
             }
 
