@@ -9,22 +9,37 @@
 #ifndef XTENSOR_R_OPTIONAL_HPP
 #define XTENSOR_R_OPTIONAL_HPP
 
-#include "../../xtl/include/xtl/xoptional.hpp"
-#include "../../xtensor/include/xtensor/xoptional_assembly.hpp"
+#include <xtl/xoptional.hpp>
+
+#include <xtensor/xoptional_assembly.hpp>
 #include <xtensor/xfunctor_view.hpp>
 
 #include "rarray.hpp"
 
 namespace xt
 {
+    /**********************************
+     * roptional_assembly declaration *
+     **********************************/
 
+    template <class T>
+    class roptional_assembly;
+
+    /*
+     * R uses special NaN values to represent missing floating values in arrays.
+     *
+     * rna_proxy is a proxy on the value with a boolean semantics, corresponding
+     * to "has_value", i.e. `true` is the value is not NA, false otherwise.
+     */
     template <class XT>
     struct rna_proxy
     {
         using cpp_type = std::decay_t<XT>;
         constexpr static int rtype = Rcpp::traits::r_sexptype_traits<cpp_type>::rtype;
 
-        rna_proxy(XT val) : m_val(val) {};
+        rna_proxy(XT val) : m_val(val)
+        {
+        }
 
         inline operator bool() const
         {
@@ -72,14 +87,17 @@ namespace xt
         using pointer = rna_proxy<underlying_type*>;
         using const_pointer = rna_proxy<const underlying_type*>;
 
-        reference operator()(T& val) {
+        reference operator()(T& val)
+        {
             return val;
         }
 
-        const_reference operator()(const T& val) const {
+        const_reference operator()(const T& val) const
+        {
             return val;
         }
 
+        // TODO: boolean loading in xsimd
         // template <class align, class requested_type, std::size_t N, class E>
         // auto proxy_simd_load(const E& expr, std::size_t n) const
         // {
@@ -96,15 +114,12 @@ namespace xt
     };
 
     template <class T>
-    class roptional_assembly;
-
-    template <class T>
     struct xcontainer_inner_types<roptional_assembly<T>>
     {
         using raw_value_expression = rarray<T>;
         using value_storage_type = typename raw_value_expression::storage_type&;
-        using raw_flag_expression = xfunctor_view<rna_proxy_functor<T>, rarray<T>&>;
-        using flag_storage_type = xfunctor_view<rna_proxy_functor<T>, rarray<T>&>;
+        using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&>;
+        using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&>;
         using storage_type = xoptional_assembly_storage<value_storage_type&, flag_storage_type&>;
         using temporary_type = roptional_assembly<T>;
     };
@@ -123,73 +138,131 @@ namespace xt
                                public xcontainer_semantic<roptional_assembly<T>>
     {
     public:
-        using base_type = xoptional_assembly_base<roptional_assembly<T>>;
+
+        using self_type = roptional_assembly<T>;
+        using base_type = xoptional_assembly_base<self_type>;
+        using semantic_base = xcontainer_semantic<self_type>;
+
         using storage_type = typename base_type::storage_type;
         using assembly_type = roptional_assembly<T>;
 
-        roptional_assembly(SEXP exp)
-            : m_value(exp), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
-        {
-        }
+        explicit roptional_assembly(SEXP exp);
 
-    protected:
+        roptional_assembly(const roptional_assembly&);
+        roptional_assembly& operator=(const roptional_assembly&);
+        roptional_assembly(roptional_assembly&&);
+        roptional_assembly& operator=(roptional_assembly&&);
 
-        auto& value_impl() {
-            return m_value;
-        }
+        template <class E>
+        roptional_assembly(const xexpression<E>& e);
 
-        const auto& value_impl() const {
-            return m_value;
-        }
-
-        auto& has_value_impl() {
-            return m_flag;
-        }
-
-        const auto& has_value_impl() const {
-            return m_flag;
-        }
-
-        auto& storage_impl() {
-            return m_storage_proxy;
-        }
-
-        const auto& storage_impl() const {
-            return m_storage_proxy;
-        }
+        template <class E>
+        roptional_assembly& operator=(const xexpression<E>& e);
 
     private:
+
+        auto& value_impl() noexcept;
+        const auto& value_impl() const noexcept;
+        auto& has_value_impl() noexcept;
+        const auto& has_value_impl() const noexcept;
+        auto& storage_impl() noexcept;
+        const auto& storage_impl() const noexcept;
+
         rarray<T> m_value;
-        xfunctor_view<rna_proxy_functor<T>, rarray<T>&> m_flag;
+        xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&> m_flag;
         storage_type m_storage_proxy;
 
         friend xoptional_assembly_base<roptional_assembly<T>>;
     };
-}
 
-namespace Rcpp
-{
-    namespace traits
+    /*************************************
+     * roptional_assembly implementation *
+     *************************************/
+
+    template <class T>
+    inline roptional_assembly<T>::roptional_assembly(SEXP exp)
+        : m_value(exp), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
-        template <class T>
-        class Exporter<xt::roptional_assembly<T>>
-        {
+    }
 
-        public:
-            Exporter(SEXP x)
-                : m_sexp(x)
-            {
-            }
+    template <class T>
+    inline roptional_assembly<T>::roptional_assembly(const roptional_assembly& rhs)
+        : m_value(rhs.m_value), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
+    {
+    }
 
-            inline xt::roptional_assembly<T> get()
-            {
-                return m_sexp;
-            }
+    template <class T>
+    inline auto roptional_assembly<T>::operator=(const self_type& rhs) -> self_type&
+    {
+        base_type::operator=(rhs);
+        m_value = rhs.m_value;
+        return *this;
+    }
 
-        private:
-            SEXP m_sexp;
-        };
+    template <class T>
+    inline roptional_assembly<T>::roptional_assembly(self_type&& rhs)
+        : m_value(std::move(rhs.m_value)), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
+    {
+    }
+
+    template <class T>
+    inline auto roptional_assembly<T>::operator=(self_type&& rhs) -> self_type&
+    {
+        base_type::operator=(rhs);
+        m_value = std::move(rhs.m_value);
+        return *this;
+    }
+
+    template <class T>
+    template <class E>
+    inline roptional_assembly<T>::roptional_assembly(const xexpression<E>& e)
+        : m_value(), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
+    {
+        semantic_base::assign(e);
+    }
+
+    template <class T>
+    template <class E>
+    inline auto roptional_assembly<T>::operator=(const xexpression<E>& e) -> self_type&
+    {
+        return semantic_base::operator=(e);
+    }
+
+    template <class T>
+    inline auto& roptional_assembly<T>::value_impl() noexcept
+    {
+        return m_value;
+    }
+
+    template <class T>
+    inline const auto& roptional_assembly<T>::value_impl() const noexcept
+    {
+        return m_value;
+    }
+
+    template <class T>
+    inline auto& roptional_assembly<T>::has_value_impl() noexcept
+    {
+        return m_flag;
+    }
+
+    template <class T>
+    inline const auto& roptional_assembly<T>::has_value_impl() const noexcept
+    {
+        return m_flag;
+    }
+
+    template <class T>
+    inline auto& roptional_assembly<T>::storage_impl() noexcept
+    {
+        return m_storage_proxy;
+    }
+
+    template <class T>
+    inline const auto& roptional_assembly<T>::storage_impl() const noexcept
+    {
+        return m_storage_proxy;
     }
 }
-
 #endif
+

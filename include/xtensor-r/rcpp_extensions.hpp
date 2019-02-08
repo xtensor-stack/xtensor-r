@@ -18,14 +18,18 @@ namespace xt
 
     template <class T, std::size_t N>
     class rtensor;
+
+    template <class T>
+    class roptional_assembly;
 }
 
 namespace Rcpp
 {
+    // Specializing Rcpp traits for xtensor types prevents copies
+    // occuring in the generic `as<T>` function from Rcpp, called
+    // from the generic exporter.
     namespace traits
     {
-        // Specializing these traits here prevents copies from the default
-        // exporter in the generic `as<T>` function from Rcpp.
         template <class T>
         class Exporter<xt::rarray<T>>
         {
@@ -59,6 +63,26 @@ namespace Rcpp
             inline xt::rtensor<T, N> get()
             {
                 return xt::rtensor<T, N>(m_sexp);
+            }
+
+        private:
+
+            SEXP m_sexp;
+        };
+
+        template <class T>
+        class Exporter<xt::roptional_assembly<T>>
+        {
+        public:
+
+            Exporter(SEXP x)
+                : m_sexp(x)
+            {
+            }
+
+            inline xt::roptional_assembly<T> get()
+            {
+                return xt::roptional_assembly<T>(m_sexp);
             }
 
         private:

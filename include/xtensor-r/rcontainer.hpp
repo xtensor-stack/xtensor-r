@@ -188,7 +188,7 @@ namespace xt
         static constexpr bool contiguous_layout = true;
 
         template <class S = shape_type>
-        void resize(S&& shape);
+        void resize(S&& shape, bool force = false);
 
         template <class S = shape_type>
         void reshape(S&& shape);
@@ -222,10 +222,10 @@ namespace xt
      */
     template <class D, template <class> class SP>
     template <class S>
-    inline void rcontainer<D, SP>::resize(S&& shape)
+    inline void rcontainer<D, SP>::resize(S&& shape, bool force)
     {
         // if SEXP not initialized, it will be NULL (e.g. in constructor)
-        if (Rf_isNull(*this) || shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()))
+        if (Rf_isNull(*this) || shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()) || force)
         {
             derived_type tmp(xtl::forward_sequence<shape_type, S>(shape));
             *static_cast<derived_type*>(this) = std::move(tmp);
