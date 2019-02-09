@@ -26,7 +26,7 @@ namespace xt
             {mi, mi, mi},
             {15, 16, 17}}};
         SEXP exp = SEXP(t);
-        roptional_assembly<cpp_type> o(exp);
+        rarray_optional<cpp_type> o(exp);
 
         // Check has_value on elements
         EXPECT_TRUE(o(0, 0, 0).has_value());
@@ -79,7 +79,7 @@ namespace xt
             {mi, mi, mi},
             {15, 16, 17}}};
         SEXP exp = SEXP(t);
-        roptional_assembly<cpp_type> o(exp);
+        rarray_optional<cpp_type> o(exp);
 
         // Test setting element
         EXPECT_FALSE(o(0, 2, 1).has_value());
@@ -102,7 +102,7 @@ namespace xt
 
         rarray<cpp_type> t {0};
         SEXP exp = SEXP(t);
-        roptional_assembly<cpp_type> o(exp);
+        rarray_optional<cpp_type> o(exp);
 
         /*
 

@@ -9,21 +9,32 @@
 #ifndef XTENSOR_R_OPTIONAL_HPP
 #define XTENSOR_R_OPTIONAL_HPP
 
+#include <cstddef>
+#include <type_traits>
+#include <utility>
+
 #include <xtl/xoptional.hpp>
 
 #include <xtensor/xoptional_assembly.hpp>
 #include <xtensor/xfunctor_view.hpp>
 
 #include "rarray.hpp"
+#include "rtensor.hpp"
 
 namespace xt
 {
-    /**********************************
-     * roptional_assembly declaration *
-     **********************************/
+    /***********************************
+     * rcontainer_optional declaration *
+     ***********************************/
+
+    template <class RC>
+    class rcontainer_optional;
 
     template <class T>
-    class roptional_assembly;
+    using rarray_optional = rcontainer_optional<rarray<T>>;
+
+    template <class T, std::size_t N>
+    using rtensor_optional = rcontainer_optional<rtensor<T, N>>;
 
     /*
      * R uses special NaN values to represent missing floating values in arrays.
@@ -113,51 +124,69 @@ namespace xt
         // }
     };
 
-    template <class T>
-    struct xcontainer_inner_types<roptional_assembly<T>>
+    template <class RC>
+    struct xcontainer_inner_types<rcontainer_optional<RC>>
     {
-        using raw_value_expression = rarray<T>;
+        using raw_value_expression = RC;
+        using value_type = typename raw_value_expression::value_type;
         using value_storage_type = typename raw_value_expression::storage_type&;
-        using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&>;
-        using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&>;
+        using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
+        using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
         using storage_type = xoptional_assembly_storage<value_storage_type&, flag_storage_type&>;
-        using temporary_type = roptional_assembly<T>;
+        using temporary_type = rcontainer_optional<RC>;
     };
 
-    template <class T>
-    struct xiterable_inner_types<roptional_assembly<T>>
+    template <class RC>
+    struct xiterable_inner_types<rcontainer_optional<RC>>
     {
-        using assembly_type = roptional_assembly<T>;
-        using inner_shape_type = typename rarray<T>::inner_shape_type;
+        using assembly_type = rcontainer_optional<RC>;
+        using inner_shape_type = typename RC::inner_shape_type;
         using stepper = xoptional_assembly_stepper<assembly_type, false>;
         using const_stepper = xoptional_assembly_stepper<assembly_type, true>;
     };
 
-    template <class T>
-    class roptional_assembly : public xoptional_assembly_base<roptional_assembly<T>>,
-                               public xcontainer_semantic<roptional_assembly<T>>
+    /**
+     * @class rcontainer_optional
+     * @brief Multidimensional container of optional values providing the xtensor
+     * container semantics to an R array.
+     *
+     * ``rcontainer_optional`` is not meant to be used directly, but through the aliases
+     * ``rarray_optional<T>`` and ``rtensor_optional<T, N>``.
+     *
+     * Depending on the value type, optional values are reference proxies on R's
+     * ``NA_INTEGER``, ``NA_LOGICAL``, ``NA_REAL``, ``NA_STRING``, or ``R_NilValue``.
+     *
+     * Besides support for optionality, ``rarray_optional`` and ``rtensor_optional`` are similar
+     * to the \ref rarray and \ref rtensor respectively, with respect to dynamic and static
+     * dimensionality.
+     *
+     * @tparam T The type of the element stored in the rarray.
+     */
+    template <class RC>
+    class rcontainer_optional : public xoptional_assembly_base<rcontainer_optional<RC>>,
+                                public xcontainer_semantic<rcontainer_optional<RC>>
     {
     public:
 
-        using self_type = roptional_assembly<T>;
+        using self_type = rcontainer_optional<RC>;
         using base_type = xoptional_assembly_base<self_type>;
         using semantic_base = xcontainer_semantic<self_type>;
 
         using storage_type = typename base_type::storage_type;
-        using assembly_type = roptional_assembly<T>;
+        using assembly_type = rcontainer_optional<RC>;
 
-        explicit roptional_assembly(SEXP exp);
+        explicit rcontainer_optional(SEXP exp);
 
-        roptional_assembly(const roptional_assembly&);
-        roptional_assembly& operator=(const roptional_assembly&);
-        roptional_assembly(roptional_assembly&&);
-        roptional_assembly& operator=(roptional_assembly&&);
-
-        template <class E>
-        roptional_assembly(const xexpression<E>& e);
+        rcontainer_optional(const rcontainer_optional&);
+        rcontainer_optional& operator=(const rcontainer_optional&);
+        rcontainer_optional(rcontainer_optional&&);
+        rcontainer_optional& operator=(rcontainer_optional&&);
 
         template <class E>
-        roptional_assembly& operator=(const xexpression<E>& e);
+        rcontainer_optional(const xexpression<E>& e);
+
+        template <class E>
+        rcontainer_optional& operator=(const xexpression<E>& e);
 
     private:
 
@@ -168,98 +197,98 @@ namespace xt
         auto& storage_impl() noexcept;
         const auto& storage_impl() const noexcept;
 
-        rarray<T> m_value;
-        xfunctor_adaptor<rna_proxy_functor<T>, rarray<T>&> m_flag;
+        RC m_value;
+        xfunctor_adaptor<rna_proxy_functor<typename RC::value_type>, RC&> m_flag;
         storage_type m_storage_proxy;
 
-        friend xoptional_assembly_base<roptional_assembly<T>>;
+        friend xoptional_assembly_base<rcontainer_optional<RC>>;
     };
 
-    /*************************************
-     * roptional_assembly implementation *
-     *************************************/
+    /**************************************
+     * rcontainer_optional implementation *
+     **************************************/
 
-    template <class T>
-    inline roptional_assembly<T>::roptional_assembly(SEXP exp)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(SEXP exp)
         : m_value(exp), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class T>
-    inline roptional_assembly<T>::roptional_assembly(const roptional_assembly& rhs)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(const rcontainer_optional& rhs)
         : m_value(rhs.m_value), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class T>
-    inline auto roptional_assembly<T>::operator=(const self_type& rhs) -> self_type&
+    template <class RC>
+    inline auto rcontainer_optional<RC>::operator=(const self_type& rhs) -> self_type&
     {
         base_type::operator=(rhs);
         m_value = rhs.m_value;
         return *this;
     }
 
-    template <class T>
-    inline roptional_assembly<T>::roptional_assembly(self_type&& rhs)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(self_type&& rhs)
         : m_value(std::move(rhs.m_value)), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class T>
-    inline auto roptional_assembly<T>::operator=(self_type&& rhs) -> self_type&
+    template <class RC>
+    inline auto rcontainer_optional<RC>::operator=(self_type&& rhs) -> self_type&
     {
         base_type::operator=(rhs);
         m_value = std::move(rhs.m_value);
         return *this;
     }
 
-    template <class T>
+    template <class RC>
     template <class E>
-    inline roptional_assembly<T>::roptional_assembly(const xexpression<E>& e)
+    inline rcontainer_optional<RC>::rcontainer_optional(const xexpression<E>& e)
         : m_value(), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
         semantic_base::assign(e);
     }
 
-    template <class T>
+    template <class RC>
     template <class E>
-    inline auto roptional_assembly<T>::operator=(const xexpression<E>& e) -> self_type&
+    inline auto rcontainer_optional<RC>::operator=(const xexpression<E>& e) -> self_type&
     {
         return semantic_base::operator=(e);
     }
 
-    template <class T>
-    inline auto& roptional_assembly<T>::value_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::value_impl() noexcept
     {
         return m_value;
     }
 
-    template <class T>
-    inline const auto& roptional_assembly<T>::value_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::value_impl() const noexcept
     {
         return m_value;
     }
 
-    template <class T>
-    inline auto& roptional_assembly<T>::has_value_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::has_value_impl() noexcept
     {
         return m_flag;
     }
 
-    template <class T>
-    inline const auto& roptional_assembly<T>::has_value_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::has_value_impl() const noexcept
     {
         return m_flag;
     }
 
-    template <class T>
-    inline auto& roptional_assembly<T>::storage_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::storage_impl() noexcept
     {
         return m_storage_proxy;
     }
 
-    template <class T>
-    inline const auto& roptional_assembly<T>::storage_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::storage_impl() const noexcept
     {
         return m_storage_proxy;
     }
