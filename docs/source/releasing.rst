@@ -29,7 +29,3 @@ xtensor-r has been packaged for the conda package manager. Once the new tag has 
 - Check for the versions of the dependencies.
 - Optionally, rerender the conda-forge feedstock.
 
-Uploading the CRAN package
---------------------------
-
-- Generate the CRAN package with ``cmake -DBUILD_CRAN_PACKAGE=ON``.

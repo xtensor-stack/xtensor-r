@@ -15,9 +15,8 @@ set(XTENSOR_R_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Versionning
 # ===========
 
-# FOR THE CRAN PACKAGE, SET VERSIONS HERE
-set(XTENSOR_TAG 0.19.1)
-set(XTL_TAG 0.5.2)
+set(XTENSOR_REQUIRED_VERSION 0.19.2)
+set(XTL_REQUIRED_VERSION 0.5.3)
 
 set(XTENSOR_R_CONFIG_FILE
     "${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp")
@@ -35,9 +34,9 @@ message(STATUS "xtensor-r v${${PROJECT_NAME}_VERSION}")
 # Dependencies
 # ============
 
-find_package(xtl ${XTL_TAG} REQUIRED)
+find_package(xtl ${XTL_REQUIRED_VERSION} REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
-find_package(xtensor ${XTENSOR_TAG} REQUIRED)
+find_package(xtensor ${XTENSOR_REQUIRED_VERSION} REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 # Build

@@ -52,6 +52,17 @@ namespace xt
     {
     };
 
+    /**
+     * @class rarray
+     * @brief Multidimensional container providing the xtensor container semantics to an R array.
+     *
+     * rarray is similar to the xarray container in that it has a dynamic dimensionality.
+     * Reshapes of a rarray container are reflected in the underlying R array.
+     *
+     * @tparam T The type of the element stored in the rarray.
+     *
+     * @sa rtensor
+     */
     template <class T>
     class rarray : public rcontainer<rarray<T>>,
                    public xcontainer_semantic<rarray<T>>
@@ -146,6 +157,14 @@ namespace xt
         friend class rcontainer<rarray<T>, Rcpp::PreserveStorage>;
     };
 
+    /*************************
+     * rarray implementation *
+     *************************/
+
+    /**
+     * @name Constructors
+     */
+    //@{
     template <class T>
     inline rarray<T>::rarray(SEXP exp)
     {
@@ -168,12 +187,22 @@ namespace xt
         }
     }
 
+    /**
+     * Allocates an uninitialized rarray with the specified shape.
+     * @param shape the shape of the rarray
+     */
     template <class T>
     inline rarray<T>::rarray(const shape_type& shape)
     {
         init_from_shape(shape);
     }
 
+    /**
+     * Allocates a rarray with the specified shape. Elements are
+     * initialized to the specified value.
+     * @param shape the shape of the rarray
+     * @param value the value of the elements
+     */
     template <class T>
     inline rarray<T>::rarray(const shape_type& shape, const_reference value)
     {
@@ -181,21 +210,9 @@ namespace xt
         std::fill(this->begin(), this->end(), value);
     }
 
-    template <class T>
-    template <class E>
-    inline rarray<T>::rarray(const xexpression<E>& e)
-    {
-        semantic_base::assign(e);
-    }
-
-    template <class T>
-    inline rarray<T>::rarray(const self_type& rhs)
-        : base_type(rhs), semantic_base(rhs)
-    {
-        init_from_shape(rhs.shape());
-        std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());
-    }
-
+    /**
+     * Allocates a rarray with nested initializer lists.
+     */
     template <class T>
     inline rarray<T>::rarray(const value_type& t)
     {
@@ -238,13 +255,36 @@ namespace xt
         nested_copy(this->begin(), t);
     }
 
+    /**
+     * Allocates and returns an rarray with the specified shape.
+     * @param shape the shape of the rarray
+     */
     template <class T>
     template <class S>
     inline rarray<T> rarray<T>::from_shape(S&& shape)
     {
         return self_type(xtl::forward_sequence<shape_type, S>(shape));
     }
+    //@}
 
+    /**
+     * @name Copy semantic
+     */
+    //@{
+    /**
+     * The copy constructor.
+     */
+    template <class T>
+    inline rarray<T>::rarray(const self_type& rhs)
+        : base_type(rhs), semantic_base(rhs)
+    {
+        init_from_shape(rhs.shape());
+        std::copy(rhs.storage().cbegin(), rhs.storage().cend(), this->storage().begin());
+    }
+
+    /**
+     * The assignment operator.
+     */
     template <class T>
     inline auto rarray<T>::operator=(const self_type& rhs) -> self_type&
     {
@@ -252,13 +292,32 @@ namespace xt
         *this = std::move(tmp);
         return *this;
     }
+    //@}
 
+    /**
+     * @name Extended copy semantic
+     */
+    //@{
+    /**
+     * The extended copy constructor.
+     */
+    template <class T>
+    template <class E>
+    inline rarray<T>::rarray(const xexpression<E>& e)
+    {
+        semantic_base::assign(e);
+    }
+
+    /**
+     * The extended assignment operator.
+     */
     template <class T>
     template <class E>
     inline auto rarray<T>::operator=(const xexpression<E>& e) -> self_type&
     {
         return semantic_base::operator=(e);
     }
+    //@}
 
     template <class T>
     inline layout_type rarray<T>::layout() const

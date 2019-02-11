@@ -50,17 +50,17 @@ namespace xt
 
     /**
      * @class rtensor
-     * @brief Multidimensional container providing the xtensor container semantics wrapping a R array.
+     * @brief Multidimensional container providing the xtensor container semantics wrapping an R array.
      *
      * rtensor is similar to the xtensor container in that it has a static dimensionality.
      *
-     * Unlike with the pyarray container, rtensor cannot be reshaped with a different number of dimensions
-     * and reshapes are not reflected on the Python side. However, rtensor has benefits compared to pyarray
+     * Unlike the rarray container, rtensor cannot be reshaped with a different number of dimensions
+     * and reshapes are not reflected on the R side. However, rtensor has benefits compared to rarray
      * in terms of performances. rtensor shapes are stack-allocated which makes iteration upon rtensor
      * faster than with pyarray.
      *
-     * @tparam T The type of the element stored in the pyarray.
-     * @sa pyarray
+     * @tparam T The type of the element stored in the rarray.
+     * @sa rarray
      */
     template <class T, std::size_t N>
     class rtensor : public rcontainer<rtensor<T, N>>,
@@ -152,7 +152,7 @@ namespace xt
      */
     //@{
     /**
-     * Allocates an uninitialized rtensor that holds 1 element.
+     * Allocates an uninitialized rtensor.
      */
     template <class T, std::size_t N>
     inline rtensor<T, N>::rtensor()

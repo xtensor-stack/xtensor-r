@@ -113,7 +113,7 @@ install:
     - conda install cmake -c conda-forge
     # Build tests
     - conda install r r-rcpp r-rinside -c conda-forge
-    - conda install xtensor==0.19.1 -c conda-forge
+    - conda install xtensor==0.19.2 -c conda-forge
     - mkdir build
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..

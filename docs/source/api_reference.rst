@@ -15,6 +15,7 @@ Containers
 
    rarray
    rtensor
+   roptional
 
 Numpy-style universal functions
 -------------------------------
