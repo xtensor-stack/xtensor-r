@@ -66,21 +66,22 @@ make install
 
 ### Installation of the R package
 
-We also provide a R package for xtensor, which has been packaged for both conda and CRAN (Comprehensive R Archive Network). The repository for the R package is https://github.com/QuantStack/Xtensor.R.
+We provide a R package for Xtensor on both conda and CRAN (Comprehensive R Archive Network).
+The packaging boilerplate for the R package is available at https://github.com/QuantStack/Xtensor.R.
 
-To install the conda package:
+To install the R package with conda:
 
 ```bash
 conda install r-xtensor -c conda-forge
 ```
 
-To install the R package from CRAN
+To install the R package from CRAN:
 
-```R
-install.packages("xtensor")
+```bash
+R CMD INSTALL xtensor
 ```
 
-or from its GitHub repository using devtools
+or from the GitHub repository using devtools
 
 ```R
 devtools::install_github("QuantStack/Xtensor.R")

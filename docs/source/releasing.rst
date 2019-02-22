@@ -29,3 +29,22 @@ xtensor-r has been packaged for the conda package manager. Once the new tag has 
 - Check for the versions of the dependencies.
 - Optionally, rerender the conda-forge feedstock.
 
+Releasing the R Package
+=======================
+
+To build a package tarball for R, simply clone https://github.com/QuantStack/Xtensor.R and run
+
+.. code:: bash
+
+    R CMD build .
+
+from the root of the source directory.
+
+To produce a package tarball *vendoring* the xtl, xsimd and xtensor dependencies (for e.g. CRAN), clone https://github.com/QuantStack/Xtensor.R and run
+
+.. code:: bash
+
+    ./configure   # Downloads xtl, xtensor, xsimd, and xtensor-r.
+    R CMD build .
+
+from the root of the source directory.
