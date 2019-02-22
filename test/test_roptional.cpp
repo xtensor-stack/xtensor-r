@@ -104,11 +104,6 @@ namespace xt
         SEXP exp = SEXP(t);
         rarray_optional<cpp_type> o(exp);
 
-        /*
-
-        // Uncomment upon release of xtensor 0.19.3
-        // Adding strides() method to xfunctor_adaptor.
-
         // Assign expression
         xtensor_optional<double, 2> m
             {{ 1.0 ,       2.0         },
@@ -120,7 +115,5 @@ namespace xt
         EXPECT_TRUE(o(0, 1).has_value());
         EXPECT_TRUE(o(1, 0).has_value());
         EXPECT_FALSE(o(1, 1).has_value());
-        
-        */
     }
 }

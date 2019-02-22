@@ -21,11 +21,11 @@ init:
 
 install:
   - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Testing
-  - conda install r r-rcpp r-rinside r-devtools -c conda-forge
-  - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix
-  - conda install xtensor==0.19.2 -c conda-forge
+  # - conda update -q conda -c conda-forge
+  # Host dependencies
+  - conda install xtensor=0.19.4 r-rcpp r-rinside r-devtools -c conda-forge
+  # Build dependencies 
+  - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix -c conda-forge
   - mkdir build
   - cd build
   # Install miktex
