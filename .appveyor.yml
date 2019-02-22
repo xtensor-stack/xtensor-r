@@ -21,7 +21,7 @@ init:
 
 install:
   - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda -c conda-forge
+  # - conda update -q conda -c conda-forge
   # Host dependencies
   - conda install xtensor=0.19.4 r-rcpp r-rinside r-devtools -c conda-forge
   # Build dependencies 
