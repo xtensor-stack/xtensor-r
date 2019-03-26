@@ -71,12 +71,6 @@ namespace xt
 
             if (Rf_isNull(dim))
             {
-                // This is a 0D scalar
-                if (Rf_xlength(exp) == 1)
-                {
-                    return xbuffer_adaptor<int*>(nullptr, 0);
-                }
-
                 shape_sexp = Rcpp::IntegerVector::create(Rf_length(exp));
             }
             else
@@ -93,11 +87,6 @@ namespace xt
         {
             SEXP shape_sexp;
             SEXP dim = Rf_getAttrib(exp, R_DimSymbol);
-
-            if (n == 0)
-            {
-                return xbuffer_adaptor<int*>(nullptr, 0);
-            }
 
             if (Rf_isNull(dim))
             {
