@@ -171,7 +171,6 @@ namespace xt
         using self_type = rcontainer_optional<RC>;
         using base_type = xoptional_assembly_base<self_type>;
         using semantic_base = xcontainer_semantic<self_type>;
-        using rcontainer_type = RC;
 
         using storage_type = typename base_type::storage_type;
         using assembly_type = rcontainer_optional<RC>;
