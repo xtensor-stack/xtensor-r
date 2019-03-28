@@ -19,7 +19,7 @@ namespace xt
     template <class T, std::size_t N>
     class rtensor;
 
-    template <class T, template <class> class SP>
+    template <class T>
     class rcontainer_optional;
 }
 
@@ -70,8 +70,8 @@ namespace Rcpp
             SEXP m_sexp;
         };
 
-        template <class T, template <class> class SP>
-        class Exporter<xt::rcontainer_optional<T, SP>>
+        template <class T>
+        class Exporter<xt::rcontainer_optional<T>>
         {
         public:
 
@@ -80,9 +80,9 @@ namespace Rcpp
             {
             }
 
-            inline xt::rcontainer_optional<T, SP> get()
+            inline xt::rcontainer_optional<T> get()
             {
-                return xt::rcontainer_optional<T, SP>(m_sexp);
+                return xt::rcontainer_optional<T>(m_sexp);
             }
 
         private:

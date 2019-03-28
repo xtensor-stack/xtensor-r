@@ -27,14 +27,14 @@ namespace xt
      * rcontainer_optional declaration *
      ***********************************/
 
-    template <class RC, template <class> class SP>
+    template <class RC>
     class rcontainer_optional;
 
-    template <class T, template <class> class SP = Rcpp::PreserveStorage>
-    using rarray_optional = rcontainer_optional<rarray<T>, SP>;
+    template <class T>
+    using rarray_optional = rcontainer_optional<rarray<T>>;
 
-    template <class T, std::size_t N, template <class> class SP = Rcpp::PreserveStorage>
-    using rtensor_optional = rcontainer_optional<rtensor<T, N>, SP>;
+    template <class T, std::size_t N>
+    using rtensor_optional = rcontainer_optional<rtensor<T, N>>;
 
     /*
      * R uses special NaN values to represent missing floating values in arrays.
@@ -124,8 +124,8 @@ namespace xt
         // }
     };
 
-    template <class RC, template <class> class SP>
-    struct xcontainer_inner_types<rcontainer_optional<RC, SP>>
+    template <class RC>
+    struct xcontainer_inner_types<rcontainer_optional<RC>>
     {
         using raw_value_expression = RC;
         using value_type = typename raw_value_expression::value_type;
@@ -133,13 +133,13 @@ namespace xt
         using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
         using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
         using storage_type = xoptional_assembly_storage<value_storage_type&, flag_storage_type&>;
-        using temporary_type = rcontainer_optional<RC, SP>;
+        using temporary_type = rcontainer_optional<RC>;
     };
 
-    template <class RC, template <class> class SP>
-    struct xiterable_inner_types<rcontainer_optional<RC, SP>>
+    template <class RC>
+    struct xiterable_inner_types<rcontainer_optional<RC>>
     {
-        using assembly_type = rcontainer_optional<RC, SP>;
+        using assembly_type = rcontainer_optional<RC>;
         using inner_shape_type = typename RC::inner_shape_type;
         using stepper = xoptional_assembly_stepper<assembly_type, false>;
         using const_stepper = xoptional_assembly_stepper<assembly_type, true>;
@@ -162,19 +162,19 @@ namespace xt
      *
      * @tparam T The type of the element stored in the rarray.
      */
-    template <class RC, template <class> class SP = Rcpp::PreserveStorage>
-    class rcontainer_optional : public xoptional_assembly_base<rcontainer_optional<RC, SP>>,
-                                public xcontainer_semantic<rcontainer_optional<RC, SP>>,
-                                public SP<RC>
+    template <class RC>
+    class rcontainer_optional : public xoptional_assembly_base<rcontainer_optional<RC>>,
+                                public xcontainer_semantic<rcontainer_optional<RC>>
     {
     public:
 
-        using self_type = rcontainer_optional<RC, SP>;
+        using self_type = rcontainer_optional<RC>;
         using base_type = xoptional_assembly_base<self_type>;
         using semantic_base = xcontainer_semantic<self_type>;
+        using rcontainer_type = RC;
 
         using storage_type = typename base_type::storage_type;
-        using assembly_type = rcontainer_optional<RC, SP>;
+        using assembly_type = rcontainer_optional<RC>;
 
         explicit rcontainer_optional(SEXP exp);
 
@@ -189,7 +189,7 @@ namespace xt
         template <class E>
         rcontainer_optional& operator=(const xexpression<E>& e);
         
-        using base_type::data;
+        operator SEXP() const noexcept;
 
     private:
 
@@ -204,97 +204,104 @@ namespace xt
         xfunctor_adaptor<rna_proxy_functor<typename RC::value_type>, RC&> m_flag;
         storage_type m_storage_proxy;
 
-        friend xoptional_assembly_base<rcontainer_optional<RC, SP>>;
+        friend xoptional_assembly_base<rcontainer_optional<RC>>;
     };
 
     /**************************************
      * rcontainer_optional implementation *
      **************************************/
 
-    template <class RC, template <class> class SP>
-    inline rcontainer_optional<RC, SP>::rcontainer_optional(SEXP exp)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(SEXP exp)
         : m_value(exp), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class RC, template <class> class SP>
-    inline rcontainer_optional<RC, SP>::rcontainer_optional(const rcontainer_optional& rhs)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(const rcontainer_optional& rhs)
         : m_value(rhs.m_value), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class RC, template <class> class SP>
-    inline auto rcontainer_optional<RC, SP>::operator=(const self_type& rhs) -> self_type&
+    template <class RC>
+    inline auto rcontainer_optional<RC>::operator=(const self_type& rhs) -> self_type&
     {
         base_type::operator=(rhs);
         m_value = rhs.m_value;
         return *this;
     }
 
-    template <class RC, template <class> class SP>
-    inline rcontainer_optional<RC, SP>::rcontainer_optional(self_type&& rhs)
+    template <class RC>
+    inline rcontainer_optional<RC>::rcontainer_optional(self_type&& rhs)
         : m_value(std::move(rhs.m_value)), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
     }
 
-    template <class RC, template <class> class SP>
-    inline auto rcontainer_optional<RC, SP>::operator=(self_type&& rhs) -> self_type&
+    template <class RC>
+    inline auto rcontainer_optional<RC>::operator=(self_type&& rhs) -> self_type&
     {
         base_type::operator=(rhs);
         m_value = std::move(rhs.m_value);
         return *this;
     }
 
-    template <class RC, template <class> class SP>
+    template <class RC>
     template <class E>
-    inline rcontainer_optional<RC, SP>::rcontainer_optional(const xexpression<E>& e)
+    inline rcontainer_optional<RC>::rcontainer_optional(const xexpression<E>& e)
         : m_value(), m_flag(m_value), m_storage_proxy(m_value.storage(), m_flag)
     {
         semantic_base::assign(e);
     }
 
-    template <class RC, template <class> class SP>
+    template <class RC>
     template <class E>
-    inline auto rcontainer_optional<RC, SP>::operator=(const xexpression<E>& e) -> self_type&
+    inline auto rcontainer_optional<RC>::operator=(const xexpression<E>& e) -> self_type&
     {
         return semantic_base::operator=(e);
     }
 
-    template <class RC, template <class> class SP>
-    inline auto& rcontainer_optional<RC, SP>::value_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::value_impl() noexcept
     {
         return m_value;
     }
 
-    template <class RC, template <class> class SP>
-    inline const auto& rcontainer_optional<RC, SP>::value_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::value_impl() const noexcept
     {
         return m_value;
     }
 
-    template <class RC, template <class> class SP>
-    inline auto& rcontainer_optional<RC, SP>::has_value_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::has_value_impl() noexcept
     {
         return m_flag;
     }
 
-    template <class RC, template <class> class SP>
-    inline const auto& rcontainer_optional<RC, SP>::has_value_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::has_value_impl() const noexcept
     {
         return m_flag;
     }
 
-    template <class RC, template <class> class SP>
-    inline auto& rcontainer_optional<RC, SP>::storage_impl() noexcept
+    template <class RC>
+    inline auto& rcontainer_optional<RC>::storage_impl() noexcept
     {
         return m_storage_proxy;
     }
 
-    template <class RC, template <class> class SP>
-    inline const auto& rcontainer_optional<RC, SP>::storage_impl() const noexcept
+    template <class RC>
+    inline const auto& rcontainer_optional<RC>::storage_impl() const noexcept
     {
         return m_storage_proxy;
+    }
+    
+    template <class RC>
+    inline rcontainer_optional<RC>::operator SEXP() const noexcept
+    {
+        return SEXP(m_value);
     }
 }
+
 #endif
 
