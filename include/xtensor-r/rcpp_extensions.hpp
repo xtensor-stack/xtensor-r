@@ -20,7 +20,10 @@ namespace xt
     class rtensor;
 
     template <class T>
-    class roptional_assembly;
+    class rarray_optional;
+    
+    template <class T, std::size_t N>
+    class rtensor_optional;
 }
 
 namespace Rcpp
@@ -71,7 +74,7 @@ namespace Rcpp
         };
 
         template <class T>
-        class Exporter<xt::roptional_assembly<T>>
+        class Exporter<xt::rarray_optional<T>>
         {
         public:
 
@@ -80,13 +83,33 @@ namespace Rcpp
             {
             }
 
-            inline xt::roptional_assembly<T> get()
+            inline xt::rarray_optional<T> get()
             {
-                return xt::roptional_assembly<T>(m_sexp);
+                return xt::rarray_optional<T>(m_sexp);
             }
 
         private:
 
+            SEXP m_sexp;
+        };
+        
+        template <class T, std::size_t N>
+        class Exporter<xt::rtensor_optional<T, N>>
+        {
+        public:
+            
+            Exporter(SEXP x)
+                : m_sexp(x)
+            {
+            }
+            
+            inline xt::rtensor_optional<T, N> get()
+            {
+                return xt::rtensor_optional<T, N>(m_sexp);
+            }
+            
+        private:
+            
             SEXP m_sexp;
         };
     }
