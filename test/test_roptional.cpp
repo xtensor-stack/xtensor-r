@@ -116,4 +116,23 @@ namespace xt
         EXPECT_TRUE(o(1, 0).has_value());
         EXPECT_FALSE(o(1, 1).has_value());
     }
+
+    TEST(roptional, sexp_operator)
+    {
+        using cpp_type = double;
+        constexpr static int rtype = Rcpp::traits::r_sexptype_traits<cpp_type>::rtype;
+        auto mi = Rcpp::traits::get_na<rtype>();
+
+        rarray<cpp_type> t
+          {{{ 0,  1,  2},
+            { 3, mi, 5},
+            { 6, mi, 8}},
+           {{ 9, 10, 11},
+            {mi, mi, mi},
+            {15, 16, 17}}};
+        SEXP exp_t = SEXP(t);
+        rarray_optional<cpp_type> o(exp_t);
+        SEXP exp_o = SEXP(o);
+        EXPECT_EQ(exp_t, exp_o);
+    }
 }

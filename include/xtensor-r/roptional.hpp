@@ -188,6 +188,8 @@ namespace xt
         template <class E>
         rcontainer_optional& operator=(const xexpression<E>& e);
 
+        operator SEXP() const noexcept;
+
     private:
 
         auto& value_impl() noexcept;
@@ -255,6 +257,12 @@ namespace xt
     inline auto rcontainer_optional<RC>::operator=(const xexpression<E>& e) -> self_type&
     {
         return semantic_base::operator=(e);
+    }
+
+    template <class RC>
+    inline rcontainer_optional<RC>::operator SEXP() const noexcept
+    {
+        return SEXP(m_value);
     }
 
     template <class RC>
