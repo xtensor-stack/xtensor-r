@@ -113,7 +113,7 @@ install:
     - conda install cmake -c conda-forge
     # Build tests
     - conda install r r-rcpp r-rinside -c conda-forge
-    - conda install xtensor==0.19.4 -c conda-forge
+    - conda install xtensor==0.20.1 -c conda-forge
     - mkdir build
     - cd build
     - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
@@ -122,7 +122,7 @@ install:
     # Install R package
     - conda install r-devtools r-testthat -c conda-forge
     - export TAR="/bin/tar"
-    - R -e "library(devtools); options(devtools.install.args='--novendor'); install_github('QuantStack/Xtensor.R')"
+    - R -e "library(devtools); install_github('QuantStack/Xtensor.R', configure.args = '--novendor')"
 
 script:
     # Run C++ tests

@@ -33,6 +33,9 @@ namespace xt
         using r_type = T;
         using underlying_type = r_detail::get_underlying_value_type_r<T>;
         using storage_type = xbuffer_adaptor<typename underlying_type::type*>;
+        using reference = typename storage_type::reference;
+        using const_reference = typename storage_type::const_reference;
+        using size_type = typename storage_type::size_type;
         constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
         using shape_type = xt::dynamic_shape<typename storage_type::size_type>;
         using strides_type = xt::dynamic_shape<typename storage_type::difference_type>;

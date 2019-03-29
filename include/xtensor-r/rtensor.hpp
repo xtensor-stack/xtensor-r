@@ -38,6 +38,9 @@ namespace xt
         using r_type = T;
         using underlying_type = r_detail::get_underlying_value_type_r<T>;
         using storage_type = xbuffer_adaptor<typename underlying_type::type*>;
+        using reference = typename storage_type::reference;
+        using const_reference = typename storage_type::const_reference;
+        using size_type = typename storage_type::size_type;
         using shape_type = std::array<int, N>;
         using strides_type = shape_type;
         using backstrides_type = shape_type;
