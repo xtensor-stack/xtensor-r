@@ -20,7 +20,7 @@ namespace xt
     class rtensor;
 
     template <class T>
-    class roptional_assembly;
+    class rcontainer_optional;
 }
 
 namespace Rcpp
@@ -71,7 +71,7 @@ namespace Rcpp
         };
 
         template <class T>
-        class Exporter<xt::roptional_assembly<T>>
+        class Exporter<xt::rcontainer_optional<T>>
         {
         public:
 
@@ -80,9 +80,9 @@ namespace Rcpp
             {
             }
 
-            inline xt::roptional_assembly<T> get()
+            inline xt::rcontainer_optional<T> get()
             {
-                return xt::roptional_assembly<T>(m_sexp);
+                return xt::rcontainer_optional<T>(m_sexp);
             }
 
         private:

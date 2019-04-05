@@ -187,6 +187,8 @@ namespace xt
 
         template <class E>
         rcontainer_optional& operator=(const xexpression<E>& e);
+        
+        operator SEXP() const noexcept;
 
     private:
 
@@ -292,6 +294,13 @@ namespace xt
     {
         return m_storage_proxy;
     }
+    
+    template <class RC>
+    inline rcontainer_optional<RC>::operator SEXP() const noexcept
+    {
+        return SEXP(m_value);
+    }
 }
+
 #endif
 
