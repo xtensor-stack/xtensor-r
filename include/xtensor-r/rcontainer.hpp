@@ -20,10 +20,9 @@
 
 #include "xtensor_r_config.hpp"
 
-#include <Rcpp.h>
-#include <RcppCommon.h>
-
 #include "rcpp_extensions.hpp"
+
+#include <Rcpp.h>
 
 // Fake type for R logicals
 struct rlogical {};
