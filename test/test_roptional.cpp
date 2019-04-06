@@ -116,4 +116,25 @@ namespace xt
         EXPECT_TRUE(o(1, 0).has_value());
         EXPECT_FALSE(o(1, 1).has_value());
     }
+
+    TEST(roptional, assign_expression)
+    {
+        using cpp_type = double;
+        constexpr static int rtype = Rcpp::traits::r_sexptype_traits<cpp_type>::rtype;
+        auto mi = Rcpp::traits::get_na<rtype>();
+
+        rarray<cpp_type> t {0};
+        SEXP exp = SEXP(t);
+        rarray_optional<cpp_type> o(exp);
+
+        // Assign expression
+        xtensor_optional<double, 2> m
+            {{ 1.0 ,       2.0         },
+             { 3.0 , xtl::missing<double>() }};
+        o = xt::sum(m);
+
+        EXPECT_EQ(o.dimension(), 1);
+        EXPECT_TRUE(o(0).has_value());
+        EXPECT_FALSE(o(1).has_value());
+    }
 }

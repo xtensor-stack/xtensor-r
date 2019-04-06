@@ -128,11 +128,12 @@ namespace xt
     struct xcontainer_inner_types<rcontainer_optional<RC>>
     {
         using raw_value_expression = RC;
-        using value_type = typename raw_value_expression::value_type;
-        using value_storage_type = typename raw_value_expression::storage_type&;
-        using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
-        using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<value_type>, RC&>;
-        using storage_type = xoptional_assembly_storage<value_storage_type&, flag_storage_type&>;
+        using raw_value_type = typename raw_value_expression::value_type;
+        using raw_value_storage_type = typename raw_value_expression::storage_type&;
+        using raw_flag_expression = xfunctor_adaptor<rna_proxy_functor<raw_value_type>, RC&>;
+        using flag_storage_type = xfunctor_adaptor<rna_proxy_functor<raw_value_type>, RC&>;
+        using storage_type = xoptional_assembly_storage<raw_value_storage_type&, flag_storage_type&>;
+        using value_type = typename storage_type::value_type;
         using temporary_type = rcontainer_optional<RC>;
     };
 
