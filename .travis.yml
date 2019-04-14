@@ -3,67 +3,6 @@ dist: trusty
 matrix:
   include:
     - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-      env: COMPILER=gcc GCC=4.9
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: COMPILER=gcc GCC=5
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env: COMPILER=gcc GCC=6
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env: COMPILER=gcc GCC=7
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      compiler: clang
-      env: COMPILER=clang CLANG=3.6
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      compiler: clang
-      env: COMPILER=clang CLANG=3.7
-    - os: linux
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-      compiler: clang
-      env: COMPILER=clang CLANG=3.8
     - os: osx
       osx_image: xcode8
       compiler: clang
@@ -77,21 +16,14 @@ env:
 before_install:
     - |
       # Configure build variables
-      if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        if [[ "$COMPILER" == "gcc" ]]; then
-          export CXX=g++-$GCC CC=gcc-$GCC;
-        fi
-        if [[ "$COMPILER" == "clang" ]]; then
-          export CXX=clang++-$CLANG CC=clang-$CLANG;
-        fi
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        export CXX=clang++ CC=clang PYTHONHOME=$HOME/miniconda;
+      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+        export PYTHONHOME=$HOME/miniconda;
       fi
 
 before_install:
-    - sudo apt-get install -y gcc-6 g++-6 gfortran-6
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
-    - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended;
+      fi
 
 install:
     # Define the version of miniconda to download
@@ -110,17 +42,24 @@ install:
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
+    # Host dependencies
+    - conda install r r-rcpp xtensor==0.20.4 -c conda-forge
+    # Build dependencies
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        conda install gxx_linux-64 -c conda-forge;
+      fi
     - conda install cmake -c conda-forge
-    # Build tests
-    - conda install r r-rcpp r-rinside -c conda-forge
-    - conda install xtensor==0.20.1 -c conda-forge
+    # Test dependencies
+    - conda install r-rinside r-devtools r-testthat -c conda-forge
+    # Activate root environment
+    - source activate root
+    # Build
     - mkdir build
     - cd build
-    - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
+    - cmake -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
     - cmake --build . --target test_xtensor_r
     - cmake --build . --target install
     # Install R package
-    - conda install r-devtools r-testthat -c conda-forge
     - export TAR="/bin/tar"
     - R -e "library(devtools); install_github('QuantStack/Xtensor.R', configure.args = '--novendor')"
 

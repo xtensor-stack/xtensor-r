@@ -21,13 +21,11 @@ init:
 
 install:
   - conda config --set always_yes yes --set changeps1 no
-  # - conda update -q conda -c conda-forge
+  - conda update -q conda -c conda-forge
   # Host dependencies
-  - conda install xtensor=0.20.1 r-rcpp r-rinside r-devtools -c conda-forge
+  - conda install xtensor=0.20.4 r-rcpp r-rinside r-devtools -c conda-forge
   # Build dependencies 
   - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix -c conda-forge
-  - mkdir build
-  - cd build
   # Install miktex
   - if not exist c:\miktex\texmfs\install\miktex\bin\pdflatex.exe appveyor DownloadFile http://miktex.org/download/ctan/systems/win32/miktex/setup/windows-x86/miktex-portable.exe
   - if not exist c:\miktex\texmfs\install\miktex\bin\pdflatex.exe 7z x miktex-portable.exe -oC:\miktex >NUL
@@ -35,6 +33,8 @@ install:
   # Enable installing miktex packages on the fly
   - initexmf --set-config-value [MPM]AutoInstall=1
   # Full build on x64 with msys64
+  - mkdir build
+  - cd build
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set R_HOME=%MINICONDA%\\Lib\\R
   - set MINGW_PATH=%MINICONDA%\\Library\\mingw-w64\\bin

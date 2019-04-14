@@ -7,9 +7,12 @@
 ****************************************************************************/
 
 #include "gtest/gtest.h"
-#include "test_common.hpp"
-#include "xtensor-r/rarray.hpp"
+
 #include "xtensor/xarray.hpp"
+
+#include "xtensor-r/rarray.hpp"
+
+#include "test_common.hpp"
 
 namespace xt
 {
