@@ -7,13 +7,18 @@
 ****************************************************************************/
 
 #include "gtest/gtest.h"
+
+#include <complex>
+#include <cstddef>
+#include <vector>
+
 #include "test_common.hpp"
+
 #include "xtensor-r/rtensor.hpp"
 #include "xtensor-r/rvectorize.hpp"
 
 namespace xt
 {
-
     double f1(double a, double b)
     {
         return a + b;

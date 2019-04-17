@@ -87,11 +87,12 @@ before_install:
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
         export CXX=clang++ CC=clang PYTHONHOME=$HOME/miniconda;
       fi
-
-before_install:
-    - sudo apt-get install -y gcc-6 g++-6 gfortran-6
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
-    - sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended
+    - |
+      # Install Latex for CRAN package check
+      if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-$GCC 60 --slave /usr/bin/g++ g++ /usr/bin/g++-$GCC;
+        sudo apt-get install -y texlive-latex-base texlive-latex-recommended texinfo texlive-fonts-extra texlive-fonts-recommended;
+      fi
 
 install:
     # Define the version of miniconda to download
@@ -110,17 +111,19 @@ install:
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
+    # Host dependencies
+    - conda install r r-rcpp xtensor==0.20.4 -c conda-forge
+    # Build dependencies
     - conda install cmake -c conda-forge
-    # Build tests
-    - conda install r r-rcpp r-rinside -c conda-forge
-    - conda install xtensor==0.20.1 -c conda-forge
+    # Test dependencies
+    - conda install r-rinside r-devtools r-testthat -c conda-forge
+    # Build
     - mkdir build
     - cd build
-    - cmake -D XTENSOR_INSTALL_R_PACKAGES=OFF -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda ..
+    - cmake -D DOWNLOAD_GTEST=ON -D CMAKE_INSTALL_PREFIX=$HOME/miniconda -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
     - cmake --build . --target test_xtensor_r
     - cmake --build . --target install
     # Install R package
-    - conda install r-devtools r-testthat -c conda-forge
     - export TAR="/bin/tar"
     - R -e "library(devtools); install_github('QuantStack/Xtensor.R', configure.args = '--novendor')"
 

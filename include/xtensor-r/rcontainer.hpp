@@ -44,6 +44,16 @@ namespace Rcpp
 
 namespace xt
 {
+#if defined(__GNUC__) && !defined(__clang__)
+    namespace workaround
+    {
+        inline void complex_allocator()
+        {
+           std::allocator<std::complex<double>> a;
+        }
+    }
+#endif
+
     // R stores logicals as int32. This ensures that when a logical is seen,
     // the internal xtensor storage type uses an int.
     namespace r_detail
