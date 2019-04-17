@@ -95,6 +95,7 @@ link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 set(XTENSOR_R_TESTS
     main.cpp
     test_rarray.cpp
+    test_rreducer.cpp
     test_roptional.cpp
     test_rtensor.cpp
     test_rvectorize.cpp

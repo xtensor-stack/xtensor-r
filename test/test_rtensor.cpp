@@ -7,9 +7,17 @@
 ****************************************************************************/
 
 #include "gtest/gtest.h"
-#include "test_common.hpp"
-#include "xtensor-r/rtensor.hpp"
+
+#include <array>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
 #include "xtensor/xtensor.hpp"
+
+#include "xtensor-r/rtensor.hpp"
+
+#include "test_common.hpp"
 
 namespace xt
 {
