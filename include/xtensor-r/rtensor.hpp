@@ -22,7 +22,6 @@
 
 namespace xt
 {
-
     template <class T, std::size_t N>
     class rtensor;
 
