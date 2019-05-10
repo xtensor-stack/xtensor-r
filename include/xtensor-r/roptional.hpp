@@ -18,6 +18,8 @@
 #include <xtensor/xoptional_assembly.hpp>
 #include <xtensor/xfunctor_view.hpp>
 
+#include <xsimd/types/xsimd_traits.hpp>
+
 #include "rarray.hpp"
 #include "rtensor.hpp"
 
