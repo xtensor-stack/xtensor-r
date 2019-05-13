@@ -87,7 +87,7 @@ namespace xt
         using underlying_type = std::decay_t<T>;
 
         template <class xunderlying_type, class requested_type>
-        using simd_return_type = xsimd::simd_return_type<xunderlying_type, requested_type>;
+        using simd_return_type = xt_simd::simd_return_type<xunderlying_type, requested_type>;
 
         using cpp_type = std::decay_t<T>;
         constexpr static int rtype = Rcpp::traits::r_sexptype_traits<cpp_type>::rtype;
@@ -120,7 +120,7 @@ namespace xt
         // auto proxy_simd_store(E& expr, std::size_t n, const simd& batch) const
         // {
         //     using simd_value_type = typename E::simd_value_type;
-        //     return expr.template store_simd<align>(n, xsimd::select(batch, simd_value_type(0), simd_value_type(NA_INTEGER)));
+        //     return expr.template store_simd<align>(n, xt_simd::select(batch, simd_value_type(0), simd_value_type(NA_INTEGER)));
         // }
     };
 
