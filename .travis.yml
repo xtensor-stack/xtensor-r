@@ -112,7 +112,7 @@ install:
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Host dependencies
-    - conda install r r-rcpp xtensor==0.20.5 -c conda-forge
+    - conda install r r-rcpp xtensor==0.20.6 -c conda-forge
     # Build dependencies
     - conda install cmake -c conda-forge
     # Test dependencies
