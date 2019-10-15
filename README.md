@@ -1,11 +1,11 @@
 # ![xtensor-r](docs/source/xtensor-r.svg)
 
-[![Travis](https://travis-ci.org/QuantStack/xtensor-r.svg?branch=master)](https://travis-ci.org/QuantStack/xtensor-r)
-[![Appveyor](https://ci.appveyor.com/api/projects/status/5pe90pdw4wddaxx7?svg=true)](https://ci.appveyor.com/project/QuantStack/xtensor-r)
+[![Travis](https://travis-ci.org/xtensor-stack/xtensor-r.svg?branch=master)](https://travis-ci.org/xtensor-stack/xtensor-r)
+[![Appveyor](https://ci.appveyor.com/api/projects/status/xulke75tfifvnmj6?svg=true)](https://ci.appveyor.com/project/xtensor-stack/xtensor-r)
 [![Documentation](http://readthedocs.org/projects/xtensor-r/badge/?version=latest)](https://xtensor-r.readthedocs.io/en/latest/?badge=latest)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-R bindings for the [xtensor](https://github.com/QuantStack/xtensor) C++ multi-dimensional array library.
+R bindings for the [xtensor](https://github.com/xtensor-stack/xtensor) C++ multi-dimensional array library.
 
  - `xtensor` is a C++ library for multi-dimensional arrays enabling numpy-style broadcasting and lazy computing.
  - `xtensor-r` enables inplace use of R arrays in C++ with all the benefits from `xtensor`
@@ -67,7 +67,7 @@ make install
 ### Installation of the R package
 
 We provide a R package for Xtensor on both conda and CRAN (Comprehensive R Archive Network).
-The packaging boilerplate for the R package is available at https://github.com/QuantStack/Xtensor.R.
+The packaging boilerplate for the R package is available at https://github.com/xtensor-stack/Xtensor.R.
 
 To install the R package with conda:
 
@@ -84,7 +84,7 @@ R CMD INSTALL xtensor
 or from the GitHub repository using devtools
 
 ```R
-devtools::install_github("QuantStack/Xtensor.R")
+devtools::install_github("xtensor-stack/Xtensor.R")
 ```
 
 The CRAN package vendors the headers for `xtensor-r`, xtensor`, `xtl` and `xsimd`.
