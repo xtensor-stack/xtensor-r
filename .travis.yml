@@ -112,7 +112,7 @@ install:
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Host dependencies
-    - conda install r r-rcpp xtensor==0.20.8 -c conda-forge
+    - conda install r-base r-rcpp xtensor==0.20.8 -c conda-forge
     # Build dependencies
     - conda install cmake -c conda-forge
     # Test dependencies
@@ -125,7 +125,7 @@ install:
     - cmake --build . --target install
     # Install R package
     - export TAR="/bin/tar"
-    - R -e "library(devtools); install_github('QuantStack/Xtensor.R', configure.args = '--novendor')"
+    - R -e "library(devtools); install_github('xtensor-stack/Xtensor.R', configure.args = '--novendor')"
 
 script:
     # Run C++ tests
