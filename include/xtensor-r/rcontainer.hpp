@@ -173,6 +173,7 @@ namespace xt
         void reshape(S&& shape);
 
         layout_type layout() const;
+        bool is_contiguous() const noexcept;
 
         // explicitly forward data against ambiguity with Rcpp::Storage::data;
         using base_type::data;
@@ -187,11 +188,6 @@ namespace xt
 
         rcontainer(rcontainer&&) = default;
         rcontainer& operator=(rcontainer&&) = default;
-
-        // TODO: remove these once xcontainer::derived_cast is protected.
-        derived_type& derived_cast() & noexcept;
-        const derived_type& derived_cast() const & noexcept;
-        derived_type derived_cast() && noexcept;
     };
 
 
@@ -207,7 +203,7 @@ namespace xt
         if (Rf_isNull(*this) || shape.size() != this->dimension() || !std::equal(std::begin(shape), std::end(shape), this->shape().cbegin()) || force)
         {
             derived_type tmp(xtl::forward_sequence<shape_type, S>(shape));
-            *static_cast<derived_type*>(this) = std::move(tmp);
+            this->derived_cast() = std::move(tmp);
         }
     }
 
@@ -239,21 +235,9 @@ namespace xt
     }
 
     template <class D, template <class> class SP>
-    inline auto rcontainer<D, SP>::derived_cast() & noexcept -> derived_type&
+    inline bool rcontainer<D, SP>::is_contiguous() const noexcept
     {
-        return *static_cast<derived_type*>(this);
-    }
-
-    template <class D, template <class> class SP>
-    inline auto rcontainer<D, SP>::derived_cast() const & noexcept -> const derived_type&
-    {
-        return *static_cast<const derived_type*>(this);
-    }
-
-    template <class D, template <class> class SP>
-    inline auto rcontainer<D, SP>::derived_cast() && noexcept -> derived_type
-    {
-        return *static_cast<derived_type*>(this);
+        return this->derived_cast().strides().front() == difference_type(1);
     }
 }
 
