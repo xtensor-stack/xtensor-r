@@ -72,5 +72,5 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
    releasing
 
 .. _`numpy to xtensor cheat sheet`: http://xtensor.readthedocs.io/en/latest/numpy.html 
-.. _xtensor: https://github.com/QuantStack/xtensor
+.. _xtensor: https://github.com/xtensor-stack/xtensor
 .. _Rcpp: http://www.rcpp.org/

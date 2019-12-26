@@ -66,7 +66,7 @@ Installation of the R package
 =============================
 
 We provide a R package for Xtensor on both conda and CRAN (Comprehensive R Archive Network).
-The packaging boilerplate for the R package is available at https://github.com/QuantStack/Xtensor.R.
+The packaging boilerplate for the R package is available at https://github.com/xtensor-stack/Xtensor.R.
 
 To install the R package with conda:
 
@@ -84,7 +84,7 @@ or from the GitHub repository using devtools:
 
 .. code:: r
 
-    devtools::install_github("QuantStack/Xtensor.R")
+    devtools::install_github("xtensor-stack/Xtensor.R")
 
 .. note::
 

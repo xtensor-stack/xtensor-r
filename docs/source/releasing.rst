@@ -32,7 +32,7 @@ xtensor-r has been packaged for the conda package manager. Once the new tag has 
 Releasing the R Package
 =======================
 
-To build a package tarball for R, simply clone https://github.com/QuantStack/Xtensor.R and run
+To build a package tarball for R, simply clone https://github.com/xtensor-stack/Xtensor.R and run
 
 .. code:: bash
 
@@ -40,7 +40,7 @@ To build a package tarball for R, simply clone https://github.com/QuantStack/Xte
 
 from the root of the source directory.
 
-To produce a package tarball *vendoring* the xtl, xsimd and xtensor dependencies (for e.g. CRAN), clone https://github.com/QuantStack/Xtensor.R and run
+To produce a package tarball *vendoring* the xtl, xsimd and xtensor dependencies (for e.g. CRAN), clone https://github.com/xtensor-stack/Xtensor.R and run
 
 .. code:: bash
 
