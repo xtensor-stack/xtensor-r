@@ -1,7 +1,7 @@
 name: xtensor-r-docs
 
 channels:
-  - conda-forge
+  - QuantStack
 
 dependencies:
   - breathe
