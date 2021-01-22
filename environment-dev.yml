@@ -1,0 +1,12 @@
+name: xtensor-r
+channels:
+  - conda-forge
+dependencies:
+  - cmake
+  - xtensor=0.21.4
+  - r-base
+  - r-cpp
+  # test dependencies
+  - r-rinside
+  - r-devtools
+  - r-testthat
