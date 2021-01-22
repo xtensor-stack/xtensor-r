@@ -4,6 +4,18 @@ jobs:
       matrix:
         clang_4:
           llvm_version: '4.0'
+        clang_5:
+          llvm_version: '5.0'
+        clang_6:
+          llvm_version: '6.0'
+        clang_7:
+          llvm_version: '7'
+        clang_8:
+          llvm_version: '8'
+        clang_9:
+          llvm_version: '9'
+        clang_10:
+          llvm_version: '10'
     pool:
       vmImage: ubuntu-16.04
     variables:
