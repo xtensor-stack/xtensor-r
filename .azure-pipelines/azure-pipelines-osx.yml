@@ -4,8 +4,10 @@ jobs:
       matrix:
         macOS_10_14:
           image_name: 'macOS-10.14'
-        #macOS_10_15:
-          #image_name: 'macOS-10.15'
+          osx_platform: 1
+        macOS_10_15:
+          image_name: 'macOS-10.15'
+          osx_platform: 1
     pool:
       vmImage: $(image_name)
     variables:
