@@ -23,7 +23,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda -c conda-forge
   # Host dependencies
-  - conda install xtensor=0.22.0 r-rcpp r-rinside r-devtools -c conda-forge
+  - conda install xtensor=0.23.0 r-rcpp r-rinside r-devtools -c conda-forge
   # Build dependencies 
   - conda install m2w64-gcc m2w64-make m2w64-toolchain m2-libbz2 posix -c conda-forge
   # Full build on x64 with msys64
