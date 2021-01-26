@@ -34,10 +34,8 @@ steps:
     workingDirectory: $(Build.BinariesDirectory)/build
 
   - script: |
-      if [[ $(osx_platform) != 1 ]]; then
-        source activate xtensor-r
-        ./test_xtensor_r
-      fi
+      source activate xtensor-r
+      ./test_xtensor_r
     displayName: Run C++ tests
     workingDirectory: $(Build.BinariesDirectory)/build/test
 
