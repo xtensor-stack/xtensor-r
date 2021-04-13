@@ -27,14 +27,14 @@ Besides the xtendor-r headers, all these methods place the `cmake` project confi
 
 .. image:: conda.svg
 
-Using the conda package
------------------------
+Using the conda-forge package
+-----------------------------
 
-A package for xtensor-r is available on the conda package manager.
+A package for xtensor-r is available on the mamba (or conda) package manager.
 
 .. code::
 
-    conda install -c conda-forge xtensor-r
+    mamba install -c conda-forge xtensor-r
 
 .. image:: cmake.svg
 

@@ -50,10 +50,10 @@ s
 
 ### Installation of the standalone C++ library
 
-`xtensor-r` a header-only C++ library. It has been packaged for the conda package manager.
+`xtensor-r` a header-only C++ library. It has been packaged for the mamba (or conda) package manager.
 
 ```bash
-conda install xtensor-r -c conda-forge
+mamba install xtensor-r -c conda-forge
 ```
 
 `xtensor-r` can be installed from source with cmake in any installation prefix. For example, on unix systems
