@@ -100,6 +100,7 @@ set(XTENSOR_R_TESTS
     test_roptional.cpp
     test_rtensor.cpp
     test_rvectorize.cpp
+    test_sfinae.cpp
 )
 
 add_executable(test_xtensor_r ${XTENSOR_R_TESTS} ${XTENSOR_R_HEADERS})

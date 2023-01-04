@@ -93,6 +93,8 @@ namespace xt
 
         constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
 
+        constexpr static std::size_t rank = N;
+
         rtensor();
         rtensor(nested_initializer_list_t<T, N> t);
 

@@ -106,6 +106,8 @@ namespace xt
 
         constexpr static int SXP = Rcpp::traits::r_sexptype_traits<T>::rtype;
 
+        constexpr static std::size_t rank = SIZE_MAX;
+
         rarray() = default;
         rarray(SEXP exp);
 
