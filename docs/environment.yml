@@ -1,7 +1,8 @@
 name: xtensor-r-docs
 
 channels:
-  - QuantStack
+  - conda-forge
 
 dependencies:
   - breathe
+  - sphinx_rtd_theme
