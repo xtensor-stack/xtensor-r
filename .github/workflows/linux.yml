@@ -79,8 +79,12 @@ jobs:
 
     - name: Install R package
       working-directory: build
+      env:
+        GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        export TAR="/bin/tar"
+        echo "which tar"
+        which tar
+        export TAR="/usr/bin/tar"
         R -e "library(devtools); install_github('xtensor-stack/Xtensor.R', configure.args = '--novendor')"
 
     - name: Run tests (C++)
