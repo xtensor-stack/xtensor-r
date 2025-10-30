@@ -14,7 +14,7 @@
 #include <utility>
 #include <vector>
 
-#include "xtensor/xtensor.hpp"
+#include "xtensor/containers/xtensor.hpp"
 
 #include "xtensor-r/rtensor.hpp"
 
