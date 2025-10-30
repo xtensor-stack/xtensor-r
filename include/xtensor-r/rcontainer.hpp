@@ -14,8 +14,8 @@
 #include <functional>
 #include <numeric>
 
-#include "xtensor/xbuffer_adaptor.hpp"
-#include "xtensor/xcontainer.hpp"
+#include "xtensor/containers/xbuffer_adaptor.hpp"
+#include "xtensor/containers/xcontainer.hpp"
 
 #include "xtl/xsequence.hpp"
 

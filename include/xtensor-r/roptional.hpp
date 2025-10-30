@@ -16,8 +16,8 @@
 
 #include <xtl/xoptional.hpp>
 
-#include <xtensor/xoptional_assembly.hpp>
-#include <xtensor/xfunctor_view.hpp>
+#include <xtensor/optional/xoptional_assembly.hpp>
+#include <xtensor/views/xfunctor_view.hpp>
 
 #include "rarray.hpp"
 #include "rtensor.hpp"
