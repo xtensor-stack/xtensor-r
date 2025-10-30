@@ -9,9 +9,9 @@
 
 #include <gtest/gtest.h>
 
-#include <xtensor/xtensor.hpp>
-#include <xtensor/xarray.hpp>
-#include <xtensor/xmath.hpp>
+#include <xtensor/containers/xtensor.hpp>
+#include <xtensor/containers/xarray.hpp>
+#include <xtensor/core/xmath.hpp>
 
 #include "xtensor-r/rarray.hpp"
 #include "xtensor-r/rtensor.hpp"

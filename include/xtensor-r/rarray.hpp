@@ -15,11 +15,11 @@
 #include <utility>
 #include <vector>
 
-#include "xtensor/xbuffer_adaptor.hpp"
-#include "xtensor/xcontainer.hpp"
-#include "xtensor/xiterator.hpp"
-#include "xtensor/xsemantic.hpp"
-#include "xtensor/xutils.hpp"
+#include "xtensor/containers/xbuffer_adaptor.hpp"
+#include "xtensor/containers/xcontainer.hpp"
+#include "xtensor/core/xiterator.hpp"
+#include "xtensor/core/xsemantic.hpp"
+#include "xtensor/utils/xutils.hpp"
 
 #include "xtensor-r/rcontainer.hpp"
 
