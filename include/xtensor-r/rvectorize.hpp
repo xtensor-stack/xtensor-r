@@ -13,7 +13,7 @@
 #include <type_traits>
 
 #include "rarray.hpp"
-#include "xtensor/xvectorize.hpp"
+#include "xtensor/core/xvectorize.hpp"
 
 namespace xt
 {
