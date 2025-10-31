@@ -3,7 +3,7 @@
 [![Travis](https://travis-ci.org/xtensor-stack/xtensor-r.svg?branch=master)](https://travis-ci.org/xtensor-stack/xtensor-r)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/xulke75tfifvnmj6?svg=true)](https://ci.appveyor.com/project/xtensor-stack/xtensor-r)
 [![Documentation](http://readthedocs.org/projects/xtensor-r/badge/?version=latest)](https://xtensor-r.readthedocs.io/en/latest/?badge=latest)
-[![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Zulip](https://img.shields.io/badge/social_chat-zulip-blue.svg)](https://xtensor.zulipchat.com/#narrow/channel/539553-Ask-anything)
 
 R bindings for the [xtensor](https://github.com/xtensor-stack/xtensor) C++ multi-dimensional array library.
 
