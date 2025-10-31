@@ -53,6 +53,12 @@ jobs:
         export TAR="/usr/bin/tar"
         R -e "library(devtools); install_github('xtensor-stack/Xtensor.R', configure.args = '--novendor')"
 
+    - name: print R HOME
+      run: |
+        R RHOME
+        echo "Printing R_HOME"
+        echo $R_HOME
+
     - name: Run tests (C++)
       working-directory: build/test
       run: ./test_xtensor_r
