@@ -61,7 +61,9 @@ jobs:
 
     - name: Run tests (C++)
       working-directory: build/test
-      run: ./test_xtensor_r
+      run: |
+        export R_HOME=$(R RHOME)
+        ./test_xtensor_r
 
     - name: Run tests (R)
       working-directory: test
