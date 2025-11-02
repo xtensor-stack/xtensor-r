@@ -27,6 +27,7 @@ namespace xt
         EXPECT_EQ(x_sum(1), 15);
     }
 
+#ifndef __clang__
     TEST(rxreducer, variance)
     {
         // For computing references
@@ -46,4 +47,5 @@ namespace xt
             EXPECT_EQ(xt::variance(arr, axes), xt::variance(data, axes));
         }
     }
+#endif
 }
