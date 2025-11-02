@@ -17,18 +17,27 @@ jobs:
     name: MINGW64
 
     steps:
-      
+
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set conda environment
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-file: environment-dev.yml
-        cache-environment: true
+        cache-environment: false
+
+    - name: Install gcc_win-64
+      run: micromamba install gxx_win-64 -c conda-forge
 
     - name: Configure using CMake
-      run: cmake -Bbuild -DXTENSOR_INSTALL_R_PACKAGES=OFF -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DDOWNLOAD_GTEST=ON $(Build.SourcesDirectory)
+      run: |
+        cmake -Bbuild \
+          -DXTENSOR_INSTALL_R_PACKAGES=OFF \
+          -G "MinGW Makefiles" \
+          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DDOWNLOAD_GTEST=ON \
+          $(Build.SourcesDirectory)
 
     - name: Install
       working-directory: build
