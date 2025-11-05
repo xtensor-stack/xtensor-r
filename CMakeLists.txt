@@ -57,7 +57,7 @@ add_library(xtensor-r INTERFACE)
 target_include_directories(xtensor-r INTERFACE $<BUILD_INTERFACE:${XTENSOR_R_INCLUDE_DIR}>
                                                $<INSTALL_INTERFACE:include>)
 
-target_compile_features(xtensor INTERFACE cxx_std_17)
+target_compile_features(xtensor-r INTERFACE cxx_std_17)
 
 target_link_libraries(xtensor-r INTERFACE xtensor)
 get_target_property(inc_dir xtensor-r INTERFACE_INCLUDE_DIRECTORIES)
