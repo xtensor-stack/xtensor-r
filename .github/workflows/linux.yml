@@ -78,7 +78,7 @@ jobs:
         echo "which tar"
         which tar
         export TAR="/usr/bin/tar"
-        R -e "library(devtools); install_github('xtensor-stack/Xtensor.R', configure.args = '--novendor')"
+        R -e "library(devtools); install_github('fbourgin/Xtensor.R', ref = 'update_xtensor', configure.args = '--novendor')"
 
     - name: print R HOME
       run: |
