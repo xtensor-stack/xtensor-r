@@ -7,7 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-// [[Rcpp::plugins(cpp14)]]
+// [[Rcpp::plugins(cpp17)]]
 // [[Rcpp::depends(xtensor)]]
 
 #include "xtensor-r/rcontainer.hpp"
