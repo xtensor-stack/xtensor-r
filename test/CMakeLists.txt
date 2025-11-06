@@ -33,12 +33,12 @@ string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wunused-parameter -Wextra -Wreorder -Wconversion")
-    CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP17_FLAG)
+    CHECK_CXX_COMPILER_FLAG("-std=c++20" HAS_CPP20_FLAG)
 
-    if (HAS_CPP17_FLAG)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+    if (HAS_CPP20_FLAG)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
     else()
-        message(FATAL_ERROR "Unsupported compiler -- xtensor requires C++17 support!")
+        message(FATAL_ERROR "Unsupported compiler -- xtensor requires C++20 support!")
     endif()
 endif()
 
