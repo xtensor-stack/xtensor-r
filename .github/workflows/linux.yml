@@ -97,6 +97,6 @@ jobs:
         mkdir ~/.R
         touch ~/.R/Makevars
         echo "CXX20=$CXX" >> ~/.R/Makevars
-        echo "CXX20FLAGS=-fPIC -O2" >> ~/.R/Makevars
+        echo "CXX20FLAGS=-fPIC -O2 -std=c++20" >> ~/.R/Makevars
         Rscript ./unittest.R
       
