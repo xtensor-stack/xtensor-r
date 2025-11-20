@@ -16,8 +16,8 @@ set(XTENSOR_R_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Versionning
 # ===========
 
-set(XTENSOR_REQUIRED_VERSION 0.25.0)
-set(XTL_REQUIRED_VERSION 0.7.7)
+set(XTENSOR_REQUIRED_VERSION 0.26.0)
+set(XTL_REQUIRED_VERSION 0.8.0)
 
 set(XTENSOR_R_CONFIG_FILE
     "${XTENSOR_R_INCLUDE_DIR}/xtensor-r/xtensor_r_config.hpp")
@@ -56,6 +56,8 @@ set(XTENSOR_R_HEADERS
 add_library(xtensor-r INTERFACE)
 target_include_directories(xtensor-r INTERFACE $<BUILD_INTERFACE:${XTENSOR_R_INCLUDE_DIR}>
                                                $<INSTALL_INTERFACE:include>)
+
+target_compile_features(xtensor-r INTERFACE cxx_std_17)
 
 target_link_libraries(xtensor-r INTERFACE xtensor)
 get_target_property(inc_dir xtensor-r INTERFACE_INCLUDE_DIRECTORIES)

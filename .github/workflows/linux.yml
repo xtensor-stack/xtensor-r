@@ -22,7 +22,7 @@ jobs:
         - {compiler: gcc, version: '12'}
         - {compiler: gcc, version: '13'}
         - {compiler: gcc, version: '14'}
-        #- {compiler: clang, version: '19'}
+        - {compiler: clang, version: '19'}
         - {compiler: clang, version: '20'}
 
     steps:
@@ -78,7 +78,7 @@ jobs:
         echo "which tar"
         which tar
         export TAR="/usr/bin/tar"
-        R -e "library(devtools); install_github('xtensor-stack/Xtensor.R', configure.args = '--novendor')"
+        R -e "library(devtools); install_github('fbourgin/Xtensor.R', ref = 'update_xtensor', configure.args = '--novendor')"
 
     - name: print R HOME
       run: |
@@ -96,7 +96,7 @@ jobs:
         if [[ "${{matrix.sys.compiler}}" = "gcc" ]]; then export CC=gcc-${{matrix.sys.version}}; export CXX=g++-${{matrix.sys.version}}; else export CC=clang; export CXX=clang++; fi
         mkdir ~/.R
         touch ~/.R/Makevars
-        echo "CXX14=$CXX" >> ~/.R/Makevars
-        echo "CXX14FLAGS=-fPIC -O2" >> ~/.R/Makevars
+        echo "CXX17=$CXX" >> ~/.R/Makevars
+        echo "CXX17FLAGS=-fPIC -O2" >> ~/.R/Makevars
         Rscript ./unittest.R
       

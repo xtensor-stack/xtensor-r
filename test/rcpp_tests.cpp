@@ -7,13 +7,13 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-// [[Rcpp::plugins(cpp14)]]
+// [[Rcpp::plugins(cpp17)]]
 // [[Rcpp::depends(xtensor)]]
 
 #include "xtensor-r/rcontainer.hpp"
 #include "xtensor-r/rarray.hpp"
-#include "xtensor/xmath.hpp"
-#include "xtensor/xio.hpp"
+#include "xtensor/core/xmath.hpp"
+#include "xtensor/io/xio.hpp"
 
 // [[Rcpp::export]]
 int modify_cpp(xt::rarray<double>& x)

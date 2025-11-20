@@ -14,8 +14,8 @@
 #include <functional>
 #include <numeric>
 
-#include "xtensor/xbuffer_adaptor.hpp"
-#include "xtensor/xcontainer.hpp"
+#include "xtensor/containers/xbuffer_adaptor.hpp"
+#include "xtensor/containers/xcontainer.hpp"
 
 #include "xtl/xsequence.hpp"
 
@@ -142,7 +142,7 @@ namespace xt
         using difference_type = typename storage_type::difference_type;
 
 #ifndef XTENSOR_R_ALLOW_REINTERPRETATION
-        static_assert(xtl::disjunction<std::is_same<r_type, int32_t>,
+        static_assert(std::disjunction<std::is_same<r_type, int32_t>,
                                        std::is_same<r_type, double>,
                                        std::is_same<r_type, Rbyte>,
                                        std::is_same<r_type, rlogical>,
