@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - cmake
-  - xtensor=0.26.0
+  - xtensor=0.27.1
   - r-base
   - r-rcpp
   # test dependencies
