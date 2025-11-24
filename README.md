@@ -1,7 +1,8 @@
 # ![xtensor-r](docs/source/xtensor-r.svg)
 
-[![Travis](https://travis-ci.org/xtensor-stack/xtensor-r.svg?branch=master)](https://travis-ci.org/xtensor-stack/xtensor-r)
-[![Appveyor](https://ci.appveyor.com/api/projects/status/xulke75tfifvnmj6?svg=true)](https://ci.appveyor.com/project/xtensor-stack/xtensor-r)
+[![GHA Linux](https://github.com/xtensor-stack/xtensor-r/actions/workflows/linux.yml/badge.svg)](https://github.com/xtensor-stack/xtensor-r/actions/workflows/linux.yml)
+[![GHA OSX](https://github.com/xtensor-stack/xtensor-r/actions/workflows/osx.yml/badge.svg)](https://github.com/xtensor-stack/xtensor-r/actions/workflows/osx.yml)
+[![GHA Windows](https://github.com/xtensor-stack/xtensor-r/actions/workflows/windows.yml/badge.svg)](https://github.com/xtensor-stack/xtensor-r/actions/workflows/windows.yml)
 [![Documentation](http://readthedocs.org/projects/xtensor-r/badge/?version=latest)](https://xtensor-r.readthedocs.io/en/latest/?badge=latest)
 [![Zulip](https://img.shields.io/badge/social_chat-zulip-blue.svg)](https://xtensor.zulipchat.com/#narrow/channel/539553-Ask-anything)
 
