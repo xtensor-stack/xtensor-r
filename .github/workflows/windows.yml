@@ -48,7 +48,7 @@ jobs:
       run: cmake --build . --target test_xtensor_r --parallel 8
 
     # TODO: fix the test on Windows
-    #- name: Run tests (C++)
-      #working-directory: build/test
-      #run: test_xtensor_r
+    - name: Run tests (C++)
+      working-directory: build/test
+      run: ./test_xtensor_r
 
